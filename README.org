@@ -383,7 +383,7 @@ opens dialog for configuration selection (Choose ~axis_etool~)
 [[file:pics-keep/simulator-open-file.png]]
 
 Finally, ~cleanup~ -command empties data directories 
-#+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports code
+#+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
 <<run-etool>> cleanup ls
 #+END_SRC
 
