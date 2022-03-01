@@ -11,8 +11,8 @@
 - [[#marcus2002etool---docker-mapping-gerber-files-to-gcode-with-simulator-support][marcus2002/etool - Docker mapping Gerber files to gcode with simulator support]]
   - [[#features][Features]]
   - [[#usage][Usage]]
-  - [[#configuration-files][Configuration files]]
   - [[#architecture][Architecture]]
+  - [[#configuration-files-initialized-in-etool-directory][Configuration files initialized in etool directory]]
   - [[#test-marcus2002etool][Test marcus2002/etool]]
   - [[#development][Development]]
   - [[#release--notes][RELEASE -notes]]
@@ -49,16 +49,16 @@
 
 ** Usage
 
-Using  ~etool.sh~ with the following content
+Using script ~etool.sh~ with the following content
 #+BEGIN_SRC bash :eval no-export :results output :exports results
-cat usage
+cat etool.sh 
 #+END_SRC
 
 #+RESULTS:
 
-output tool usage
+To show tool usage run the script without parameters
 #+BEGIN_SRC bash :eval no-export :results output :results output :exports both
-./etool.sh usage
+./etool.sh
 #+END_SRC
 
 #+RESULTS:
@@ -103,24 +103,15 @@ output tool usage
 #+end_example
 
 
-
-** Configuration files
-
-| Configuration file               | Content                                             |
-|----------------------------------+-----------------------------------------------------|
-| [[file:docker/etool/pcb2gcode.ini]]  | CAM parameters for pcb2gcode -tool                  |
-| [[file:docker/etool/pcb2gcode-control.template][pcb2gcode-control.template]]       | Input/ouput configuration of pcb2gcode -tool        |
-| [[file:docker/etool/axis_etool.ini]] | linuxcnc simulator configuration (w. probe support) |
-
-
 ** Architecture
 
 Following box and line diagram gives an overview of ~marcus2002/etool~
 -architecture. It presents,
 
 1) Docker container initializing subdirectory structure and
-   configurations in *etool -directory*. These configurations
-   are used by the tools packaged in the container.
+   configurations in *etool -directory*. These configurations are used
+   by the tools packaged in the container. Configuration files are
+   documentend in the following chapter.
 2) Gerber files written into *01-gerber* subdirectory from KiCAD EDA
    -tool,  or using ~example~ - command of ~marcus2002/etool~.
 3) gcode files written into *02-ngc* subdirectory using ~cam~ -command
@@ -166,6 +157,16 @@ Following box and line diagram gives an overview of ~marcus2002/etool~
                                                  +-----------------+
  #+end_example
 
+
+** Configuration files initialized in ~etool directory~
+
+Following table summarizes configuration file initialized in ~etool~ -directory.
+
+| Configuration file               | Content                                             |
+|----------------------------------+-----------------------------------------------------|
+| [[file:docker/etool/pcb2gcode.ini]]  | CAM parameters for pcb2gcode -tool                  |
+| [[file:docker/etool/pcb2gcode-control.template][pcb2gcode-control.template]]       | Input/ouput configuration of pcb2gcode -tool        |
+| [[file:docker/etool/axis_etool.ini]] | linuxcnc simulator configuration (w. probe support) |
 
 
 
