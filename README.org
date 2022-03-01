@@ -13,7 +13,7 @@
   - [[#usage][Usage]]
   - [[#architecture][Architecture]]
   - [[#configuration-files-initialized-in-etool-directory][Configuration files initialized in etool directory]]
-  - [[#test-marcus2002etool][Test marcus2002/etool]]
+  - [[#installing-and-using--marcus2002etool][Installing and using  marcus2002/etool]]
   - [[#development][Development]]
   - [[#release--notes][RELEASE -notes]]
 :END:
@@ -49,23 +49,7 @@
 
 ** Usage
 
-Using script ~etool.sh~ with the following content:
-
-#+BEGIN_SRC bash :eval no-export :results output :exports results
-cat etool.sh
-#+END_SRC
-
-#+RESULTS:
-: #!/bin/bash
-:
-: HOST_DIR=tmp/etool
-: TAG=1
-: ETOOL="docker run --rm --user $(id -u):$(id -g) -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd)/$HOST_DIR:/etool marcus2002/etool:$TAG"
-:
-: set -x
-: $ETOOL $*
-
-To show tool usage run script ~etool.sh~
+Command line usage
 #+BEGIN_SRC bash :eval no-export :results output :results output :exports both
 ./etool.sh
 #+END_SRC
@@ -176,11 +160,22 @@ Following table summarizes configuration file initialized in ~etool~ -directory.
 | [[file:docker/etool/axis_etool.ini]] | linuxcnc simulator configuration (w. probe support) |
 
 
-** Test ~marcus2002/etool~
+** Installing and using  ~marcus2002/etool~
 :PROPERTIES:
 :header-args:bash: :dir  "."
 :END:
 
+Pull ~marcus2002/etool:1~ from Docker hub
+
+#+BEGIN_SRC bash :eval no-export :results output :exports both
+docker pull marcus2002/etool:1
+#+END_SRC
+
+#+RESULTS:
+: 1: Pulling from marcus2002/etool
+: Digest: sha256:67c4ce25b60ac6e15799b827619bf0697da138132d207720cfdd19ff46c602b5
+: Status: Image is up to date for marcus2002/etool:1
+: docker.io/marcus2002/etool:1
 
 
 Using data directory ~tmp/etool~ for tesing. Reset directory
@@ -198,6 +193,7 @@ Use ~<<run-etool>>~ below as a short hand for
 #+BEGIN_SRC bash :eval no :results output :exports code
 docker run --rm --user $(id -u):$(id -g) -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd)/tmp/etool:/etool marcus2002/etool:1
 #+END_SRC
+
 
 Calling ~<<run-etool>>~ for the first time inializes directory
 structure. Command ~ls~ shows empty directories ~/etool/01-gerber~ and
@@ -408,6 +404,7 @@ total 0
 ** Development
 
 Ref: [[file:docker.org]]
+
 
 ** RELEASE -notes
 
