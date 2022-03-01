@@ -21,7 +21,7 @@
 
 ** Features
 
- - [X] Docker content
+ - [X] Tools packaged into Docker container
    - [X] [[https://github.com/pcb2gcode/pcb2gcode%20][pcb2gcode]] : Tool for mapping Gerber files to gcode
    - [X] [[https://linuxcnc.org/][linuxcnc]]: Simulator for validating CNC execution paths
    - [X] [[file:docker/etool/etool.sh][etool.sh]]: Simple bash script for managing configuration and diretory structures
@@ -163,6 +163,7 @@ Following box and line diagram gives an overview of ~marcus2002/etool~
                                          |                 |
                                          +-----------------+
 #+end_example
+
 
 ** Configuration files initialized in ~etool directory~
 
@@ -381,10 +382,32 @@ opens dialog for configuration selection (Choose ~axis_etool~)
 
 [[file:pics-keep/simulator-open-file.png]]
 
+Finally, ~cleanup~ -command empties data directories 
+#+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports code
+<<run-etool>> cleanup ls
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Directory /etool/01-gerber exits - not modified
+Directory /etool/02-ngc exits - not modified
+Directory /etool/linuxcnc/configs/sim.axis exits - not modified
+File /etool/pcb2gcode.ini exits - not modified
+File /etool/linuxcnc/configs/sim.axis/axis_etool.ini exits - not modified
+File /etool/linuxcnc/configs/sim.axis/sim_mm.tbl exits - not modified
+File /etool/pcb2gcode-control.template exits - not modified
+File /etool/.linuxcncrc exits - not modified
+/etool/01-gerber:
+total 0
+
+/etool/02-ngc:
+total 0
+#+end_example
+
+
 ** Development
 
 Ref: [[file:docker.org]]
-
 
 ** RELEASE -notes
 
