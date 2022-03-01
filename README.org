@@ -49,21 +49,29 @@
 
 ** Usage
 
-Using script ~etool.sh~ with the following content
+Using script ~etool.sh~ with the following content:
+
 #+BEGIN_SRC bash :eval no-export :results output :exports results
-cat etool.sh 
+cat etool.sh
 #+END_SRC
 
 #+RESULTS:
+: #!/bin/bash
+:
+: HOST_DIR=tmp/etool
+: TAG=1
+: ETOOL="docker run --rm --user $(id -u):$(id -g) -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd)/$HOST_DIR:/etool marcus2002/etool:$TAG"
+:
+: set -x
+: $ETOOL $*
 
-To show tool usage run the script without parameters
+To show tool usage run script ~etool.sh~
 #+BEGIN_SRC bash :eval no-export :results output :results output :exports both
 ./etool.sh
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-
 
          marcus2002/etool - a tool for mapping Gerber files to gcode for CNC
          machining and launching linuxcnc -simulator for validating
@@ -121,42 +129,40 @@ Following box and line diagram gives an overview of ~marcus2002/etool~
 5) gcode files in *02-ngc* -subdirectory copied to CNC for milling,
    drilling and edge cutting.
 
- #+begin_example
-                       +-----------------+      +--------------------------------+
-                       | EDA -tool e.g.  |      | marcus2002/etool -container    |
-                       | Kicad           |      | - pcb2gcode                    |
-                       |                 |      | - linuxcnc -simulator          |
-                       |                 |      | - etool.sh -script             |
-                       |                 |      | - initial configuration        |
-                       +-----------------+      +--------------------------------+
-                            plot |                   |     |       ^          ^
-                                 |   +---------------+     |       |          |
-                                 |   | example command     |       |tool      |
-           +----------------+    |   |                init |       |access    | file read
-           |etool -directory|    |   |                once |       |          | in simulator
-           |                +----|---|---------------------|-------|---+      |
-           |                     |   |                     V       |   |      |
-           |                     |   |                   configuration |      |
-           |                     |   |                                 |      |
-           |         +-----------V---V-+        +-----------------+    |      |
-           |         | 01-gerber       |        | 02-ngc          |    |      |
-           |         |                 |  cam   |                 |-----------+
-           |         | Gerber-files    |--------> gcode -files    |    |
-           |         |                 |        |                 |    |
-           |         +-----------------+        +-----------------+    |
-           |                                              |            |
-           +----------------------------------------------|------------+
-                                                          | copy to CNC for
-                                                          | milling, drilling & cutting
-                                                          |
-                                                          |
-                                                 +--------V--------+
-                                                 | CNC machine     |
-                                                 | - linuxcnc      |
-                                                 |                 |
-                                                 +-----------------+
- #+end_example
 
+#+begin_example
+               +-----------------+      +--------------------------------+
+               | EDA -tool e.g.  |      | marcus2002/etool -container    |
+               | Kicad           |      | - pcb2gcode                    |
+               |                 |      | - linuxcnc -simulator          |
+               |                 |      | - etool.sh -script             |
+               |                 |      | - initial configuration        |
+               +-----------------+      +--------------------------------+
+                    plot |                   |     |       ^          ^
+                         |   +---------------+     |       |          |
+                         |   | example command     |       |tool      |
+   +----------------+    |   |                init |       |access    | file read
+   |etool -directory|    |   |                once |       |          | in simulator
+   |                +----|---|---------------------|-------|---+      |
+   |                     |   |                     V       |   |      |
+   |                     |   |                   configuration |      |
+   |                     |   |                                 |      |
+   |         +-----------V---V-+        +-----------------+    |      |
+   |         | 01-gerber       |        | 02-ngc          |    |      |
+   |         |                 |  cam   |                 |-----------+
+   |         | Gerber-files    |--------> gcode -files    |    |
+   |         |                 |        |                 |    |
+   |         +-----------------+        +-----------------+    |
+   +----------------------------------------------|------------+
+                                                  | copy to CNC for
+                                                  | milling, drilling & cutting
+                                                  |
+                                         +--------V--------+
+                                         | CNC machine     |
+                                         | - linuxcnc      |
+                                         |                 |
+                                         +-----------------+
+#+end_example
 
 ** Configuration files initialized in ~etool directory~
 
@@ -169,8 +175,7 @@ Following table summarizes configuration file initialized in ~etool~ -directory.
 | [[file:docker/etool/axis_etool.ini]] | linuxcnc simulator configuration (w. probe support) |
 
 
-
-** Test ~marcus2002/etool~ 
+** Test ~marcus2002/etool~
 :PROPERTIES:
 :header-args:bash: :dir  "."
 :END:
@@ -276,7 +281,7 @@ Importing outline... DONE.
 Processing input files... DONE.
 Exporting back... DONE. (Height: 17.1mm Width: 37.76mm)
 Exporting front... DONE. (Height: 17.1mm Width: 37.76mm)
-Exporting outline... DONE. (Height: 17.1mm Width: 37.76mm) The board should be cut from the FRONT side. 
+Exporting outline... DONE. (Height: 17.1mm Width: 37.76mm) The board should be cut from the FRONT side.
 Importing drill... DONE.
 Exporting milldrill... Exporting drill... DONE. The board should be drilled from the FRONT side.
 END.
@@ -284,7 +289,7 @@ Importing front side... not specified.
 Importing back side... not specified.
 Importing outline... DONE.
 Processing input files... DONE.
-Exporting outline... DONE. (Height: 17.1mm Width: 37.76mm) The board should be cut from the FRONT side. 
+Exporting outline... DONE. (Height: 17.1mm Width: 37.76mm) The board should be cut from the FRONT side.
 Importing drill... DONE.
 Exporting milldrill... Exporting drill... DONE. The board should be drilled from the FRONT side.
 END.
@@ -351,7 +356,7 @@ total 592
 #+end_example
 
 
-Simulator command 
+Simulator command
 #+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports code
 <<run-etool>> simulator
 #+END_SRC
