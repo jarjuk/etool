@@ -1,7 +1,8 @@
+#+PROPERTY: header-args+ :var  ETOOL_DOCKER_TAG="2"
+
 * marcus2002/etool - Docker mapping Gerber files to gcode with simulator support
 :PROPERTIES:
 :TOC:      :include all
-:header-args+: :var  ETOOL_DOCKER_TAG="2"
 :END:
 
  ~marcus2002/etool~ - a tool for mapping Gerber files to gcode for CNC
@@ -165,8 +166,16 @@ Following table summarizes configuration files initialized under
 
 ** Installing and using  ~marcus2002/etool~
 :PROPERTIES:
-:header-args:bash: :dir  "."
+:header-args:bash+: :dir  "."
 :END:
+
+#+BEGIN_SRC bash :eval no-export :results output :exports results
+echo ETOOL_DOCKER_TAG=$ETOOL_DOCKER_TAG
+#+END_SRC
+
+#+RESULTS:
+: ETOOL_DOCKER_TAG=2
+
 
 Pull ~marcus2002/etool:$ETOOL_DOCKER_TAG~ from Docker hub
 
