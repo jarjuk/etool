@@ -29,15 +29,14 @@
    - [X] Gerber input:
      - [X] Input example Gerber files
      - [X] Accept Gerber files from [[https://www.kicad.org/][Kicad EDA -tool]]
-     - [X] Priviso for accepting Gerber files from EDA tools using
-       different naming scheme
+     - [X] Proviso for accepting Gerber files from EDA tools using
+       [[file:docker/etool/pcb2gcode-control.template][different naming scheme]]
    - [X] cam -command converting Gerger files to gcode
-     - [X] optionated subset of ~pcb2gcode~ configurations for initial
-       configuration
-     - [X] possible to access all ~pcb2gcode~ CLI configuration
-       options in configuration files
+     - [X] [[file:docker/etool/pcb2gcode.ini][optionated subset]] of ~pcb2gcode~ configurations for initial
+       configuration (possible to add other ~pcb2gcode~ CLI configuration
+       options)
      - [X] ~pcb2gcode~  autolevelling [on/off]
-   - [X] Gcode output:
+   - [X] [[file:docker/etool/pcb2gcode-control.template][Gcode output]]:
      - [X] Front, Back, EdgeCut, PTH drill, NPTH drill -gcode files
    - [X] simulator -command for validating Gcode output
  - [X] Configuration management
