@@ -50,12 +50,13 @@
 ** Usage
 
 Command line usage
-#+BEGIN_SRC bash :eval no-export :results output :results output :exports both
+#+BEGIN_SRC bash :eval no-export :results output :results output :exports results
 ./etool.sh
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
+
 
          marcus2002/etool - a tool for mapping Gerber files to gcode for CNC
          machining and launching linuxcnc -simulator for validating
