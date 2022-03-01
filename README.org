@@ -374,8 +374,7 @@ opens dialog for configuration selection (Choose ~axis_etool~)
 ~linuxcnc~ ~File Open~ -command shows gcode files in ~/etool/02-ngc~
 -directory
 
-file:pics-keep/simulator-open-file.png
-
+[[file:pics-keep/simulator-open-file.png]]
 
 ** Development
 
