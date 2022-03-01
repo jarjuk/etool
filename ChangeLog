@@ -1,0 +1,4 @@
+2022-02-26  jj  <jj@santtu>
+
+	* docker/etool/etool.sh (initApp): First version
+

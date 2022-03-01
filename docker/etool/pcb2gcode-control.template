@@ -1,0 +1,65 @@
+# pcb2gcode-control.template - etool filetemplate for cam -command
+#
+# The intended use is to define input and output  filenames and
+# directories for pcb2gcode -tool.
+#
+# This file is expanded in cam -command and passed 
+# to pcb2gcode -tool using --config option.
+#
+# This file is processed in two passes, to separate drilling of PTH
+# (pcb soldering etc) and NPTH (screw and positioning) holes. 
+#
+# For more details ref etool cam-help command
+# and https://github.com/pcb2gcode/pcb2gcode/wiki
+#
+#
+# Evaluation context includes following environment variables:
+#
+# $CAM               : command parameter passed etool cam -command
+# ${GERBERS_DIR}     : directory, where gerbers are located
+# ${CAM_OUTPUT_DIR}  : gcode output directory
+# $PASS1             : for pass 1 "" (empty string), pass 2 "# "
+# $PASS2             : for pass 1 "# ", pass 2 "" (emtpy string)
+
+# ==================================================================
+# Patters for KiCAD generated gerbers
+
+# ----------
+# PASS1 - Front/Back copper, Edge cut, PTH holes
+
+${PASS1}front=${GERBERS_DIR}/${CAM}-F_Cu.gbr            # front copper
+${PASS1}front-output=${CAM}-F_Cu.ngc
+
+${PASS1}back=${GERBERS_DIR}/${CAM}-B_Cu.gbr             # back copper
+${PASS1}back-output=${CAM}-B_Cu.ngc
+
+${PASS1}outline=${GERBERS_DIR}/${CAM}-Edge_Cuts.gbr     # edge cut
+${PASS1}outline-output=${CAM}-Edge_Cuts.ngc
+
+# PTH (Plating Through Hole) 
+${PASS1}drill=${GERBERS_DIR}/${CAM}-PTH.drl             # drill holes
+${PASS1}drill-output=${CAM}-PTH.ngc
+
+# ----------
+# PASS2 - NPTH (Non Plating Through Hole), Edge Cut
+# NPTH (Non Plating Through Hole)  - pass 2
+# refers to a hole without copper in the borehole wall.
+# for positioning hole and screw hole of PCB (
+# The hole diameter is usually larger than PTH
+# Edge cut procesed 2 times to tell board size
+
+${PASS2}drill=${GERBERS_DIR}/${CAM}-NPTH.drl           # drill holes
+${PASS2}drill-output=${CAM}-NPTH.ngc
+
+${PASS2}outline=${GERBERS_DIR}/${CAM}-Edge_Cuts.gbr    # edge cut
+${PASS2}outline-output=${CAM}-Edge_Cuts.ngc
+
+
+# ==================================================================
+# Patters for other EDA -tools
+# TDB
+
+# ==================================================================
+# Common configurations
+
+output-dir=${CAM_OUTPUT_DIR}                           # gcode output dir

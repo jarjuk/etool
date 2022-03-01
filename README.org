@@ -1,0 +1,180 @@
+* marcus2002/etool - Docker mapping Gerber files to gcode with simulator support
+:PROPERTIES:
+:TOC:      :include all
+:END:
+
+
+:CONTENTS:
+- [[#marcus2002etool---docker-mapping-gerber-files-to-gcode-with-simulator-support][marcus2002/etool - Docker mapping Gerber files to gcode with simulator support]]
+  - [[#features][Features]]
+  - [[#usage][Usage]]
+  - [[#configuration-files][Configuration files]]
+  - [[#architecture][Architecture]]
+  - [[#development][Development]]
+  - [[#release--notes][RELEASE -notes]]
+:END:
+
+ ~marcus2002/etool~ - a tool for mapping Gerber files to gcode for CNC
+ machining and launching linuxcnc -simulator for validating
+ CNC execution paths.
+
+** Features
+
+ - [X] Docker content
+   - [X] [[https://github.com/pcb2gcode/pcb2gcode%20][pcb2gcode]] : Tool for mapping Gerber files to gcode
+   - [X] [[https://linuxcnc.org/][linuxcnc]]: Simulator for validating CNC execution paths
+   - [X] [[file:docker/etool/etool.sh][etool.sh]]: Simple bash script for managing configuration and diretory structures
+ - [X] Workflow
+   - [X] Gerber input:
+     - [X] Input example Gerber files
+     - [X] Accept Gerber files from [[https://www.kicad.org/][Kicad EDA -tool]]
+     - [X] Priviso for accepting Gerber files from EDA tools using
+       different naming scheme
+   - [X] cam -command converting Gerger files to gcode
+     - [X] optionated subset of ~pcb2gcode~ configurations for initial
+       configuration
+     - [X] possible to access all ~pcb2gcode~ CLI configuration
+       options in configuration files
+     - [X] ~pcb2gcode~  autolevelling [on/off]
+   - [X] Gcode output:
+     - [X] Front, Back, EdgeCut, PTH drill, NPTH drill -gcode files
+   - [X] simulator -command for validating Gcode output
+ - [X] Configuration management
+   - [X] almost 'zero configuration' - requiring one empty, writable data directory
+   - [X] directory structure and configurations automagically
+     intialized in an empty data directory
+   - [X] intialized configuration not overridden (=possible for user
+     to modify initialized configuration)
+
+
+** Usage
+
+#+BEGIN_SRC bash :eval no-export :results output :results output
+./etool.sh usage
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+
+
+         marcus2002/etool - a tool for mapping Gerber files to gcode for CNC
+         machining and launching linuxcnc -simulator for validating
+         CNC execution paths.
+
+         Usage:
+
+         docker DOCKER_OPTS run marcus2002/etool CMD_AND_OPTIONS ...
+
+         where CMD_AND_OPTIONS one of operations
+         o cam FILE            : create gcode for  (gerber)  with
+                                 configuration CAM_OPTIONS_FILE
+         o simulator           : start 'linuxcnc'
+
+         or one of data management utilities:
+         o ls                  : list data files in /etool -data directories
+         o cleanup             : remove files from /etool -data directories (/etool/01-gerber, /etool/02-ngc)
+         o example GERBER      : copy example GERBER (one of pad2pad soic ) to /etool/01-gerber
+
+         or one of miscallaneous commands:
+         o usage               : this help text
+         o cam-help            : help on pcb2gcode CAM options to put into
+                                  /etool/pcb2gcode.ini -file and open image explaining
+                                  dimension options
+         o releases            : output RELEASES document
+         o Dockerfile          : show Dockerfile used
+
+         and DOCKER_OPTS  options for 'docker run' command, particularly
+         o --rm                             : cleanup after Docker finished
+         o --user $(id -u):$(id -g)         : user credentials (instead of root)
+         o -e DISPLAY=unix:0                : allow Docker to open X11 apps
+         o -v /tmp/.X11-unix:/tmp/.X11-unix : allow Docker to open X11 apps
+         o -v HOSTD:/etool                   : data directory HOSTD (must exist,
+                                               owned by --user), structure is initialized
+
+
+#+end_example
+
+
+
+** Configuration files
+
+| Configuration file               | Content                                             |
+|----------------------------------+-----------------------------------------------------|
+| [[file:docker/etool/pcb2gcode.ini]]  | CAM parameters for pcb2gcode -tool                  |
+| [[file:docker/etool/pcb2gcode-control.template][pcb2gcode-control.template]]       | Input/ouput configuration of pcb2gcode -tool        |
+| [[file:docker/etool/axis_etool.ini]] | linuxcnc simulator configuration (w. probe support) |
+
+
+** Architecture
+
+Following box and line diagram gives an overview of ~marcus2002/etool~
+-architecture:
+
+ #+begin_example
+                       +-----------------+      +--------------------------------+
+                       | EDA -tool e.g.  |      | marcus2002/etool -container    |
+                       | Kicad           |      | - pcb2gcode                    |
+                       |                 |      | - linuxcnc -simulator          |
+                       |                 |      | - etool.sh -script             |
+                       |                 |      | - initial configuration        |
+                       +-----------------+      +-------------------------^------+
+                            plot |                   |     | init         |
+                                 |   +---------------+     | once         |
+                                 |   |    example          |              |
+           +----------------+    |   |                     |              | file open
+           |etool -directory|    |   |                     |              | in simulator
+           |                +----|---|---------------------|-----------+  |
+           |                     |   |                     V           |  |
+           |                     |   |                   configuration |  |
+           |                     |   |                                 |  |
+           |         +-----------V---V-+        +-----------------+    |  |
+           |         | 01-gerber       |        | 02-ngc          |    |  |
+           |         |                 |  cam   |                 |-------+
+           |         | Gerber-files    |--------> gcode -files    |    |
+           |         |                 |        |                 |    |
+           |         +-----------------+        +-----------------+    |
+           |                                              |            |
+           +----------------------------------------------|------------+
+                                                          | copy to CNC for
+                                                          | milling, drilling & cutting
+                                                          |
+                                                          |
+                                                 +--------V--------+
+                                                 | CNC machine     |
+                                                 | - linuxcnc      |
+                                                 |                 |
+                                                 +-----------------+
+ #+end_example
+
+ The diargram above shows:
+
+1) Docker container initializing subdirectory structure and
+   configurations in *etool -directory*
+2) Gerber files being written into *01-gerber* subdirectory using
+   KiCAD EDA -tool or using example command ~marcus2002/etool~ docker
+   container
+3) gcode files being written into *02-ngc* subdirectory using cam
+   -command in ~marcus2002/etool~ docker container
+4) gcode files in *02-ngc* -subdirectory read by linuxcnc simulator in
+   ~marcus2002/etool~ docker container
+5) gcode files in *02-ngc* -subdirectory copied to CNC for milling,
+   drilling and edge cutting
+
+
+
+** Development
+
+Ref: [[file:docker.org]]
+
+** RELEASE -notes
+
+Ref: [[file:docker/etool/RELEASES]]
+
+* Fin                                                              :noexport:
+
+   #+RESULTS:
+
+   # Local Variables:
+   # org-confirm-babel-evaluate: nil
+   # org-make-toc-mode: t
+   # End:
