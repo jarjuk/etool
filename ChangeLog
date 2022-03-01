@@ -1,3 +1,9 @@
+2022-03-01  jj  <jj@santtu>
+
+	* README.org: ETOOL_DOCKER_TAG="2"
+
+	* docker.org: ETOOL_DOCKER_TAG="2"
+
 2022-02-26  jj  <jj@santtu>
 
 	* docker/etool/etool.sh (initApp): First version

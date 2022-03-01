@@ -77,14 +77,13 @@ EOF
          docker DOCKER_OPTS run $APPI CMD_AND_OPTIONS ...
 
          where CMD_AND_OPTIONS one of follwoing operations:
-         o cam FILE            : create gcode for $INFILE (gerber)  with
-                                 configuration CAM_OPTIONS_FILE
+         o cam PROJECT         : create gcode for PROJECT Gerber -files
          o simulator           : start 'linuxcnc'
 
          or one of data management utilities:
          o ls                  : list data files in $ROOT -data directories
          o cleanup             : remove files from $ROOT -data directories ($GERBERS_DIR, $CAM_OUTPUT_DIR)
-         o example GERBER      : copy example GERBER (one of $EXAMPLES) to $GERBERS_DIR
+         o example PROJECT     : copy example PROJECT Gerber files to  $GERBERS_DIR
 
          or one of miscallaneous commands:
          o usage               : this help text

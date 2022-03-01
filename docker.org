@@ -1,7 +1,7 @@
 * ~etool~ Docker
   :PROPERTIES:
   :header-args+: :dir  docker/etool
-  :header-args+: :var  ETOOL_DOCKER_TAG="1"
+  :header-args+: :var  ETOOL_DOCKER_TAG="2"
   :END:
 
 
@@ -13,7 +13,7 @@ echo Current ETOOL_DOCKER_TAG=$ETOOL_DOCKER_TAG
 #+END_SRC
 
 #+RESULTS:
-: Current ETOOL_DOCKER_TAG=1
+: Current ETOOL_DOCKER_TAG=2
 
 Build ~marcus2002/etool:$ETOOL_DOCKER_TAG~
 
@@ -23,8 +23,7 @@ docker build -t marcus2002/etool:$ETOOL_DOCKER_TAG .  2>&1; echo $?
 
 #+RESULTS:
 #+begin_example
-/home/jj/work/etool/docker/etool
-Sending build context to Docker daemon  250.9kB
+Sending build context to Docker daemon  251.9kB
 Step 1/34 : FROM ubuntu:18.04
  ---> c3c304cb4f22
 Step 2/34 : RUN apt-get update &&      apt-get install -y      curl      wget      git      gnupg2  gnupg
@@ -79,51 +78,48 @@ Step 18/34 : COPY pcbGcodeZprobing.py /pcbGcodeZprobing
  ---> Using cache
  ---> efef92ab7df0
 Step 19/34 : COPY resources/ /resources
- ---> 51fddfec3546
+ ---> Using cache
+ ---> 511579c8c611
 Step 20/34 : WORKDIR /etool
- ---> Running in 6a2e74b921c9
-Removing intermediate container 6a2e74b921c9
- ---> 7f74a56e9bd4
+ ---> Using cache
+ ---> 21cee529c7ee
 Step 21/34 : ENV HOME=/etool
- ---> Running in e71aa980f7b4
-Removing intermediate container e71aa980f7b4
- ---> c8bf98a4cdff
+ ---> Using cache
+ ---> cb31741be747
 Step 22/34 : RUN mkdir /etool-bin
- ---> Running in 3b9e40f3ed54
-Removing intermediate container 3b9e40f3ed54
- ---> 1838655e57a0
+ ---> Using cache
+ ---> 0f1779d8ea70
 Step 23/34 : ENV PATH=/etool-bin:/emc/scripts:${PATH}
- ---> Running in b11d80a12c14
-Removing intermediate container b11d80a12c14
- ---> ae78645e93ca
+ ---> Using cache
+ ---> 6fda5a59bd7e
 Step 24/34 : COPY etool.sh /etool-bin/
- ---> b70d71df7cdf
+ ---> d5cde8ee7a75
 Step 25/34 : COPY RELEASES /etool-bin/
- ---> a454b3aefb34
+ ---> 546428a3561f
 Step 26/34 : COPY axis_etool.ini /etool-bin/
- ---> aaf151c8cb18
+ ---> de8efe9e1896
 Step 27/34 : COPY sim_mm.tbl /etool-bin/
- ---> 5e9867031d51
+ ---> 63058acfbdf1
 Step 28/34 : COPY .linuxcncrc /etool-bin/
- ---> 8fb01f879f4d
+ ---> 815a37053e95
 Step 29/34 : COPY pcb2gcode.ini /etool-bin/
- ---> 24fdbffc68b6
+ ---> d3f258b403f5
 Step 30/34 : COPY pcb2gcode-control.template /etool-bin/
- ---> 95a9bf312408
+ ---> aa80a1da2cb5
 Step 31/34 : COPY pcb2gcode-control.template /etool-bin/
- ---> c234fd236bf7
+ ---> 573207acc2db
 Step 32/34 : COPY Dockerfile /etool-bin/
- ---> 2a2204b60c9c
+ ---> 2cc4000ce3f5
 Step 33/34 : ENTRYPOINT [ "etool.sh" ]
- ---> Running in 993627800a99
-Removing intermediate container 993627800a99
- ---> d9cd975a3465
+ ---> Running in a7cfb84ba508
+Removing intermediate container a7cfb84ba508
+ ---> 17b54f9e3deb
 Step 34/34 : CMD [ "usage"]
- ---> Running in 6e7171da6d22
-Removing intermediate container 6e7171da6d22
- ---> bc98ea2386a0
-Successfully built bc98ea2386a0
-Successfully tagged marcus2002/etool:1
+ ---> Running in b2380eabbe50
+Removing intermediate container b2380eabbe50
+ ---> adb1a408e85f
+Successfully built adb1a408e85f
+Successfully tagged marcus2002/etool:2
 0
 #+end_example
 

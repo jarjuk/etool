@@ -1,10 +1,11 @@
 * marcus2002/etool - Docker mapping Gerber files to gcode with simulator support
 :PROPERTIES:
 :TOC:      :include all
+:header-args+: :var  ETOOL_DOCKER_TAG="2"
 :END:
 
  ~marcus2002/etool~ - a tool for mapping Gerber files to gcode for CNC
- machining and launching linuxcnc -simulator for validating
+ machining, and launching linuxcnc -simulator for validating
  CNC execution paths.
 
 :CONTENTS:
@@ -21,21 +22,22 @@
 
 ** Features
 
- - [X] Tools packaged into Docker container
+ - [X] Tools packaged into the Docker container
    - [X] [[https://github.com/pcb2gcode/pcb2gcode%20][pcb2gcode]] : Tool for mapping Gerber files to gcode
    - [X] [[https://linuxcnc.org/][linuxcnc]]: Simulator for validating CNC execution paths
-   - [X] [[file:docker/etool/etool.sh][etool.sh]]: Simple bash script for managing configuration and diretory structures
+   - [X] [[file:docker/etool/etool.sh][etool.sh]]: Simple bash script for managing configuration and
+     diretory structures
  - [X] Workflow
    - [X] Gerber input:
-     - [X] Input example Gerber files
-     - [X] Accept Gerber files from [[https://www.kicad.org/][Kicad EDA -tool]]
-     - [X] Proviso for accepting Gerber files from EDA tools using
+     - [X] Input example project Gerber files
+     - [X] Accept project Gerber files from [[https://www.kicad.org/][Kicad EDA -tool]]
+     - [X] Proviso for accepting project Gerber files from EDA tools using
        [[file:docker/etool/pcb2gcode-control.template][different naming scheme]]
-   - [X] cam -command converting Gerger files to gcode
-     - [X] [[file:docker/etool/pcb2gcode.ini][optionated subset]] of ~pcb2gcode~ configurations for initial
-       configuration (possible to add other ~pcb2gcode~ CLI configuration
-       options)
-     - [X] ~pcb2gcode~  autolevelling [on/off]
+   - [X] cam -command converting project Gerger files to gcode
+     - [X] [[file:docker/etool/pcb2gcode.ini][opinionated subset]] of ~pcb2gcode~ configurations for
+       initialize configuration (possible to add other [[https://github.com/pcb2gcode/pcb2gcode/wiki][~pcb2gcode~ CLI
+       configuration options]])
+     - [X] set ~pcb2gcode~  autolevelling [on/off]
    - [X] [[file:docker/etool/pcb2gcode-control.template][Gcode output]]:
      - [X] Front, Back, EdgeCut, PTH drill, NPTH drill -gcode files
    - [X] simulator -command for validating Gcode output
@@ -66,31 +68,30 @@ Command line usage
 
          docker DOCKER_OPTS run marcus2002/etool CMD_AND_OPTIONS ...
 
-         where CMD_AND_OPTIONS one of operations
-         o cam FILE            : create gcode for  (gerber)  with
-                                 configuration CAM_OPTIONS_FILE
+         where CMD_AND_OPTIONS one of follwoing operations:
+         o cam PROJECT         : create gcode for PROJECT Gerber -files
          o simulator           : start 'linuxcnc'
 
          or one of data management utilities:
          o ls                  : list data files in /etool -data directories
          o cleanup             : remove files from /etool -data directories (/etool/01-gerber, /etool/02-ngc)
-         o example GERBER      : copy example GERBER (one of pad2pad soic ) to /etool/01-gerber
+         o example PROJECT     : copy example PROJECT Gerber files to  /etool/01-gerber
 
          or one of miscallaneous commands:
          o usage               : this help text
          o cam-help            : help on pcb2gcode CAM options to put into
-                                  /etool/pcb2gcode.ini -file and open image explaining
-                                  dimension options
+                                 /etool/pcb2gcode.ini -file and open image explaining
+                                 dimension options
          o releases            : output RELEASES document
          o Dockerfile          : show Dockerfile used
 
-         and DOCKER_OPTS  options for 'docker run' command, particularly
+         and DOCKER_OPTS options for 'docker run' -command, particularly
          o --rm                             : cleanup after Docker finished
          o --user $(id -u):$(id -g)         : user credentials (instead of root)
          o -e DISPLAY=unix:0                : allow Docker to open X11 apps
          o -v /tmp/.X11-unix:/tmp/.X11-unix : allow Docker to open X11 apps
-         o -v HOSTD:/etool                   : data directory HOSTD (must exist,
-                                               owned by --user), structure is initialized
+         o -v HOSTD:/etool                  : data directory HOSTD (must exist,
+                                              owned by --user), structure is initialized
 
 
 #+end_example
@@ -101,58 +102,59 @@ Command line usage
 Following box and line diagram gives an overview of ~marcus2002/etool~
 -architecture. It presents,
 
-1) Docker container initializing subdirectory structure and
-   configurations in *etool -directory*. These configurations are used
-   by the tools packaged in the container. Configuration files are
-   documentend in the following chapter.
-2) Gerber files written into *01-gerber* subdirectory from KiCAD EDA
-   -tool,  or using ~example~ - command of ~marcus2002/etool~.
-3) gcode files written into *02-ngc* subdirectory using ~cam~ -command
-   of ~marcus2002/etool~.
+1) *etool -directory*, in which docker ~marcus2002/etool~ initializes
+   subdirectory structure and configurations. These configurations are
+   accessed by the tools packaged within the container. Configuration
+   files are documentend in the following chapter.
+2) Gerber files in *01-gerber* subdirectory. These files are created
+   using plot command in KiCAD EDA -tool, or using ~example~ -command
+   in ~marcus2002/etool~.
+3) gcode files in *02-ngc* subdirectory. These files are produced with
+   ~cam~ -command in ~marcus2002/etool~.
 4) gcode files in *02-ngc* -subdirectory read by ~linuxcnc~ -simulator
    packaged within in ~marcus2002/etool~ docker container.
 5) gcode files in *02-ngc* -subdirectory copied to CNC for milling,
-   drilling and edge cutting.
-
+   drilling, and edge cutting.
 
 #+begin_example
-               +-----------------+      +--------------------------------+
-               | EDA -tool e.g.  |      | marcus2002/etool -container    |
-               | Kicad           |      | - pcb2gcode                    |
-               |                 |      | - linuxcnc -simulator          |
-               |                 |      | - etool.sh -script             |
-               |                 |      | - initial configuration        |
-               +-----------------+      +--------------------------------+
-                    plot |                   |     |       ^          ^
-                         |   +---------------+     |       |          |
-                         |   | example command     |       |tool      |
-   +----------------+    |   |                init |       |access    | file read
-   |etool -directory|    |   |                once |       |          | in simulator
-   |                +----|---|---------------------|-------|---+      |
-   |                     |   |                     V       |   |      |
-   |                     |   |                   configuration |      |
-   |                     |   |                                 |      |
-   |         +-----------V---V-+        +-----------------+    |      |
-   |         | 01-gerber       |        | 02-ngc          |    |      |
-   |         |                 |  cam   |                 |-----------+
-   |         | Gerber-files    |--------> gcode -files    |    |
-   |         |                 |        |                 |    |
-   |         +-----------------+        +-----------------+    |
-   +----------------------------------------------|------------+
-                                                  | copy to CNC for
-                                                  | milling, drilling & cutting
-                                                  |
-                                         +--------V--------+
-                                         | CNC machine     |
-                                         | - linuxcnc      |
-                                         |                 |
-                                         +-----------------+
+            +-----------------+      +--------------------------------+
+            | EDA -tool e.g.  |      | marcus2002/etool -container    |
+            | Kicad           |      | - pcb2gcode                    |
+            |                 |      | - linuxcnc -simulator          |
+            |                 |      | - etool.sh -script             |
+            |                 |      | - initial configuration        |
+            +-----------------+      +--------------------------------+
+                 plot |                   |     |       ^          ^
+                      |   +---------------+     |       |          |
+                      |   | example command     |       |tool      |
++----------------+    |   |                init |       |access    | file read
+|etool -directory|    |   |                once |       |          | for simulation
+|                +----|---|---------------------|-------|---+      |
+|                     |   |                     V       |   |      |
+|                     |   |                   configuration |      |
+|                     |   |                                 |      |
+|         +-----------V---V-+        +-----------------+    |      |
+|         | 01-gerber       |        | 02-ngc          |    |      |
+|         |                 |  cam   |                 |-----------+
+|         | Gerber-files    |--------> gcode -files    |    |
+|         |                 |        |                 |    |
+|         +-----------------+        +-----------------+    |
++----------------------------------------------|------------+
+                                               | copy to CNC for
+                                               | milling, drilling & cutting
+                                               |
+                                      +--------V--------+
+                                      | CNC machine     |
+                                      | - linuxcnc      |
+                                      |                 |
+                                      +-----------------+
 #+end_example
 
 
 ** Configuration files initialized in ~etool directory~
 
-Following table summarizes configuration file initialized in ~etool~ -directory.
+Following table summarizes configuration files initialized under
+~etool~ -data directory.
 
 | Configuration file               | Content                                             |
 |----------------------------------+-----------------------------------------------------|
@@ -166,10 +168,10 @@ Following table summarizes configuration file initialized in ~etool~ -directory.
 :header-args:bash: :dir  "."
 :END:
 
-Pull ~marcus2002/etool:1~ from Docker hub
+Pull ~marcus2002/etool:$ETOOL_DOCKER_TAG~ from Docker hub
 
 #+BEGIN_SRC bash :eval no-export :results output :exports both
-docker pull marcus2002/etool:1
+docker pull marcus2002/etool:$ETOOL_DOCKER_TAG
 #+END_SRC
 
 #+RESULTS:
@@ -179,20 +181,19 @@ docker pull marcus2002/etool:1
 : docker.io/marcus2002/etool:1
 
 
-Using data directory ~tmp/etool~ for tesing. Reset directory
-Remove old existing directory
+Using data directory ~tmp/etool~ for tesing. Reset directory and
+remove old existing directory
 #+BEGIN_SRC bash :eval no-export :results output
 rm -rf tmp/etool
 mkdir -p tmp/etool
 #+END_SRC
 
 #+RESULTS:
-: /home/jj/work/etool
 
 Use ~<<run-etool>>~ below as a short hand for
 #+name: run-etool
 #+BEGIN_SRC bash :eval no :results output :exports code
-docker run --rm --user $(id -u):$(id -g) -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd)/tmp/etool:/etool marcus2002/etool:1
+docker run --rm --user $(id -u):$(id -g) -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd)/tmp/etool:/etool marcus2002/etool:$ETOOL_DOCKER_TAG
 #+END_SRC
 
 
@@ -222,9 +223,7 @@ total 0
 #+end_example
 
 
-#+END_SRC
-
-Using ~<<run-etool>>~ to populate example Gerbers ~soic~:
+Using ~<<run-etool>>~ to populate example Gerbers for ~soic~ -project:
 
 #+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
 <<run-etool>> example soic
@@ -293,8 +292,8 @@ Exporting milldrill... Exporting drill... DONE. The board should be drilled from
 END.
 #+end_example
 
-After ~cam~ command directory ~/etool/02-ngc~ contains ~ngc~ -files
-for CNC processing.
+After ~cam~ command, directory ~/etool/02-ngc~ contains gcode in ~ngc~
+-files.
 
 #+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
 <<run-etool>> ls
@@ -379,7 +378,7 @@ opens dialog for configuration selection (Choose ~axis_etool~)
 
 [[file:pics-keep/simulator-open-file.png]]
 
-Finally, ~cleanup~ -command empties data directories 
+Finally, ~cleanup~ -command empties data directories
 #+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
 <<run-etool>> cleanup ls
 #+END_SRC
