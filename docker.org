@@ -8,15 +8,16 @@
 ** Build  ~marcus2002/etool~ 
 
 
-#+BEGIN_SRC bash :eval no-export :results output
-echo ETOOL_DOCKER_TAG=$ETOOL_DOCKER_TAG
+#+BEGIN_SRC bash :eval no-export :results output :exports output
+echo Current ETOOL_DOCKER_TAG=$ETOOL_DOCKER_TAG
 #+END_SRC
 
 #+RESULTS:
-: ETOOL_DOCKER_TAG=1
+: Current ETOOL_DOCKER_TAG=1
 
-#+BEGIN_SRC bash :eval no-export :results output
-pwd
+Build ~marcus2002/etool:$ETOOL_DOCKER_TAG~
+
+#+BEGIN_SRC bash :eval no-export :results output :exports code
 docker build -t marcus2002/etool:$ETOOL_DOCKER_TAG .  2>&1; echo $?
 #+END_SRC
 
@@ -125,84 +126,6 @@ Successfully built bc98ea2386a0
 Successfully tagged marcus2002/etool:1
 0
 #+end_example
-
-
-
-** Test ~marcus2002/etool~ 
-
-
-*** Init test data
-    :PROPERTIES:
-    :header-args:
-    :END:
-
-#+BEGIN_SRC bash :eval no-export :results output
-pwd
-cp schema/pad2pad/gerber-x2/* tmp/etool/01-gerber/
-#+END_SRC
-
-#+RESULTS:
-: /home/jj/work/e-rakentelu/pcb-milling
-
-    
-*** Run pbc2gcode
-#+BEGIN_SRC bash :eval no-export :results output
-echo \
-docker run \
-      --rm \
-      --user $(id -u):$(id -g) \
-      -v /home/jj/work/e-rakentelu/pcb-milling/tmp/etool:/etool \
-      marcus2002/etool:$ETOOL_DOCKER_TAG  \
-           pcb2gcode \
-           --config /etool/pcb2gcode.ini \
-           --front /etool/01-gerber/pad2pad-F_Cu.gbr \
-           --output-dir /etool/02-ngc
-#+END_SRC
-
-#+RESULTS:
-: docker run --rm --user 1000:1000 -v /home/jj/work/e-rakentelu/pcb-milling/tmp/etool:/etool marcus2002/etool:1 pcb2gcode --config /etool/pcb2gcode.ini --front /etool/01-gerber/pad2pad-F_Cu.gbr --output-dir /etool/02-ngc
-
-#+BEGIN_SRC bash :eval no-export :results output
-echo \
-docker run \
-      --rm \
-      --user $(id -u):$(id -g) \
-      -v /home/jj/work/e-rakentelu/pcb-milling/tmp/etool:/etool \
-      marcus2002/etool:$ETOOL_DOCKER_TAG  \
-           pcb2gcode \
-           --metric \
-           --metricoutput \
-           --zsafe 2 \
-           --zchange 15 \
-           --zwork -0.1 \
-           --offset 0.25 \
-           --mill-feed 120 \
-           --mill-speed 1000 \
-           --isolation-width 0.2 \
-           --mill-diameters 0.2 \
-           --front /etool/01-gerber/pad2pad-F_Cu.gbr \
-           --output-dir /etool/02-ngc
-#+END_SRC
-
-#+RESULTS:
-: docker run --rm --user 1000:1000 -v /home/jj/work/e-rakentelu/pcb-milling/tmp/etool:/etool marcus2002/etool:1 pcb2gcode --metric --metricoutput --zsafe 2 --zchange 15 --zwork -0.1 --offset 0.25 --mill-feed 120 --mill-speed 1000 --isolation-width 0.2 --mill-diameters 0.2 --front /etool/01-gerber/pad2pad-F_Cu.gbr --output-dir /etool/02-ngc
-
-
-*** Simulate
-#+BEGIN_SRC bash :eval no-export :results output
-echo \
-docker run \
-      --rm \
-      --user $(id -u):$(id -g) \
-      -e DISPLAY=unix$DISPLAY  \
-      -v /tmp/.X11-unix:/tmp/.X11-unix \
-      -v /home/jj/work/e-rakentelu/pcb-milling/tmp/etool:/etool \
-      marcus2002/etool:$ETOOL_DOCKER_TAG  \
-           simulate
-#+END_SRC
-
-#+RESULTS:
-: docker run --rm --user 1000:1000 -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v /home/jj/work/e-rakentelu/pcb-milling/tmp/etool:/etool marcus2002/etool:1 simulate
 
 
 

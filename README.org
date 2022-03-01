@@ -3,6 +3,9 @@
 :TOC:      :include all
 :END:
 
+ ~marcus2002/etool~ - a tool for mapping Gerber files to gcode for CNC
+ machining and launching linuxcnc -simulator for validating
+ CNC execution paths.
 
 :CONTENTS:
 - [[#marcus2002etool---docker-mapping-gerber-files-to-gcode-with-simulator-support][marcus2002/etool - Docker mapping Gerber files to gcode with simulator support]]
@@ -10,13 +13,11 @@
   - [[#usage][Usage]]
   - [[#configuration-files][Configuration files]]
   - [[#architecture][Architecture]]
+  - [[#test-marcus2002etool][Test marcus2002/etool]]
   - [[#development][Development]]
   - [[#release--notes][RELEASE -notes]]
 :END:
 
- ~marcus2002/etool~ - a tool for mapping Gerber files to gcode for CNC
- machining and launching linuxcnc -simulator for validating
- CNC execution paths.
 
 ** Features
 
@@ -49,7 +50,15 @@
 
 ** Usage
 
-#+BEGIN_SRC bash :eval no-export :results output :results output
+Using  ~etool.sh~ with the following content
+#+BEGIN_SRC bash :eval no-export :results output :exports results
+cat usage
+#+END_SRC
+
+#+RESULTS:
+
+output tool usage
+#+BEGIN_SRC bash :eval no-export :results output :results output :exports both
 ./etool.sh usage
 #+END_SRC
 
@@ -108,7 +117,19 @@
 ** Architecture
 
 Following box and line diagram gives an overview of ~marcus2002/etool~
--architecture:
+-architecture. It presents,
+
+1) Docker container initializing subdirectory structure and
+   configurations in *etool -directory*. These configurations
+   are used by the tools packaged in the container.
+2) Gerber files written into *01-gerber* subdirectory from KiCAD EDA
+   -tool,  or using ~example~ - command of ~marcus2002/etool~.
+3) gcode files written into *02-ngc* subdirectory using ~cam~ -command
+   of ~marcus2002/etool~.
+4) gcode files in *02-ngc* -subdirectory read by ~linuxcnc~ -simulator
+   packaged within in ~marcus2002/etool~ docker container.
+5) gcode files in *02-ngc* -subdirectory copied to CNC for milling,
+   drilling and edge cutting.
 
  #+begin_example
                        +-----------------+      +--------------------------------+
@@ -117,19 +138,19 @@ Following box and line diagram gives an overview of ~marcus2002/etool~
                        |                 |      | - linuxcnc -simulator          |
                        |                 |      | - etool.sh -script             |
                        |                 |      | - initial configuration        |
-                       +-----------------+      +-------------------------^------+
-                            plot |                   |     | init         |
-                                 |   +---------------+     | once         |
-                                 |   |    example          |              |
-           +----------------+    |   |                     |              | file open
-           |etool -directory|    |   |                     |              | in simulator
-           |                +----|---|---------------------|-----------+  |
-           |                     |   |                     V           |  |
-           |                     |   |                   configuration |  |
-           |                     |   |                                 |  |
-           |         +-----------V---V-+        +-----------------+    |  |
-           |         | 01-gerber       |        | 02-ngc          |    |  |
-           |         |                 |  cam   |                 |-------+
+                       +-----------------+      +--------------------------------+
+                            plot |                   |     |       ^          ^
+                                 |   +---------------+     |       |          |
+                                 |   | example command     |       |tool      |
+           +----------------+    |   |                init |       |access    | file read
+           |etool -directory|    |   |                once |       |          | in simulator
+           |                +----|---|---------------------|-------|---+      |
+           |                     |   |                     V       |   |      |
+           |                     |   |                   configuration |      |
+           |                     |   |                                 |      |
+           |         +-----------V---V-+        +-----------------+    |      |
+           |         | 01-gerber       |        | 02-ngc          |    |      |
+           |         |                 |  cam   |                 |-----------+
            |         | Gerber-files    |--------> gcode -files    |    |
            |         |                 |        |                 |    |
            |         +-----------------+        +-----------------+    |
@@ -146,29 +167,225 @@ Following box and line diagram gives an overview of ~marcus2002/etool~
                                                  +-----------------+
  #+end_example
 
- The diargram above shows:
 
-1) Docker container initializing subdirectory structure and
-   configurations in *etool -directory*
-2) Gerber files being written into *01-gerber* subdirectory using
-   KiCAD EDA -tool or using example command ~marcus2002/etool~ docker
-   container
-3) gcode files being written into *02-ngc* subdirectory using cam
-   -command in ~marcus2002/etool~ docker container
-4) gcode files in *02-ngc* -subdirectory read by linuxcnc simulator in
-   ~marcus2002/etool~ docker container
-5) gcode files in *02-ngc* -subdirectory copied to CNC for milling,
-   drilling and edge cutting
 
+
+** Test ~marcus2002/etool~ 
+:PROPERTIES:
+:header-args:bash: :dir  "."
+:END:
+
+
+
+Using data directory ~tmp/etool~ for tesing. Reset directory
+Remove old existing directory
+#+BEGIN_SRC bash :eval no-export :results output
+rm -rf tmp/etool
+mkdir -p tmp/etool
+#+END_SRC
+
+#+RESULTS:
+: /home/jj/work/etool
+
+Use ~<<run-etool>>~ below as a short hand for
+#+name: run-etool
+#+BEGIN_SRC bash :eval no :results output :exports code
+docker run --rm --user $(id -u):$(id -g) -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd)/tmp/etool:/etool marcus2002/etool:1
+#+END_SRC
+
+Calling ~<<run-etool>>~ for the first time inializes directory
+structure. Command ~ls~ shows empty directories ~/etool/01-gerber~ and
+~/etool/02-ngc~:
+
+#+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
+<<run-etool>> ls
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Directory /etool/01-gerber created
+Directory /etool/02-ngc created
+Directory /etool/linuxcnc/configs/sim.axis created
+File /etool/pcb2gcode.ini created
+File /etool/linuxcnc/configs/sim.axis/axis_etool.ini created
+File /etool/linuxcnc/configs/sim.axis/sim_mm.tbl created
+File /etool/pcb2gcode-control.template created
+File /etool/.linuxcncrc created
+/etool/01-gerber:
+total 0
+
+/etool/02-ngc:
+total 0
+#+end_example
+
+
+#+END_SRC
+
+Using ~<<run-etool>>~ to populate example Gerbers ~soic~:
+
+#+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
+<<run-etool>> example soic
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Directory /etool/01-gerber exits - not modified
+Directory /etool/02-ngc exits - not modified
+Directory /etool/linuxcnc/configs/sim.axis exits - not modified
+File /etool/pcb2gcode.ini exits - not modified
+File /etool/linuxcnc/configs/sim.axis/axis_etool.ini exits - not modified
+File /etool/linuxcnc/configs/sim.axis/sim_mm.tbl exits - not modified
+File /etool/pcb2gcode-control.template exits - not modified
+File /etool/.linuxcncrc exits - not modified
+soic-B_Cu.gbr
+soic-B_Mask.gbr
+soic-B_Paste.gbr
+soic-B_SilkS.gbr
+soic-Edge_Cuts.gbr
+soic-F_Cu.gbr
+soic-F_Mask.gbr
+soic-F_Paste.gbr
+soic-F_SilkS.gbr
+soic-NPTH-drl_map.ps
+soic-NPTH.drl
+soic-PTH-drl_map.ps
+soic-PTH.drl
+soic-job.gbrjob
+#+end_example
+
+Using ~cam~-command in ~<<run-etool>>~ to create gcode files for
+~soic~ -project:
+
+#+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
+<<run-etool>> cam soic
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Directory /etool/01-gerber exits - not modified
+Directory /etool/02-ngc exits - not modified
+Directory /etool/linuxcnc/configs/sim.axis exits - not modified
+File /etool/pcb2gcode.ini exits - not modified
+File /etool/linuxcnc/configs/sim.axis/axis_etool.ini exits - not modified
+File /etool/linuxcnc/configs/sim.axis/sim_mm.tbl exits - not modified
+File /etool/pcb2gcode-control.template exits - not modified
+File /etool/.linuxcncrc exits - not modified
+Importing front side... DONE.
+Importing back side... DONE.
+Importing outline... DONE.
+Processing input files... DONE.
+Exporting back... DONE. (Height: 17.1mm Width: 37.76mm)
+Exporting front... DONE. (Height: 17.1mm Width: 37.76mm)
+Exporting outline... DONE. (Height: 17.1mm Width: 37.76mm) The board should be cut from the FRONT side. 
+Importing drill... DONE.
+Exporting milldrill... Exporting drill... DONE. The board should be drilled from the FRONT side.
+END.
+Importing front side... not specified.
+Importing back side... not specified.
+Importing outline... DONE.
+Processing input files... DONE.
+Exporting outline... DONE. (Height: 17.1mm Width: 37.76mm) The board should be cut from the FRONT side. 
+Importing drill... DONE.
+Exporting milldrill... Exporting drill... DONE. The board should be drilled from the FRONT side.
+END.
+#+end_example
+
+After ~cam~ command directory ~/etool/02-ngc~ contains ~ngc~ -files
+for CNC processing.
+
+#+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
+<<run-etool>> ls
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Directory /etool/01-gerber exits - not modified
+Directory /etool/02-ngc exits - not modified
+Directory /etool/linuxcnc/configs/sim.axis exits - not modified
+File /etool/pcb2gcode.ini exits - not modified
+File /etool/linuxcnc/configs/sim.axis/axis_etool.ini exits - not modified
+File /etool/linuxcnc/configs/sim.axis/sim_mm.tbl exits - not modified
+File /etool/pcb2gcode-control.template exits - not modified
+File /etool/.linuxcncrc exits - not modified
+/etool/01-gerber:
+total 92
+-rw-r--r-- 1 1000 1000  1477 Mar  1 14:12 soic-B_Cu.gbr
+-rw-r--r-- 1 1000 1000  1068 Mar  1 14:12 soic-B_Mask.gbr
+-rw-r--r-- 1 1000 1000   541 Mar  1 14:12 soic-B_Paste.gbr
+-rw-r--r-- 1 1000 1000   542 Mar  1 14:12 soic-B_SilkS.gbr
+-rw-r--r-- 1 1000 1000   777 Mar  1 14:12 soic-Edge_Cuts.gbr
+-rw-r--r-- 1 1000 1000  6080 Mar  1 14:12 soic-F_Cu.gbr
+-rw-r--r-- 1 1000 1000  3801 Mar  1 14:12 soic-F_Mask.gbr
+-rw-r--r-- 1 1000 1000  3274 Mar  1 14:12 soic-F_Paste.gbr
+-rw-r--r-- 1 1000 1000  7168 Mar  1 14:12 soic-F_SilkS.gbr
+-rw-r--r-- 1 1000 1000 15457 Mar  1 14:12 soic-NPTH-drl_map.ps
+-rw-r--r-- 1 1000 1000   379 Mar  1 14:12 soic-NPTH.drl
+-rw-r--r-- 1 1000 1000 20129 Mar  1 14:12 soic-PTH-drl_map.ps
+-rw-r--r-- 1 1000 1000   483 Mar  1 14:12 soic-PTH.drl
+-rw-r--r-- 1 1000 1000  2491 Mar  1 14:12 soic-job.gbrjob
+
+/etool/02-ngc:
+total 592
+-rw-r--r-- 1 1000 1000    411 Mar  1 14:12 original_drill.svg
+-rw-r--r-- 1 1000 1000   4817 Mar  1 14:12 outp0_original_back.svg
+-rw-r--r-- 1 1000 1000    522 Mar  1 14:12 outp0_original_outline.svg
+-rw-r--r-- 1 1000 1000  10284 Mar  1 14:12 outp1_original_front.svg
+-rw-r--r-- 1 1000 1000    522 Mar  1 14:12 outp2_original_outline.svg
+-rw-r--r-- 1 1000 1000   4817 Mar  1 14:12 outp3_masked_back.svg
+-rw-r--r-- 1 1000 1000  10284 Mar  1 14:12 outp4_masked_front.svg
+-rw-r--r-- 1 1000 1000  55665 Mar  1 14:12 processed_back.svg
+-rw-r--r-- 1 1000 1000  32725 Mar  1 14:12 processed_back_final.svg
+-rw-r--r-- 1 1000 1000 104874 Mar  1 14:12 processed_front.svg
+-rw-r--r-- 1 1000 1000  64522 Mar  1 14:12 processed_front_final.svg
+-rw-r--r-- 1 1000 1000   2209 Mar  1 14:12 processed_outline.svg
+-rw-r--r-- 1 1000 1000  27556 Mar  1 14:12 soic-B_Cu.ngc
+-rw-r--r-- 1 1000 1000   3596 Mar  1 14:12 soic-Edge_Cuts.ngc
+-rw-r--r-- 1 1000 1000  51185 Mar  1 14:12 soic-F_Cu.ngc
+-rw-r--r-- 1 1000 1000    737 Mar  1 14:12 soic-NPTH.ngc
+-rw-r--r-- 1 1000 1000    854 Mar  1 14:12 soic-PTH.ngc
+-rw-r--r-- 1 1000 1000  41195 Mar  1 14:12 traced_back.svg
+-rw-r--r-- 1 1000 1000  18255 Mar  1 14:12 traced_back_final.svg
+-rw-r--r-- 1 1000 1000  77871 Mar  1 14:12 traced_front.svg
+-rw-r--r-- 1 1000 1000  37519 Mar  1 14:12 traced_front_final.svg
+-rw-r--r-- 1 1000 1000   1782 Mar  1 14:12 traced_outline.svg
+#+end_example
+
+
+Simulator command 
+#+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports code
+<<run-etool>> simulator
+#+END_SRC
+
+#+RESULTS:
+: Directory /etool/01-gerber exits - not modified
+: Directory /etool/02-ngc exits - not modified
+: Directory /etool/linuxcnc/configs/sim.axis exits - not modified
+: File /etool/pcb2gcode.ini exits - not modified
+: File /etool/linuxcnc/configs/sim.axis/axis_etool.ini exits - not modified
+: File /etool/linuxcnc/configs/sim.axis/sim_mm.tbl exits - not modified
+: File /etool/pcb2gcode-control.template exits - not modified
+: File /etool/.linuxcncrc exits - not modified
+: RUN: linuxcnc
+
+opens dialog for configuration selection (Choose ~axis_etool~)
+
+[[file:pics-keep/simulator-conf.png]]
+
+~linuxcnc~ ~File Open~ -command shows gcode files in ~/etool/02-ngc~
+-directory
+
+file:pics-keep/simulator-open-file.png
 
 
 ** Development
 
 Ref: [[file:docker.org]]
 
+
 ** RELEASE -notes
 
 Ref: [[file:docker/etool/RELEASES]]
+
 
 * Fin                                                              :noexport:
 
