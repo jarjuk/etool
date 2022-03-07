@@ -15,7 +15,7 @@
 #
 # Evaluation context includes following environment variables:
 #
-# $CAM               : command parameter passed etool cam -command
+# $PROJECT           : command parameter passed etool cam -command
 # ${GERBERS_DIR}     : directory, where gerbers are located
 # ${CAM_OUTPUT_DIR}  : gcode output directory
 # $PASS1             : for pass 1 "" (empty string), pass 2 "# "
@@ -27,18 +27,18 @@
 # ----------
 # PASS1 - Front/Back copper, Edge cut, PTH holes
 
-${PASS1}front=${GERBERS_DIR}/${CAM}-F_Cu.gbr            # front copper
-${PASS1}front-output=${CAM}-F_Cu.ngc
+${PASS1}front=${GERBERS_DIR}/${PROJECT}-F_Cu.gbr           # front copper
+${PASS1}front-output=${PROJECT}-F_Cu.ngc
 
-${PASS1}back=${GERBERS_DIR}/${CAM}-B_Cu.gbr             # back copper
-${PASS1}back-output=${CAM}-B_Cu.ngc
+${PASS1}back=${GERBERS_DIR}/${PROJECT}-B_Cu.gbr            # back copper
+${PASS1}back-output=${PROJECT}-B_Cu.ngc
 
-${PASS1}outline=${GERBERS_DIR}/${CAM}-Edge_Cuts.gbr     # edge cut
-${PASS1}outline-output=${CAM}-Edge_Cuts.ngc
+${PASS1}outline=${GERBERS_DIR}/${PROJECT}-Edge_Cuts.gbr    # edge cut
+${PASS1}outline-output=${PROJECT}-Edge_Cuts.ngc
 
 # PTH (Plating Through Hole) 
-${PASS1}drill=${GERBERS_DIR}/${CAM}-PTH.drl             # drill holes
-${PASS1}drill-output=${CAM}-PTH.ngc
+${PASS1}drill=${GERBERS_DIR}/${PROJECT}-PTH.drl            # drill holes
+${PASS1}drill-output=${PROJECT}-PTH.ngc
 
 # ----------
 # PASS2 - NPTH (Non Plating Through Hole), Edge Cut
@@ -48,11 +48,11 @@ ${PASS1}drill-output=${CAM}-PTH.ngc
 # The hole diameter is usually larger than PTH
 # Edge cut procesed 2 times to tell board size
 
-${PASS2}drill=${GERBERS_DIR}/${CAM}-NPTH.drl           # drill holes
-${PASS2}drill-output=${CAM}-NPTH.ngc
+${PASS2}drill=${GERBERS_DIR}/${PROJECT}-NPTH.drl           # drill holes
+${PASS2}drill-output=${PROJECT}-NPTH.ngc
 
-${PASS2}outline=${GERBERS_DIR}/${CAM}-Edge_Cuts.gbr    # edge cut
-${PASS2}outline-output=${CAM}-Edge_Cuts.ngc
+${PASS2}outline=${GERBERS_DIR}/${PROJECT}-Edge_Cuts.gbr    # edge cut
+${PASS2}outline-output=${PROJECT}-Edge_Cuts.ngc
 
 
 # ==================================================================
@@ -62,4 +62,4 @@ ${PASS2}outline-output=${CAM}-Edge_Cuts.ngc
 # ==================================================================
 # Common configurations
 
-output-dir=${CAM_OUTPUT_DIR}                           # gcode output dir
+output-dir=${CAM_OUTPUT_DIR}                               # gcode output dir

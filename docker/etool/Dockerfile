@@ -156,15 +156,18 @@ ENV HOME=/etool
 RUN mkdir /etool-bin
 ENV PATH=/etool-bin:/emc/scripts:${PATH}
 
-COPY etool.sh /etool-bin/
-COPY RELEASES /etool-bin/
-COPY axis_etool.ini /etool-bin/
-COPY sim_mm.tbl /etool-bin/
-COPY .linuxcncrc /etool-bin/
-COPY pcb2gcode.ini /etool-bin/
-COPY pcb2gcode-control.template /etool-bin/
-COPY pcb2gcode-control.template /etool-bin/
-COPY Dockerfile /etool-bin/
+COPY \
+      etool.sh \
+      RELEASES \
+      VERSION \
+      axis_etool.ini \
+      sim_mm.tbl \
+      .linuxcncrc \
+      pcb2gcode.ini \
+      pcb2gcode-control.template \
+      Dockerfile \
+      /etool-bin/
+
 
 # entry only trough script - default output usage
 ENTRYPOINT [ "etool.sh" ]

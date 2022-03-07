@@ -4,7 +4,7 @@ APPI="marcus2002/etool"
 # error trap
 set -e
 err_report() {
-  echo "$APPI, errro on line $1"
+  echo "$APPI, error on line $1"
 }
 trap 'err_report $LINENO' ERR
 
@@ -61,14 +61,23 @@ CAM_CONTROL_FILE=/tmp/pcb2gcode-control.ini
 
 EOF
      }
+
+     version() {
+         cat <<EOF
+         $APPI:$(cat $ETOOL_BIN/VERSION)
+EOF
+     }
      
      usage() {
          echo
          EXAMPLES="$(ls $EXAMPLE_DIR/ | grep -e 'gerber$' | sed 's!-gerber!!' | tr '\n' ' ' )"
 
+         
+         version
+         
          cat <<EOF
 
-         $APPI - a tool for mapping Gerber files to gcode for CNC
+         A tool for mapping Gerber files to gcode for CNC
          machining and launching linuxcnc -simulator for validating
          CNC execution paths.
 
@@ -183,10 +192,12 @@ EOF
                ;;
              cam)
                initApp
-               CAM=$1; shift
+               PROJECT=$1; shift
                # read template, evaluate in two passes below
                read -r -d '' TMPL <$CAM_CONTROL_TEMPLATE_FILE || true
 
+               # Ref env context promises in 'pcb2gcode-control.template'
+               
                # PASS1 - comment out PASS2
                PASS1=""
                PASS2="# "
@@ -236,6 +247,9 @@ EOF
                usage
                break
                ;;
+             --version)
+                 version
+                 ;;
              example)
                EXAMPLE=$1; shift
                initApp

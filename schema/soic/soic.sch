@@ -128,4 +128,32 @@ F 3 "~" H 6900 1650 50  0001 C CNN
 	1    6900 1650
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	4250 2650 5200 2650
+Wire Wire Line
+	5200 2650 5200 2500
+Connection ~ 4250 2650
+Connection ~ 5200 2500
+$Comp
+L Mechanical:MountingHole H3
+U 1 1 6225ED9F
+P 6900 2100
+F 0 "H3" H 7000 2146 50  0000 L CNN
+F 1 "MountingHole" H 7000 2055 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.1mm" H 6900 2100 50  0001 C CNN
+F 3 "~" H 6900 2100 50  0001 C CNN
+	1    6900 2100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H4
+U 1 1 6225EF9E
+P 6900 2350
+F 0 "H4" H 7000 2396 50  0000 L CNN
+F 1 "MountingHole" H 7000 2305 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.1mm" H 6900 2350 50  0001 C CNN
+F 3 "~" H 6900 2350 50  0001 C CNN
+	1    6900 2350
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

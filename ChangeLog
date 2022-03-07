@@ -1,3 +1,9 @@
+2022-03-07  jj  <jj@santtu>
+
+	* docker/etool/etool.sh (initApp): CAM->PROJECT
+
+	* docker/etool/pcb2gcode-control.template: CAM->PROJECT
+
 2022-03-01  jj  <jj@santtu>
 
 	* README.org: ETOOL_DOCKER_TAG="2"

@@ -18,107 +18,92 @@ echo Current ETOOL_DOCKER_TAG=$ETOOL_DOCKER_TAG
 Build ~marcus2002/etool:$ETOOL_DOCKER_TAG~
 
 #+BEGIN_SRC bash :eval no-export :results output :exports code
+echo $ETOOL_DOCKER_TAG > VERSION
 docker build -t marcus2002/etool:$ETOOL_DOCKER_TAG .  2>&1; echo $?
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-Sending build context to Docker daemon  251.9kB
-Step 1/34 : FROM ubuntu:18.04
+Sending build context to Docker daemon  265.2kB
+Step 1/26 : FROM ubuntu:18.04
  ---> c3c304cb4f22
-Step 2/34 : RUN apt-get update &&      apt-get install -y      curl      wget      git      gnupg2  gnupg
+Step 2/26 : RUN apt-get update &&      apt-get install -y      curl      wget      git      gnupg2  gnupg
  ---> Using cache
  ---> 8649238509b5
-Step 3/34 : RUN apt-get install -y       build-essential       linux-headers-$(uname -r)       dkms
+Step 3/26 : RUN apt-get install -y       build-essential       linux-headers-$(uname -r)       dkms
  ---> Using cache
  ---> ace38c0968f1
-Step 4/34 : ENV LANG C.UTF-8
+Step 4/26 : ENV LANG C.UTF-8
  ---> Using cache
  ---> 2157eb1ec776
-Step 5/34 : ENV TZ=Europe/Helsinki
+Step 5/26 : ENV TZ=Europe/Helsinki
  ---> Using cache
  ---> 4adfde947877
-Step 6/34 : RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+Step 6/26 : RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
  ---> Using cache
  ---> b8d4f93898a9
-Step 7/34 : RUN apt-get -y install     tzdata
+Step 7/26 : RUN apt-get -y install     tzdata
  ---> Using cache
  ---> e4bab8080cb0
-Step 8/34 : RUN     sudo cp /etc/apt/sources.list /etc/apt/sources.list.orig     &&   sed -i -e'/bionic main restricted/s!# deb-src!deb-src!'                       -e'/bionic-updates main restricted/s!# deb-src!deb-src!'                 -e'/bionic universe/s!# deb-src!deb-src!'                 -e'/bionic-updates universe/s!# deb-src!deb-src!'                 /etc/apt/sources.list     && apt-get update
+Step 8/26 : RUN     sudo cp /etc/apt/sources.list /etc/apt/sources.list.orig     &&   sed -i -e'/bionic main restricted/s!# deb-src!deb-src!'                       -e'/bionic-updates main restricted/s!# deb-src!deb-src!'                 -e'/bionic universe/s!# deb-src!deb-src!'                 -e'/bionic-updates universe/s!# deb-src!deb-src!'                 /etc/apt/sources.list     && apt-get update
  ---> Using cache
  ---> 1844c3037dee
-Step 9/34 : RUN apt-get -y install    devscripts    build-essential     dpkg-dev    debhelper    dh-python    libudev-dev    libxenomai-dev    tcl8.6-dev    tk8.6-dev    libreadline-gplv2-dev    asciidoc dblatex    docbook-xsl    dvipng    graphviz    groff    inkscape    python-lxml    source-highlight    w3c-linkchecker    xsltproc    texlive-extra-utils    texlive-font-utils    texlive-fonts-recommended texlive-lang-cyrillic texlive-lang-french texlive-lang-german texlive-lang-polish texlive-lang-spanish    texlive-latex-recommended asciidoc-dblatex python python-dev python-tk libxmu-dev    libglu1-mesa-dev libgl1-mesa-dev    libgtk2.0-dev intltool autoconf libboost-python-dev    libmodbus-dev    libusb-1.0-0-dev yapps2    iptables netcat psmisc desktop-file-utils
+Step 9/26 : RUN apt-get -y install    devscripts    build-essential     dpkg-dev    debhelper    dh-python    libudev-dev    libxenomai-dev    tcl8.6-dev    tk8.6-dev    libreadline-gplv2-dev    asciidoc dblatex    docbook-xsl    dvipng    graphviz    groff    inkscape    python-lxml    source-highlight    w3c-linkchecker    xsltproc    texlive-extra-utils    texlive-font-utils    texlive-fonts-recommended texlive-lang-cyrillic texlive-lang-french texlive-lang-german texlive-lang-polish texlive-lang-spanish    texlive-latex-recommended asciidoc-dblatex python python-dev python-tk libxmu-dev    libglu1-mesa-dev libgl1-mesa-dev    libgtk2.0-dev intltool autoconf libboost-python-dev    libmodbus-dev    libusb-1.0-0-dev yapps2    iptables netcat psmisc desktop-file-utils
  ---> Using cache
  ---> e75fda009662
-Step 10/34 : RUN     git clone https://github.com/LinuxCNC/linuxcnc.git emc     && cd emc     && git checkout 2.8
+Step 10/26 : RUN     git clone https://github.com/LinuxCNC/linuxcnc.git emc     && cd emc     && git checkout 2.8
  ---> Using cache
  ---> 73a68ce19bde
-Step 11/34 : RUN diff /etc/apt/sources.list /etc/apt/sources.list.orig 2>&1; echo $?
+Step 11/26 : RUN diff /etc/apt/sources.list /etc/apt/sources.list.orig 2>&1; echo $?
  ---> Using cache
  ---> d977e6ea641c
-Step 12/34 : RUN apt-get install -y              bwidget              libtk-img              tclx              python-gtk2
+Step 12/26 : RUN apt-get install -y              bwidget              libtk-img              tclx              python-gtk2
  ---> Using cache
  ---> fcd8a06b9f86
-Step 13/34 : RUN    cd emc    && debian/configure uspace    && dpkg-checkbuilddeps    && cd src    && ./autogen.sh    && ./configure --with-realtime=uspace    && make
+Step 13/26 : RUN    cd emc    && debian/configure uspace    && dpkg-checkbuilddeps    && cd src    && ./autogen.sh    && ./configure --with-realtime=uspace    && make
  ---> Using cache
  ---> 200f8a47440b
-Step 14/34 : RUN      git clone  https://github.com/pcb2gcode/pcb2gcode      && cd pcb2gcode      && git checkout e53eae9b8d490f76be6d1716dcf3b6c0ff5aad92
+Step 14/26 : RUN      git clone  https://github.com/pcb2gcode/pcb2gcode      && cd pcb2gcode      && git checkout e53eae9b8d490f76be6d1716dcf3b6c0ff5aad92
  ---> Using cache
  ---> a921b980e976
-Step 15/34 : RUn apt-get install -y              build-essential              automake              autoconf              autoconf-archive              libtool              libboost-program-options-dev              libgtkmm-2.4-dev              gerbv              librsvg2-dev
+Step 15/26 : RUn apt-get install -y              build-essential              automake              autoconf              autoconf-archive              libtool              libboost-program-options-dev              libgtkmm-2.4-dev              gerbv              librsvg2-dev
  ---> Using cache
  ---> 5cdec2ff9238
-Step 16/34 : RUN         cd /pcb2gcode      && autoreconf -fvi      && ./configure      &&  make      && make install
+Step 16/26 : RUN         cd /pcb2gcode      && autoreconf -fvi      && ./configure      &&  make      && make install
  ---> Using cache
  ---> 4737d44b2d4e
-Step 17/34 : RUN mkdir /pcbGcodeZprobing
+Step 17/26 : RUN mkdir /pcbGcodeZprobing
  ---> Using cache
  ---> 1d81de8793de
-Step 18/34 : COPY pcbGcodeZprobing.py /pcbGcodeZprobing
+Step 18/26 : COPY pcbGcodeZprobing.py /pcbGcodeZprobing
  ---> Using cache
  ---> efef92ab7df0
-Step 19/34 : COPY resources/ /resources
+Step 19/26 : COPY resources/ /resources
  ---> Using cache
- ---> 511579c8c611
-Step 20/34 : WORKDIR /etool
+ ---> b5bd8f8934e5
+Step 20/26 : WORKDIR /etool
  ---> Using cache
- ---> 21cee529c7ee
-Step 21/34 : ENV HOME=/etool
+ ---> 23ad8584c5ef
+Step 21/26 : ENV HOME=/etool
  ---> Using cache
- ---> cb31741be747
-Step 22/34 : RUN mkdir /etool-bin
+ ---> 6312c856fd6b
+Step 22/26 : RUN mkdir /etool-bin
  ---> Using cache
- ---> 0f1779d8ea70
-Step 23/34 : ENV PATH=/etool-bin:/emc/scripts:${PATH}
+ ---> b344ad0c3404
+Step 23/26 : ENV PATH=/etool-bin:/emc/scripts:${PATH}
  ---> Using cache
- ---> 6fda5a59bd7e
-Step 24/34 : COPY etool.sh /etool-bin/
- ---> d5cde8ee7a75
-Step 25/34 : COPY RELEASES /etool-bin/
- ---> 546428a3561f
-Step 26/34 : COPY axis_etool.ini /etool-bin/
- ---> de8efe9e1896
-Step 27/34 : COPY sim_mm.tbl /etool-bin/
- ---> 63058acfbdf1
-Step 28/34 : COPY .linuxcncrc /etool-bin/
- ---> 815a37053e95
-Step 29/34 : COPY pcb2gcode.ini /etool-bin/
- ---> d3f258b403f5
-Step 30/34 : COPY pcb2gcode-control.template /etool-bin/
- ---> aa80a1da2cb5
-Step 31/34 : COPY pcb2gcode-control.template /etool-bin/
- ---> 573207acc2db
-Step 32/34 : COPY Dockerfile /etool-bin/
- ---> 2cc4000ce3f5
-Step 33/34 : ENTRYPOINT [ "etool.sh" ]
- ---> Running in a7cfb84ba508
-Removing intermediate container a7cfb84ba508
- ---> 17b54f9e3deb
-Step 34/34 : CMD [ "usage"]
- ---> Running in b2380eabbe50
-Removing intermediate container b2380eabbe50
- ---> adb1a408e85f
-Successfully built adb1a408e85f
+ ---> 34996b797330
+Step 24/26 : COPY       etool.sh       RELEASES       VERSION       axis_etool.ini       sim_mm.tbl       .linuxcncrc       pcb2gcode.ini       pcb2gcode-control.template       Dockerfile       /etool-bin/
+ ---> 2a4ddd942b4b
+Step 25/26 : ENTRYPOINT [ "etool.sh" ]
+ ---> Running in 800a1203c8bd
+Removing intermediate container 800a1203c8bd
+ ---> dae8b3d35e93
+Step 26/26 : CMD [ "usage"]
+ ---> Running in 9665e2f13ba2
+Removing intermediate container 9665e2f13ba2
+ ---> fd52f46cd292
+Successfully built fd52f46cd292
 Successfully tagged marcus2002/etool:2
 0
 #+end_example
