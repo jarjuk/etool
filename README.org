@@ -160,11 +160,11 @@ Following box and line diagram gives an overview of ~marcus2002/etool~
 Following table summarizes configuration files initialized under
 ~etool~ -data directory.
 
-| Configuration file               | Content                                             |
-|----------------------------------+-----------------------------------------------------|
-| [[file:docker/etool/pcb2gcode.ini]]  | CAM parameters for pcb2gcode -tool                  |
-| [[file:docker/etool/pcb2gcode-control.template][pcb2gcode-control.template]]       | Input/ouput configuration of pcb2gcode -tool        |
-| [[file:docker/etool/axis_etool.ini]] | linuxcnc simulator configuration (w. probe support) |
+| Configuration file               | Content                                                               |
+|----------------------------------+-----------------------------------------------------------------------|
+| [[file:docker/etool/pcb2gcode.ini]]  | pcb2gcode -tool CAM parameters  with instructions for 1/2 -sided PCBs |
+| [[file:docker/etool/pcb2gcode-control.template][pcb2gcode-control.template]]       | Input/ouput configuration of pcb2gcode -tool                          |
+| [[file:docker/etool/axis_etool.ini]] | linuxcnc simulator configuration (w. probe support)                   |
 
 
 ** Installing and using  ~marcus2002/etool~
@@ -211,7 +211,7 @@ docker pull marcus2002/etool:$ETOOL_DOCKER_TAG
 *** Running etool
 
 
-To simplify running  ~marcus2002/etool~ to scripts are proded:
+To simplify running  ~marcus2002/etool~ two scripts are provided
 
 - [[file:etool.sh]] : Running ~marcus2002/etool~ on Linux
 - [[file:etool.cmd]] : Running ~marcus2002/etool~  on Windows

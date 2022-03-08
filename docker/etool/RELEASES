@@ -1,6 +1,8 @@
 * marcus2002/etool:2/2022-03-1
 
 - changes:
+  - etool.sh: cam PRORJECT [PARAMS]
+  - etool.sh: --?, usage 
   - etool.sh: create ETOOL_DIR
   - etool.cmd: added
   - pcb2gcode-control.template: cam command parameter chg (CAM->PROJECT)

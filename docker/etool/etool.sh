@@ -39,18 +39,26 @@ CAM_CONTROL_FILE=/tmp/pcb2gcode-control.ini
 
 
      # Facts
-     SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+     # self reflection I know my version
+     tag_version() {
+         local TAG=$(cat $ETOOL_BIN/VERSION)
+         echo $TAG
+     }
+
 
      # ------------------------------------------------------------------
      # usage - help text
 
-     example_usage() {
+     usage_example() {
+         TAG=
          cat <<EOF
-         Example:
+         Example usage:
 
          mkdir \$HOME/.etool           # create working directory
 
-         export ETOOL='docker run --rm --user 1000:1000 -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v \$HOME/.etool:/etool marcus2002/etool:1'
+         export ETOOL='docker run --rm --user 1000:1000 -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v \$HOME/.etool:/etool marcus2002/etool:$(tag_version)'
 
          \$ETOOL cleanup               # clean working directories
          \$ETOOL ls                    # empty directories
@@ -59,6 +67,12 @@ CAM_CONTROL_FILE=/tmp/pcb2gcode-control.ini
          \$ETOOL cam pad2pad           # create gCode
          \$ETOOL simulator             # start linuxcnc for simulating gcode
 
+         These commands can be given as one-liner
+
+         \$ETOOL cleanup ls example pad2pad ls cam pad2pad -- simulator
+         
+         Notice!
+         'cam pad2pad --' where two dashes signal end of optional parameters
 EOF
      }
 
@@ -86,7 +100,8 @@ EOF
          docker DOCKER_OPTS run $APPI CMD_AND_OPTIONS ...
 
          where CMD_AND_OPTIONS one of follwoing operations:
-         o cam PROJECT         : create gcode for PROJECT Gerber -files
+         o cam PROJECT [PARAMS]: create gcode for PROJECT Gerber -files using 
+                                 cam PARAMS (default pcb2gcode.ini)
          o simulator           : start 'linuxcnc'
 
          or one of data management utilities:
@@ -95,7 +110,8 @@ EOF
          o example PROJECT     : copy example PROJECT Gerber files to  $GERBERS_DIR
 
          or one of miscallaneous commands:
-         o usage               : this help text
+         o --help              : this help text
+         o usage               : workflow example (w. example of multiple commands on one line)
          o cam-help            : help on pcb2gcode CAM options to put into
                                  $CAM_OPTIONS_FILE -file and open image explaining
                                  dimension options
@@ -109,8 +125,8 @@ EOF
          o -v /tmp/.X11-unix:/tmp/.X11-unix : allow Docker to open X11 apps
          o -v HOSTD:/etool                  : data directory HOSTD (must exist,
                                               owned by --user), structure is initialized
-
-
+         
+  
 EOF
 
        # undocumented
@@ -192,7 +208,18 @@ EOF
                ;;
              cam)
                initApp
+
                PROJECT=$1; shift
+
+               # optional PARAMS
+               PARAMS=$CAM_OPTIONS_FILE
+               if [ $# -ge 1 ]; then
+                   if [ "$1" != '--' ]; then
+                      PARAMS=$1
+                   fi
+                   shift
+               fi
+               
                # read template, evaluate in two passes below
                read -r -d '' TMPL <$CAM_CONTROL_TEMPLATE_FILE || true
 
@@ -202,13 +229,13 @@ EOF
                PASS1=""
                PASS2="# "
                echo "${TMPL@P}" > $CAM_CONTROL_FILE
-               pcb2gcode --config $CAM_CONTROL_FILE,$CAM_OPTIONS_FILE
+               pcb2gcode --config $CAM_CONTROL_FILE,$PARAMS
 
                # PASS1 - comment out PASS1
                PASS1="# "
                PASS2=""
                echo "${TMPL@P}" > $CAM_CONTROL_FILE
-               pcb2gcode --config $CAM_CONTROL_FILE,$CAM_OPTIONS_FILE
+               pcb2gcode --config $CAM_CONTROL_FILE,$PARAMS
                ;;
              cam-help)
                pcb2gcode --help
@@ -243,9 +270,13 @@ EOF
                cat $SCRIPT_DIR/RELEASES
                break
                ;;
-             usage|-?|--?|--help)
+             -?|--?|--help)
                usage
                break
+               ;;
+             usage)
+               usage
+               usage_example
                ;;
              --version)
                  version
