@@ -63,8 +63,9 @@ Command line usage
 #+RESULTS:
 #+begin_example
 
+         marcus2002/etool:2
 
-         marcus2002/etool - a tool for mapping Gerber files to gcode for CNC
+         A tool for mapping Gerber files to gcode for CNC
          machining and launching linuxcnc -simulator for validating
          CNC execution paths.
 
@@ -73,7 +74,8 @@ Command line usage
          docker DOCKER_OPTS run marcus2002/etool CMD_AND_OPTIONS ...
 
          where CMD_AND_OPTIONS one of follwoing operations:
-         o cam PROJECT         : create gcode for PROJECT Gerber -files
+         o cam PROJECT [PARAMS]: create gcode for PROJECT Gerber -files using 
+                                 cam PARAMS (default pcb2gcode.ini)
          o simulator           : start 'linuxcnc'
 
          or one of data management utilities:
@@ -82,7 +84,8 @@ Command line usage
          o example PROJECT     : copy example PROJECT Gerber files to  /etool/01-gerber
 
          or one of miscallaneous commands:
-         o usage               : this help text
+         o --help              : this help text
+         o usage               : workflow example (w. example of multiple commands on one line)
          o cam-help            : help on pcb2gcode CAM options to put into
                                  /etool/pcb2gcode.ini -file and open image explaining
                                  dimension options
@@ -96,8 +99,27 @@ Command line usage
          o -v /tmp/.X11-unix:/tmp/.X11-unix : allow Docker to open X11 apps
          o -v HOSTD:/etool                  : data directory HOSTD (must exist,
                                               owned by --user), structure is initialized
+         
+  
+         Example usage:
 
+         mkdir $HOME/.etool           # create working directory
 
+         export ETOOL='docker run --rm --user 1000:1000 -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.etool:/etool marcus2002/etool:2'
+
+         $ETOOL cleanup               # clean working directories
+         $ETOOL ls                    # empty directories
+         $ETOOL example pad2pad       # init example 'pad2pad'
+         $ETOOL ls                    # directory /etool/01-gerber populated
+         $ETOOL cam pad2pad           # create gCode
+         $ETOOL simulator             # start linuxcnc for simulating gcode
+
+         These commands can be given as one-liner
+
+         $ETOOL cleanup ls example pad2pad ls cam pad2pad -- simulator
+         
+         Notice!
+         'cam pad2pad --' where two dashes signal end of optional parameters
 #+end_example
 
 
@@ -183,7 +205,12 @@ Following table summarizes configuration files initialized under
 **** Windows 10
 
 - Install Docker Desktop on Windows: https://docs.docker.com/desktop/windows/install/
-- Installl VcXsrv Windows X Server: https://sourceforge.net/projects/vcxsrv/
+  - defines Windows features and Bios setting needed to run Docker
+  - a hint for the impatient: installer checks that Docker
+    prerequisites are met
+- Install VcXsrv Windows X Server: https://sourceforge.net/projects/vcxsrv/
+  - When launching VcXsrv choose 'disable access control checked' to
+    allow Docker to open X11 windows
 
 *** Pull ~etool~ Docker from docker.io repo
 
@@ -203,6 +230,13 @@ docker pull marcus2002/etool:$ETOOL_DOCKER_TAG
 #+END_SRC
 
 #+RESULTS:
+: 2: Pulling from marcus2002/etool
+: Digest: sha256:21ffdfee4f13341bffbcc4ef798778121616eccb86afa89dde75b6bdd4e01fb9
+: Status: Image is up to date for marcus2002/etool:2
+: docker.io/marcus2002/etool:2
+
+
+Docker tag 1
 : 1: Pulling from marcus2002/etool
 : Digest: sha256:67c4ce25b60ac6e15799b827619bf0697da138132d207720cfdd19ff46c602b5
 : Status: Image is up to date for marcus2002/etool:1

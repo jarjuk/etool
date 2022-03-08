@@ -24,7 +24,7 @@ docker build -t marcus2002/etool:$ETOOL_DOCKER_TAG .  2>&1; echo $?
 
 #+RESULTS:
 #+begin_example
-Sending build context to Docker daemon  265.2kB
+Sending build context to Docker daemon  266.8kB
 Step 1/26 : FROM ubuntu:18.04
  ---> c3c304cb4f22
 Step 2/26 : RUN apt-get update &&      apt-get install -y      curl      wget      git      gnupg2  gnupg
@@ -94,16 +94,15 @@ Step 23/26 : ENV PATH=/etool-bin:/emc/scripts:${PATH}
  ---> Using cache
  ---> 34996b797330
 Step 24/26 : COPY       etool.sh       RELEASES       VERSION       axis_etool.ini       sim_mm.tbl       .linuxcncrc       pcb2gcode.ini       pcb2gcode-control.template       Dockerfile       /etool-bin/
- ---> 2a4ddd942b4b
+ ---> Using cache
+ ---> 0ea511fee07f
 Step 25/26 : ENTRYPOINT [ "etool.sh" ]
- ---> Running in 800a1203c8bd
-Removing intermediate container 800a1203c8bd
- ---> dae8b3d35e93
+ ---> Using cache
+ ---> 65bdc004874c
 Step 26/26 : CMD [ "usage"]
- ---> Running in 9665e2f13ba2
-Removing intermediate container 9665e2f13ba2
- ---> fd52f46cd292
-Successfully built fd52f46cd292
+ ---> Using cache
+ ---> 0a3e22fd3c75
+Successfully built 0a3e22fd3c75
 Successfully tagged marcus2002/etool:2
 0
 #+end_example
@@ -120,23 +119,18 @@ docker push marcus2002/etool:$ETOOL_DOCKER_TAG
 #+RESULTS:
 #+begin_example
 The push refers to repository [docker.io/marcus2002/etool]
-d8218be1ce51: Preparing
-ddda597590aa: Preparing
-ddda597590aa: Preparing
-ab5a4292cfc0: Preparing
-42ff10b67cf2: Preparing
-122a559406da: Preparing
-5bdd88eb5c1e: Preparing
-af8d84ee61a1: Preparing
-f1082a93cc07: Preparing
-e1f7cf6e82c9: Preparing
-12644fdcb7c7: Preparing
-913f5aee6fb9: Preparing
+a23d945611e7: Preparing
+60ccc31ba080: Preparing
+7682f40084f8: Preparing
+e4c72a85d0a6: Preparing
 1d621ba72a94: Preparing
 4fa2fddd8c11: Preparing
 1afcc6b88e74: Preparing
 d277f19c5cf3: Preparing
 b5cbc5447c49: Preparing
+d277f19c5cf3: Waiting
+1afcc6b88e74: Waiting
+4fa2fddd8c11: Waiting
 0ccbdce5bfb8: Preparing
 f6775943028b: Preparing
 bdece7ab0b8d: Preparing
@@ -145,65 +139,48 @@ f917492a171c: Preparing
 c2d80069578c: Preparing
 d47b9f8f5b5e: Preparing
 650e4da91065: Preparing
-af8d84ee61a1: Waiting
-f1082a93cc07: Waiting
-e1f7cf6e82c9: Waiting
-5bdd88eb5c1e: Waiting
-12644fdcb7c7: Waiting
-913f5aee6fb9: Waiting
-1afcc6b88e74: Waiting
 1433bbf12295: Preparing
-d277f19c5cf3: Waiting
 28ba7458d04b: Preparing
 838a37a24627: Preparing
-b5cbc5447c49: Waiting
-0ccbdce5bfb8: Waiting
-f6775943028b: Waiting
-bdece7ab0b8d: Waiting
 a6ebef4a95c3: Preparing
 b7f7d2967507: Preparing
-56fcf7e0a24b: Waiting
-1d621ba72a94: Waiting
+b5cbc5447c49: Waiting
+650e4da91065: Waiting
+1433bbf12295: Waiting
+28ba7458d04b: Waiting
+0ccbdce5bfb8: Waiting
+838a37a24627: Waiting
+a6ebef4a95c3: Waiting
+f6775943028b: Waiting
+b7f7d2967507: Waiting
+bdece7ab0b8d: Waiting
 c2d80069578c: Waiting
-4fa2fddd8c11: Waiting
 d47b9f8f5b5e: Waiting
 f917492a171c: Waiting
-838a37a24627: Waiting
-650e4da91065: Waiting
-a6ebef4a95c3: Waiting
-1433bbf12295: Waiting
-b7f7d2967507: Waiting
-28ba7458d04b: Waiting
-ab5a4292cfc0: Pushed
-122a559406da: Pushed
-ddda597590aa: Pushed
-d8218be1ce51: Pushed
-42ff10b67cf2: Pushed
-af8d84ee61a1: Pushed
-f1082a93cc07: Pushed
-12644fdcb7c7: Pushed
-e1f7cf6e82c9: Pushed
-5bdd88eb5c1e: Pushed
-1d621ba72a94: Pushed
-913f5aee6fb9: Pushed
-4fa2fddd8c11: Pushed
-d277f19c5cf3: Pushed
-f6775943028b: Pushed
-1afcc6b88e74: Pushed
-0ccbdce5bfb8: Pushed
-c2d80069578c: Pushed
-d47b9f8f5b5e: Pushed
-56fcf7e0a24b: Pushed
-b5cbc5447c49: Pushed
-28ba7458d04b: Mounted from marcus2002/linuxcnc
-838a37a24627: Mounted from marcus2002/linuxcnc
-a6ebef4a95c3: Mounted from marcus2002/linuxcnc
-b7f7d2967507: Mounted from marcus2002/linuxcnc
-1433bbf12295: Pushed
-650e4da91065: Pushed
-bdece7ab0b8d: Pushed
-f917492a171c: Pushed
-1: digest: sha256:67c4ce25b60ac6e15799b827619bf0697da138132d207720cfdd19ff46c602b5 size: 6595
+56fcf7e0a24b: Waiting
+1d621ba72a94: Layer already exists
+4fa2fddd8c11: Layer already exists
+1afcc6b88e74: Layer already exists
+7682f40084f8: Pushed
+e4c72a85d0a6: Pushed
+60ccc31ba080: Pushed
+a23d945611e7: Pushed
+d277f19c5cf3: Layer already exists
+b5cbc5447c49: Layer already exists
+0ccbdce5bfb8: Layer already exists
+f6775943028b: Layer already exists
+bdece7ab0b8d: Layer already exists
+f917492a171c: Layer already exists
+c2d80069578c: Layer already exists
+56fcf7e0a24b: Layer already exists
+d47b9f8f5b5e: Layer already exists
+650e4da91065: Layer already exists
+1433bbf12295: Layer already exists
+28ba7458d04b: Layer already exists
+a6ebef4a95c3: Layer already exists
+838a37a24627: Layer already exists
+b7f7d2967507: Layer already exists
+2: digest: sha256:21ffdfee4f13341bffbcc4ef798778121616eccb86afa89dde75b6bdd4e01fb9 size: 4935
 #+end_example
 
 
@@ -215,11 +192,12 @@ docker search marcus2002
 : NAME                             DESCRIPTION   STARS     OFFICIAL   AUTOMATED
 : marcus2002/tf-gpu-checker                      0                    
 : marcus2002/hello                               0                    
-: marcus2002/yolov3tf2                           0                    
 : marcus2002/yolov3-tf2-training                 0                    
+: marcus2002/yolov3tf2                           0                    
 : marcus2002/tensorflow-lite-api                 0                    
 : marcus2002/flatcam                             0                    
 : marcus2002/linuxcnc                            0                    
+: marcus2002/etool                               0                    
 
 
 
