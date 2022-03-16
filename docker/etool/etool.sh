@@ -67,12 +67,11 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
          \$ETOOL cam pad2pad           # create gCode
          \$ETOOL simulator             # start linuxcnc for simulating gcode
 
-         These commands can be given as one-liner
+         The commands can be given as a one-liner. For example, for the command above:
 
          \$ETOOL cleanup ls example pad2pad ls cam pad2pad -- simulator
          
-         Notice!
-         'cam pad2pad --' where two dashes signal end of optional parameters
+         Notice! Separator '--' in cam -command signaling end of optional parameters
 EOF
      }
 

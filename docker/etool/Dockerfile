@@ -139,6 +139,13 @@ RUN mkdir /pcbGcodeZprobing
 COPY pcbGcodeZprobing.py /pcbGcodeZprobing
 
 # ------------------------------------------------------------------
+# Add drivers needed on MacOs
+RUN \
+     apt-get update \
+     &&  apt-get install -y \
+          mesa-utils \
+          libgl1-mesa-glx
+# ------------------------------------------------------------------
 # Examples and other resources
 
 COPY resources/ /resources

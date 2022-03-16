@@ -1,6 +1,6 @@
 rem Configuration
 set ETOOL_DIR=C:%HOMEPATH%\Documents\etool
-set TAG=1
+set TAG=3
 
 rem Locate IP-address, needed to setup X11 DISPLAY 
 set ip_address_string="IPv4 Address"

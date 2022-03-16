@@ -261,6 +261,7 @@ the command
 #+RESULTS:
 :          marcus2002/etool:2
 
+
 ** Example ~etool~ -workflow 
 
 Using data directory ~tmp/etool~ for tesing. Reset directory and
@@ -484,6 +485,24 @@ total 0
 total 0
 #+end_example
 
+** Example projects 
+
+The tool includes following example projects:
+- ~pad2pad~
+  - 2 pads 2x1 mm, (F_Cu)
+  - track width 0.5 mm
+- ~dip~
+  - track width 0.5mm (B_Cu)
+  - 2x pin-header 1x4, 1.27mm grid, (PTH-drilling)
+  - DIP8 package, (B_Cu)
+- ~soic~
+  - 2 x Mounting hole 2.5 mm (NPTH)
+  - 2 x Alignement hole 2.1 mm (NPTH)
+  - Pin header 1x4, 1.27 mm 
+  - Pin header 1x4, 2 mm
+  - SOIC8 package (F_Cu)
+  - front copper track 0.25 (F_Cu)
+  - back copper trac 0.25 (B_Cu)
 
 ** Development
 

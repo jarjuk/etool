@@ -1,3 +1,14 @@
+* marcus2002/etool:3/2022-03-16
+
+- changes:
+  - zsafe: 2mm
+  - pcb2gcode.ini: parameter changes
+  - ETOOL_DIR=$HOME/.etool
+  - Dockerfile: Add drivers needed on MacOs
+  - example dip added
+  - README: added documentation on example projects
+
+
 * marcus2002/etool:2/2022-03-1
 
 - changes:

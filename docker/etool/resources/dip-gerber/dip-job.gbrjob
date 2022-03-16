@@ -7,20 +7,20 @@
       "Application": "Pcbnew",
       "Version":     "5.1.12-84ad8e8a86~92~ubuntu18.04.1"
     },
-    "CreationDate":  "2022-03-16T09:52:17+02:00"
+    "CreationDate":  "2022-03-16T13:03:40+02:00"
   },
   "GeneralSpecs":
   {
     "ProjectId":
     {
-      "Name": "soic",
-      "GUID": "736f6963-2e6b-4696-9361-645f70636258",
+      "Name": "dip",
+      "GUID": "6469702e-6b69-4636-9164-5f7063625858",
       "Revision": "rev?"
     },
     "Size":
     {
-      "X": 33.760,
-      "Y": 13.100
+      "X": 40.350,
+      "Y": 20.350
     },
     "LayerNumber": 2,
     "BoardThickness":  1.600
@@ -32,53 +32,53 @@
       "PadToPad":  0.200,
       "PadToTrack":  0.200,
       "TrackToTrack":  0.200,
-      "MinLineWidth":  0.250
+      "MinLineWidth":  0.500
     }
   ],
   "FilesAttributes":
   [
     {
-      "Path":  "soic-F_Cu.gbr",
+      "Path":  "dip-F_Cu.gbr",
       "FileFunction":  "Copper,L1,Top",
       "FilePolarity":  "Positive"
     },
     {
-      "Path":  "soic-B_Cu.gbr",
+      "Path":  "dip-B_Cu.gbr",
       "FileFunction":  "Copper,L2,Bot",
       "FilePolarity":  "Positive"
     },
     {
-      "Path":  "soic-F_Paste.gbr",
+      "Path":  "dip-F_Paste.gbr",
       "FileFunction":  "SolderPaste,Top",
       "FilePolarity":  "Positive"
     },
     {
-      "Path":  "soic-B_Paste.gbr",
+      "Path":  "dip-B_Paste.gbr",
       "FileFunction":  "SolderPaste,Bot",
       "FilePolarity":  "Positive"
     },
     {
-      "Path":  "soic-F_SilkS.gbr",
+      "Path":  "dip-F_SilkS.gbr",
       "FileFunction":  "Legend,Top",
       "FilePolarity":  "Positive"
     },
     {
-      "Path":  "soic-B_SilkS.gbr",
+      "Path":  "dip-B_SilkS.gbr",
       "FileFunction":  "Legend,Bot",
       "FilePolarity":  "Positive"
     },
     {
-      "Path":  "soic-F_Mask.gbr",
+      "Path":  "dip-F_Mask.gbr",
       "FileFunction":  "SolderMask,Top",
       "FilePolarity":  "Negative"
     },
     {
-      "Path":  "soic-B_Mask.gbr",
+      "Path":  "dip-B_Mask.gbr",
       "FileFunction":  "SolderMask,Bot",
       "FilePolarity":  "Negative"
     },
     {
-      "Path":  "soic-Edge_Cuts.gbr",
+      "Path":  "dip-Edge_Cuts.gbr",
       "FileFunction":  "Profile",
       "FilePolarity":  "Positive"
     }
