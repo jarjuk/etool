@@ -646,6 +646,7 @@ The tool includes following example projects:
   - Pin header 1x4, 2 mm
   - SOIC8 package (F_Cu)
   - front copper track 0.25 (F_Cu)
+  - 1 via between F_Cu/B_Cu
   - back copper trac 0.25 (B_Cu)
 
 
