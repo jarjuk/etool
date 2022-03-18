@@ -586,7 +586,7 @@ the output specifying configuration files
 ~/etool/pcb2gcode-control-USER1.template~ and
 ~/etool/pcb2gcode-USER1.ini~.
 
-#+BEGIN_SRC bash :eval no-export :results output :noweb yes
+#+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
 <<run-etool>> example pad2pad cam pad2pad USER1 :exports both
 #+END_SRC
 
