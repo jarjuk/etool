@@ -19,12 +19,100 @@ Build ~marcus2002/etool:$ETOOL_DOCKER_TAG~
 
 #+BEGIN_SRC bash :eval no-export :results output :exports code
 echo $ETOOL_DOCKER_TAG > VERSION
-echo docker build -t marcus2002/etool:$ETOOL_DOCKER_TAG .  2>&1; echo $?
+docker build -t marcus2002/etool:$ETOOL_DOCKER_TAG .  2>&1; echo $?
 #+END_SRC
 
 #+RESULTS:
-: docker build -t marcus2002/etool:4 .
-: 0
+#+begin_example
+Sending build context to Docker daemon    342kB
+Step 1/27 : FROM ubuntu:18.04
+ ---> c3c304cb4f22
+Step 2/27 : RUN apt-get update &&      apt-get install -y      curl      wget      git      gnupg2  gnupg
+ ---> Using cache
+ ---> 8649238509b5
+Step 3/27 : RUN apt-get install -y       build-essential       linux-headers-$(uname -r)       dkms
+ ---> Using cache
+ ---> ace38c0968f1
+Step 4/27 : ENV LANG C.UTF-8
+ ---> Using cache
+ ---> 2157eb1ec776
+Step 5/27 : ENV TZ=Europe/Helsinki
+ ---> Using cache
+ ---> 4adfde947877
+Step 6/27 : RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+ ---> Using cache
+ ---> b8d4f93898a9
+Step 7/27 : RUN apt-get -y install     tzdata
+ ---> Using cache
+ ---> e4bab8080cb0
+Step 8/27 : RUN     sudo cp /etc/apt/sources.list /etc/apt/sources.list.orig     &&   sed -i -e'/bionic main restricted/s!# deb-src!deb-src!'                       -e'/bionic-updates main restricted/s!# deb-src!deb-src!'                 -e'/bionic universe/s!# deb-src!deb-src!'                 -e'/bionic-updates universe/s!# deb-src!deb-src!'                 /etc/apt/sources.list     && apt-get update
+ ---> Using cache
+ ---> 1844c3037dee
+Step 9/27 : RUN apt-get -y install    devscripts    build-essential     dpkg-dev    debhelper    dh-python    libudev-dev    libxenomai-dev    tcl8.6-dev    tk8.6-dev    libreadline-gplv2-dev    asciidoc dblatex    docbook-xsl    dvipng    graphviz    groff    inkscape    python-lxml    source-highlight    w3c-linkchecker    xsltproc    texlive-extra-utils    texlive-font-utils    texlive-fonts-recommended texlive-lang-cyrillic texlive-lang-french texlive-lang-german texlive-lang-polish texlive-lang-spanish    texlive-latex-recommended asciidoc-dblatex python python-dev python-tk libxmu-dev    libglu1-mesa-dev libgl1-mesa-dev    libgtk2.0-dev intltool autoconf libboost-python-dev    libmodbus-dev    libusb-1.0-0-dev yapps2    iptables netcat psmisc desktop-file-utils
+ ---> Using cache
+ ---> e75fda009662
+Step 10/27 : RUN     git clone https://github.com/LinuxCNC/linuxcnc.git emc     && cd emc     && git checkout 2.8
+ ---> Using cache
+ ---> 73a68ce19bde
+Step 11/27 : RUN diff /etc/apt/sources.list /etc/apt/sources.list.orig 2>&1; echo $?
+ ---> Using cache
+ ---> d977e6ea641c
+Step 12/27 : RUN apt-get install -y              bwidget              libtk-img              tclx              python-gtk2
+ ---> Using cache
+ ---> fcd8a06b9f86
+Step 13/27 : RUN    cd emc    && debian/configure uspace    && dpkg-checkbuilddeps    && cd src    && ./autogen.sh    && ./configure --with-realtime=uspace    && make
+ ---> Using cache
+ ---> 200f8a47440b
+Step 14/27 : RUN      git clone  https://github.com/pcb2gcode/pcb2gcode      && cd pcb2gcode      && git checkout e53eae9b8d490f76be6d1716dcf3b6c0ff5aad92
+ ---> Using cache
+ ---> a921b980e976
+Step 15/27 : RUn apt-get install -y              build-essential              automake              autoconf              autoconf-archive              libtool              libboost-program-options-dev              libgtkmm-2.4-dev              gerbv              librsvg2-dev
+ ---> Using cache
+ ---> 5cdec2ff9238
+Step 16/27 : RUN         cd /pcb2gcode      && autoreconf -fvi      && ./configure      &&  make      && make install
+ ---> Using cache
+ ---> 4737d44b2d4e
+Step 17/27 : RUN mkdir /pcbGcodeZprobing
+ ---> Using cache
+ ---> 1d81de8793de
+Step 18/27 : COPY pcbGcodeZprobing.py /pcbGcodeZprobing
+ ---> Using cache
+ ---> efef92ab7df0
+Step 19/27 : RUN      apt-get update      &&  apt-get install -y           mesa-utils           libgl1-mesa-glx
+ ---> Using cache
+ ---> 219ea58ef24a
+Step 20/27 : COPY resources/ /resources
+ ---> 9bdea0a39b20
+Step 21/27 : WORKDIR /etool
+ ---> Running in a7d9c9cd625b
+Removing intermediate container a7d9c9cd625b
+ ---> cfcf7fb5e704
+Step 22/27 : ENV HOME=/etool
+ ---> Running in e0a64b2a613d
+Removing intermediate container e0a64b2a613d
+ ---> 4f00993d5507
+Step 23/27 : RUN mkdir /etool-bin
+ ---> Running in e6722540ec16
+Removing intermediate container e6722540ec16
+ ---> acdcb2270858
+Step 24/27 : ENV PATH=/etool-bin:/emc/scripts:${PATH}
+ ---> Running in 0a9b780f3882
+Removing intermediate container 0a9b780f3882
+ ---> 7f1a9019a5a0
+Step 25/27 : COPY       etool.sh       RELEASES       VERSION       axis_etool.ini       sim_mm.tbl       .linuxcncrc       pcb2gcode.ini       pcb2gcode-control.template       Dockerfile       /etool-bin/
+ ---> 5a1e250d7df3
+Step 26/27 : ENTRYPOINT [ "etool.sh" ]
+ ---> Running in ee5f8476a1ee
+Removing intermediate container ee5f8476a1ee
+ ---> 04ed444607d0
+Step 27/27 : CMD [ "usage"]
+ ---> Running in 962c49e9c39a
+Removing intermediate container 962c49e9c39a
+ ---> 1121d1552f04
+Successfully built 1121d1552f04
+Successfully tagged marcus2002/etool:4
+0
+#+end_example
 
 
 
@@ -39,10 +127,10 @@ docker push marcus2002/etool:$ETOOL_DOCKER_TAG
 #+RESULTS:
 #+begin_example
 The push refers to repository [docker.io/marcus2002/etool]
-4cdab430104c: Preparing
-ebc522795c12: Preparing
-617a294c3940: Preparing
-25daf39dc288: Preparing
+50f243da7866: Preparing
+7c7b3719f971: Preparing
+77b41d008850: Preparing
+0ac2e71f1e6c: Preparing
 c2bbd67ba1ea: Preparing
 1d621ba72a94: Preparing
 4fa2fddd8c11: Preparing
@@ -53,56 +141,56 @@ b5cbc5447c49: Preparing
 f6775943028b: Preparing
 bdece7ab0b8d: Preparing
 f917492a171c: Preparing
-4fa2fddd8c11: Waiting
-1afcc6b88e74: Waiting
-d277f19c5cf3: Waiting
-1d621ba72a94: Waiting
-0ccbdce5bfb8: Waiting
 56fcf7e0a24b: Preparing
-b5cbc5447c49: Waiting
 c2d80069578c: Preparing
 d47b9f8f5b5e: Preparing
+1d621ba72a94: Waiting
 650e4da91065: Preparing
 1433bbf12295: Preparing
+4fa2fddd8c11: Waiting
 28ba7458d04b: Preparing
-bdece7ab0b8d: Waiting
-f6775943028b: Waiting
 838a37a24627: Preparing
+1afcc6b88e74: Waiting
 a6ebef4a95c3: Preparing
 b7f7d2967507: Preparing
-f917492a171c: Waiting
-56fcf7e0a24b: Waiting
-28ba7458d04b: Waiting
-c2d80069578c: Waiting
-838a37a24627: Waiting
+d277f19c5cf3: Waiting
+b5cbc5447c49: Waiting
 d47b9f8f5b5e: Waiting
-1433bbf12295: Waiting
 650e4da91065: Waiting
-b7f7d2967507: Waiting
-ebc522795c12: Layer already exists
-617a294c3940: Layer already exists
-25daf39dc288: Layer already exists
+0ccbdce5bfb8: Waiting
+56fcf7e0a24b: Waiting
+f6775943028b: Waiting
+bdece7ab0b8d: Waiting
+c2d80069578c: Waiting
+f917492a171c: Waiting
+838a37a24627: Waiting
+1433bbf12295: Waiting
+a6ebef4a95c3: Waiting
+28ba7458d04b: Waiting
 c2bbd67ba1ea: Layer already exists
-4fa2fddd8c11: Layer already exists
 1d621ba72a94: Layer already exists
+4fa2fddd8c11: Layer already exists
 1afcc6b88e74: Layer already exists
 d277f19c5cf3: Layer already exists
+77b41d008850: Pushed
+0ac2e71f1e6c: Pushed
+50f243da7866: Pushed
 b5cbc5447c49: Layer already exists
+7c7b3719f971: Pushed
 0ccbdce5bfb8: Layer already exists
 f6775943028b: Layer already exists
 bdece7ab0b8d: Layer already exists
 f917492a171c: Layer already exists
 56fcf7e0a24b: Layer already exists
-4cdab430104c: Pushed
 c2d80069578c: Layer already exists
 d47b9f8f5b5e: Layer already exists
 650e4da91065: Layer already exists
+1433bbf12295: Layer already exists
 28ba7458d04b: Layer already exists
 838a37a24627: Layer already exists
-1433bbf12295: Layer already exists
 a6ebef4a95c3: Layer already exists
 b7f7d2967507: Layer already exists
-4: digest: sha256:a9b432f5801c2707d4f4d1c28e2866a939b301370024db2cf4ced802f51b5336 size: 5148
+4: digest: sha256:281331687cb3dc4239c6036d46fcc1c11c8958da5c8517e385479ae432892bc2 size: 5148
 #+end_example
 
 
