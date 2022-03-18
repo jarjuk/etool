@@ -37,7 +37,73 @@ docker push marcus2002/etool:$ETOOL_DOCKER_TAG
 #+END_SRC
 
 #+RESULTS:
-: docker push marcus2002/etool:3
+#+begin_example
+The push refers to repository [docker.io/marcus2002/etool]
+4cdab430104c: Preparing
+ebc522795c12: Preparing
+617a294c3940: Preparing
+25daf39dc288: Preparing
+c2bbd67ba1ea: Preparing
+1d621ba72a94: Preparing
+4fa2fddd8c11: Preparing
+1afcc6b88e74: Preparing
+d277f19c5cf3: Preparing
+b5cbc5447c49: Preparing
+0ccbdce5bfb8: Preparing
+f6775943028b: Preparing
+bdece7ab0b8d: Preparing
+f917492a171c: Preparing
+4fa2fddd8c11: Waiting
+1afcc6b88e74: Waiting
+d277f19c5cf3: Waiting
+1d621ba72a94: Waiting
+0ccbdce5bfb8: Waiting
+56fcf7e0a24b: Preparing
+b5cbc5447c49: Waiting
+c2d80069578c: Preparing
+d47b9f8f5b5e: Preparing
+650e4da91065: Preparing
+1433bbf12295: Preparing
+28ba7458d04b: Preparing
+bdece7ab0b8d: Waiting
+f6775943028b: Waiting
+838a37a24627: Preparing
+a6ebef4a95c3: Preparing
+b7f7d2967507: Preparing
+f917492a171c: Waiting
+56fcf7e0a24b: Waiting
+28ba7458d04b: Waiting
+c2d80069578c: Waiting
+838a37a24627: Waiting
+d47b9f8f5b5e: Waiting
+1433bbf12295: Waiting
+650e4da91065: Waiting
+b7f7d2967507: Waiting
+ebc522795c12: Layer already exists
+617a294c3940: Layer already exists
+25daf39dc288: Layer already exists
+c2bbd67ba1ea: Layer already exists
+4fa2fddd8c11: Layer already exists
+1d621ba72a94: Layer already exists
+1afcc6b88e74: Layer already exists
+d277f19c5cf3: Layer already exists
+b5cbc5447c49: Layer already exists
+0ccbdce5bfb8: Layer already exists
+f6775943028b: Layer already exists
+bdece7ab0b8d: Layer already exists
+f917492a171c: Layer already exists
+56fcf7e0a24b: Layer already exists
+4cdab430104c: Pushed
+c2d80069578c: Layer already exists
+d47b9f8f5b5e: Layer already exists
+650e4da91065: Layer already exists
+28ba7458d04b: Layer already exists
+838a37a24627: Layer already exists
+1433bbf12295: Layer already exists
+a6ebef4a95c3: Layer already exists
+b7f7d2967507: Layer already exists
+4: digest: sha256:a9b432f5801c2707d4f4d1c28e2866a939b301370024db2cf4ced802f51b5336 size: 5148
+#+end_example
 
 
 #+BEGIN_SRC bash :eval no-export :results output
