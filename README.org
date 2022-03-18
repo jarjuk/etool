@@ -567,7 +567,7 @@ cp $(pwd)/tmp/etool/pcb2gcode-control.template  $(pwd)/tmp/etool/pcb2gcode-contr
 
 After the copy, content of directory  ~$(pwd)/tmp/etool~
 
-#+BEGIN_SRC bash :eval no-export :results output :export results
+#+BEGIN_SRC bash :eval no-export :results output :exports results
 ls $(pwd)/tmp/etool
 #+END_SRC
 
@@ -587,7 +587,7 @@ the output specifying configuration files
 ~/etool/pcb2gcode-USER1.ini~.
 
 #+BEGIN_SRC bash :eval no-export :results output :noweb yes
-<<run-etool>> example pad2pad cam pad2pad USER1
+<<run-etool>> example pad2pad cam pad2pad USER1 :exports both
 #+END_SRC
 
 #+RESULTS:
