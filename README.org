@@ -1,5 +1,4 @@
-#+PROPERTY: header-args+ :var  ETOOL_DOCKER_TAG="2"
-
+#+PROPERTY: header-args+ :var  ETOOL_DOCKER_TAG="4"
 * marcus2002/etool - Docker mapping Gerber files to gcode with simulator support
 :PROPERTIES:
 :TOC:      :include all
@@ -17,11 +16,18 @@
   - [[#configuration-files-initialized-in-etool-directory][Configuration files initialized in etool directory]]
   - [[#installing-and-using--marcus2002etool][Installing and using  marcus2002/etool]]
     - [[#install-system-tools][Install system tools]]
+      - [[#ubuntulinux][Ubuntu/Linux]]
+      - [[#windows-10][Windows 10]]
+      - [[#install-macos][Install MacOs]]
     - [[#pull-etool-docker-from-dockerio-repo][Pull etool Docker from docker.io repo]]
-    - [[#example-etool--workflow][Example etool -workflow]]
+    - [[#running-etool][Running etool]]
+  - [[#example-etool--workflow][Example etool -workflow]]
+  - [[#user-specific-cam-configuration][User specific CAM configuration]]
+  - [[#example-projects][Example projects]]
   - [[#development][Development]]
   - [[#release--notes][RELEASE -notes]]
 :END:
+
 
 
 ** Features
@@ -51,6 +57,7 @@
      intialized in an empty data directory
    - [X] intialized configuration not overridden (=possible for user
      to modify initialized configuration)
+   - [X] User specific CAM -configuration
 
 
 ** Usage
@@ -63,7 +70,7 @@ Command line usage
 #+RESULTS:
 #+begin_example
 
-         marcus2002/etool:2
+         marcus2002/etool:4
 
          A tool for mapping Gerber files to gcode for CNC
          machining and launching linuxcnc -simulator for validating
@@ -74,8 +81,9 @@ Command line usage
          docker DOCKER_OPTS run marcus2002/etool CMD_AND_OPTIONS ...
 
          where CMD_AND_OPTIONS one of follwoing operations:
-         o cam PROJECT [PARAMS]: create gcode for PROJECT Gerber -files using 
-                                 cam PARAMS (default pcb2gcode.ini)
+         o cam PROJECT [USER]:   create gcode for PROJECT Gerber -files
+                                 USER -specific cam parameters replace default paramerters
+                                 (/etool/pcb2gcode.ini, /etool/pcb2gcode-control.template)
          o simulator           : start 'linuxcnc'
 
          or one of data management utilities:
@@ -105,7 +113,7 @@ Command line usage
 
          mkdir $HOME/.etool           # create working directory
 
-         export ETOOL='docker run --rm --user 1000:1000 -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.etool:/etool marcus2002/etool:2'
+         export ETOOL='docker run --rm --user 1000:1000 -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.etool:/etool marcus2002/etool:4'
 
          $ETOOL cleanup               # clean working directories
          $ETOOL ls                    # empty directories
@@ -114,12 +122,11 @@ Command line usage
          $ETOOL cam pad2pad           # create gCode
          $ETOOL simulator             # start linuxcnc for simulating gcode
 
-         These commands can be given as one-liner
+         The commands can be given as a one-liner. For example, for the command above:
 
          $ETOOL cleanup ls example pad2pad ls cam pad2pad -- simulator
          
-         Notice!
-         'cam pad2pad --' where two dashes signal end of optional parameters
+         Notice! Separator '--' in cam -command signaling end of optional parameters
 #+end_example
 
 
@@ -196,7 +203,6 @@ Following table summarizes configuration files initialized under
 
 *** Install system tools 
 
-
 **** Ubuntu/Linux
 
 - Install Docker: https://docs.docker.com/engine/install/ubuntu/
@@ -211,6 +217,29 @@ Following table summarizes configuration files initialized under
 - Install VcXsrv Windows X Server: https://sourceforge.net/projects/vcxsrv/
   - When launching VcXsrv choose 'disable access control checked' to
     allow Docker to open X11 windows
+
+
+**** TODO Install MacOs
+
+- Install Docker Desktop on Mac: https://docs.docker.com/desktop/mac/install/
+- Install X11 support on Mac: https://www.xquartz.org/
+
+
+*MacOs X11 problem*:
+
+Xquartz 2.8.1 may report an error
+#+begin_example
+libGL error: No matching fbConfigs or visuals found
+libGL error: failed to load driver: swrast
+#+end_example
+which may be solved issuing command
+#+begin_example
+defaults write org.xquartz.X11 enable_iglx -bool true
+#+end_example
+and restarting XQuartz again. However, it may be this does not fix the
+problem persistently, and XQuartz must be restarted again, after each
+X11 session launch.
+
 
 *** Pull ~etool~ Docker from docker.io repo
 
@@ -242,12 +271,14 @@ Docker tag 1
 : Status: Image is up to date for marcus2002/etool:1
 : docker.io/marcus2002/etool:1
 
+
 *** Running etool
 
 
 To simplify running  ~marcus2002/etool~ two scripts are provided
 
 - [[file:etool.sh]] : Running ~marcus2002/etool~ on Linux
+- [[file:etoolMac.sh]] : Running ~marcus2002/etool~ on MacOs
 - [[file:etool.cmd]] : Running ~marcus2002/etool~  on Windows
 
 Copy these scripts to a CLI PATH and validate ETOOL_DIR and TAG
@@ -259,7 +290,7 @@ the command
 #+END_SRC
 
 #+RESULTS:
-:          marcus2002/etool:2
+:          marcus2002/etool:3
 
 
 ** Example ~etool~ -workflow 
@@ -304,7 +335,6 @@ total 0
 /etool/02-ngc:
 total 0
 #+end_example
-
 
 Using ~<<run-etool>>~ to populate example Gerbers for ~soic~ -project:
 
@@ -361,7 +391,7 @@ Importing outline... DONE.
 Processing input files... DONE.
 Exporting back... DONE. (Height: 17.1mm Width: 37.76mm)
 Exporting front... DONE. (Height: 17.1mm Width: 37.76mm)
-Exporting outline... DONE. (Height: 17.1mm Width: 37.76mm) The board should be cut from the FRONT side.
+Exporting outline... DONE. (Height: 17.1mm Width: 37.76mm) The board should be cut from the FRONT side. 
 Importing drill... DONE.
 Exporting milldrill... Exporting drill... DONE. The board should be drilled from the FRONT side.
 END.
@@ -369,7 +399,7 @@ Importing front side... not specified.
 Importing back side... not specified.
 Importing outline... DONE.
 Processing input files... DONE.
-Exporting outline... DONE. (Height: 17.1mm Width: 37.76mm) The board should be cut from the FRONT side.
+Exporting outline... DONE. (Height: 17.1mm Width: 37.76mm) The board should be cut from the FRONT side. 
 Importing drill... DONE.
 Exporting milldrill... Exporting drill... DONE. The board should be drilled from the FRONT side.
 END.
@@ -393,46 +423,46 @@ File /etool/linuxcnc/configs/sim.axis/sim_mm.tbl exits - not modified
 File /etool/pcb2gcode-control.template exits - not modified
 File /etool/.linuxcncrc exits - not modified
 /etool/01-gerber:
-total 92
--rw-r--r-- 1 1000 1000  1477 Mar  1 14:12 soic-B_Cu.gbr
--rw-r--r-- 1 1000 1000  1068 Mar  1 14:12 soic-B_Mask.gbr
--rw-r--r-- 1 1000 1000   541 Mar  1 14:12 soic-B_Paste.gbr
--rw-r--r-- 1 1000 1000   542 Mar  1 14:12 soic-B_SilkS.gbr
--rw-r--r-- 1 1000 1000   777 Mar  1 14:12 soic-Edge_Cuts.gbr
--rw-r--r-- 1 1000 1000  6080 Mar  1 14:12 soic-F_Cu.gbr
--rw-r--r-- 1 1000 1000  3801 Mar  1 14:12 soic-F_Mask.gbr
--rw-r--r-- 1 1000 1000  3274 Mar  1 14:12 soic-F_Paste.gbr
--rw-r--r-- 1 1000 1000  7168 Mar  1 14:12 soic-F_SilkS.gbr
--rw-r--r-- 1 1000 1000 15457 Mar  1 14:12 soic-NPTH-drl_map.ps
--rw-r--r-- 1 1000 1000   379 Mar  1 14:12 soic-NPTH.drl
--rw-r--r-- 1 1000 1000 20129 Mar  1 14:12 soic-PTH-drl_map.ps
--rw-r--r-- 1 1000 1000   483 Mar  1 14:12 soic-PTH.drl
--rw-r--r-- 1 1000 1000  2491 Mar  1 14:12 soic-job.gbrjob
+total 104
+-rw-r--r-- 1 1000 1000  1794 Mar 18 10:49 soic-B_Cu.gbr
+-rw-r--r-- 1 1000 1000  1156 Mar 18 10:49 soic-B_Mask.gbr
+-rw-r--r-- 1 1000 1000   541 Mar 18 10:49 soic-B_Paste.gbr
+-rw-r--r-- 1 1000 1000   542 Mar 18 10:49 soic-B_SilkS.gbr
+-rw-r--r-- 1 1000 1000   749 Mar 18 10:49 soic-Edge_Cuts.gbr
+-rw-r--r-- 1 1000 1000  5822 Mar 18 10:49 soic-F_Cu.gbr
+-rw-r--r-- 1 1000 1000  3735 Mar 18 10:49 soic-F_Mask.gbr
+-rw-r--r-- 1 1000 1000  3120 Mar 18 10:49 soic-F_Paste.gbr
+-rw-r--r-- 1 1000 1000  7142 Mar 18 10:49 soic-F_SilkS.gbr
+-rw-r--r-- 1 1000 1000 25676 Mar 18 10:49 soic-NPTH-drl_map.ps
+-rw-r--r-- 1 1000 1000   413 Mar 18 10:49 soic-NPTH.drl
+-rw-r--r-- 1 1000 1000 20129 Mar 18 10:49 soic-PTH-drl_map.ps
+-rw-r--r-- 1 1000 1000   476 Mar 18 10:49 soic-PTH.drl
+-rw-r--r-- 1 1000 1000  2491 Mar 18 10:49 soic-job.gbrjob
 
 /etool/02-ngc:
-total 592
--rw-r--r-- 1 1000 1000    411 Mar  1 14:12 original_drill.svg
--rw-r--r-- 1 1000 1000   4817 Mar  1 14:12 outp0_original_back.svg
--rw-r--r-- 1 1000 1000    522 Mar  1 14:12 outp0_original_outline.svg
--rw-r--r-- 1 1000 1000  10284 Mar  1 14:12 outp1_original_front.svg
--rw-r--r-- 1 1000 1000    522 Mar  1 14:12 outp2_original_outline.svg
--rw-r--r-- 1 1000 1000   4817 Mar  1 14:12 outp3_masked_back.svg
--rw-r--r-- 1 1000 1000  10284 Mar  1 14:12 outp4_masked_front.svg
--rw-r--r-- 1 1000 1000  55665 Mar  1 14:12 processed_back.svg
--rw-r--r-- 1 1000 1000  32725 Mar  1 14:12 processed_back_final.svg
--rw-r--r-- 1 1000 1000 104874 Mar  1 14:12 processed_front.svg
--rw-r--r-- 1 1000 1000  64522 Mar  1 14:12 processed_front_final.svg
--rw-r--r-- 1 1000 1000   2209 Mar  1 14:12 processed_outline.svg
--rw-r--r-- 1 1000 1000  27556 Mar  1 14:12 soic-B_Cu.ngc
--rw-r--r-- 1 1000 1000   3596 Mar  1 14:12 soic-Edge_Cuts.ngc
--rw-r--r-- 1 1000 1000  51185 Mar  1 14:12 soic-F_Cu.ngc
--rw-r--r-- 1 1000 1000    737 Mar  1 14:12 soic-NPTH.ngc
--rw-r--r-- 1 1000 1000    854 Mar  1 14:12 soic-PTH.ngc
--rw-r--r-- 1 1000 1000  41195 Mar  1 14:12 traced_back.svg
--rw-r--r-- 1 1000 1000  18255 Mar  1 14:12 traced_back_final.svg
--rw-r--r-- 1 1000 1000  77871 Mar  1 14:12 traced_front.svg
--rw-r--r-- 1 1000 1000  37519 Mar  1 14:12 traced_front_final.svg
--rw-r--r-- 1 1000 1000   1782 Mar  1 14:12 traced_outline.svg
+total 1000
+-rw-r--r-- 1 1000 1000    519 Mar 18 10:49 original_drill.svg
+-rw-r--r-- 1 1000 1000   4883 Mar 18 10:49 outp0_original_back.svg
+-rw-r--r-- 1 1000 1000    522 Mar 18 10:49 outp0_original_outline.svg
+-rw-r--r-- 1 1000 1000  10369 Mar 18 10:49 outp1_original_front.svg
+-rw-r--r-- 1 1000 1000    522 Mar 18 10:49 outp2_original_outline.svg
+-rw-r--r-- 1 1000 1000   4883 Mar 18 10:49 outp3_masked_back.svg
+-rw-r--r-- 1 1000 1000  10369 Mar 18 10:49 outp4_masked_front.svg
+-rw-r--r-- 1 1000 1000  93263 Mar 18 10:49 processed_back.svg
+-rw-r--r-- 1 1000 1000  51889 Mar 18 10:49 processed_back_final.svg
+-rw-r--r-- 1 1000 1000 178520 Mar 18 10:49 processed_front.svg
+-rw-r--r-- 1 1000 1000 106002 Mar 18 10:49 processed_front_final.svg
+-rw-r--r-- 1 1000 1000   2192 Mar 18 10:49 processed_outline.svg
+-rw-r--r-- 1 1000 1000  52971 Mar 18 10:49 soic-B_Cu.ngc
+-rw-r--r-- 1 1000 1000   3638 Mar 18 10:49 soic-Edge_Cuts.ngc
+-rw-r--r-- 1 1000 1000 104655 Mar 18 10:49 soic-F_Cu.ngc
+-rw-r--r-- 1 1000 1000    774 Mar 18 10:49 soic-NPTH.ngc
+-rw-r--r-- 1 1000 1000    857 Mar 18 10:49 soic-PTH.ngc
+-rw-r--r-- 1 1000 1000  78833 Mar 18 10:49 traced_back.svg
+-rw-r--r-- 1 1000 1000  37459 Mar 18 10:49 traced_back_final.svg
+-rw-r--r-- 1 1000 1000 150513 Mar 18 10:49 traced_front.svg
+-rw-r--r-- 1 1000 1000  77995 Mar 18 10:49 traced_front_final.svg
+-rw-r--r-- 1 1000 1000   1790 Mar 18 10:49 traced_outline.svg
 #+end_example
 
 
@@ -485,6 +515,120 @@ total 0
 total 0
 #+end_example
 
+** User specific CAM configuration
+
+Docker finds configuration files for ~pcb2gcode~ CAM -tool in ~/etool~
+directory mapped to a host directory in ~docker run~ -command. For
+example, this README uses following command
+
+#+BEGIN_SRC bash :eval no-export :results output :noweb yes :export results
+echo '<<run-etool>>'
+#+END_SRC
+
+#+RESULTS:
+: docker run --rm --user $(id -u):$(id -g) -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd)/tmp/etool:/etool marcus2002/etool:$ETOOL_DOCKER_TAG
+
+In this case, host directory is ~$(pwd)/tmp/etool~, and its directory
+listing shows default configuration files ~pcb2gcode.ini~ and
+~pcb2gcode-control.template~
+
+#+BEGIN_SRC bash :eval no-export :results output :exports both
+ls $(pwd)/tmp/etool
+#+END_SRC
+
+#+RESULTS:
+: 01-gerber
+: 02-ngc
+: linuxcnc
+: pcb2gcode-control.template
+: pcb2gcode.ini
+
+To create user specific configuration files copy these files to
+~pcb2gcode-${USR}.ini~ and ~pcb2gcode-control-$USR..template~. For
+example to create user specific configuration files USER1 issue
+commands, and edit newly created files at will.
+
+#+BEGIN_SRC bash :eval no-export :results output
+USR=USER1
+cp $(pwd)/tmp/etool/pcb2gcode.ini  $(pwd)/tmp/etool/pcb2gcode-${USR}.ini
+cp $(pwd)/tmp/etool/pcb2gcode-control.template  $(pwd)/tmp/etool/pcb2gcode-control-$USR.template
+#+END_SRC
+
+#+RESULTS:
+
+After the copy, content of directory  ~$(pwd)/tmp/etool~
+
+#+BEGIN_SRC bash :eval no-export :results output :export results
+ls $(pwd)/tmp/etool
+#+END_SRC
+
+#+RESULTS:
+: 01-gerber
+: 02-ngc
+: linuxcnc
+: pcb2gcode-control.template
+: pcb2gcode-control-USER1.template
+: pcb2gcode.ini
+: pcb2gcode-USER1.ini
+
+
+and cam -command can use the user specific configuration files. Notice
+the output specifying configuration files
+~/etool/pcb2gcode-control-USER1.template~ and
+~/etool/pcb2gcode-USER1.ini~.
+
+#+BEGIN_SRC bash :eval no-export :results output :noweb yes
+<<run-etool>> example pad2pad cam pad2pad USER1
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Directory /etool/01-gerber exits - not modified
+Directory /etool/02-ngc exits - not modified
+Directory /etool/linuxcnc/configs/sim.axis exits - not modified
+File /etool/pcb2gcode.ini exits - not modified
+File /etool/linuxcnc/configs/sim.axis/axis_etool.ini exits - not modified
+File /etool/linuxcnc/configs/sim.axis/sim_mm.tbl exits - not modified
+File /etool/pcb2gcode-control.template exits - not modified
+File /etool/.linuxcncrc exits - not modified
+pad2pad-B_Cu.gbr
+pad2pad-B_Mask.gbr
+pad2pad-B_Paste.gbr
+pad2pad-B_SilkS.gbr
+pad2pad-Edge_Cuts.gbr
+pad2pad-F_Cu.gbr
+pad2pad-F_Mask.gbr
+pad2pad-F_Paste.gbr
+pad2pad-F_SilkS.gbr
+pad2pad-NPTH-drl_map.ps
+pad2pad-NPTH.drl
+pad2pad-PTH-drl_map.ps
+pad2pad-PTH.drl
+pad2pad-job.gbrjob
+pcb2gcode using configuration files /etool/pcb2gcode-control-USER1.template, /etool/pcb2gcode-USER1.ini
+Importing front side... DONE.
+Importing back side... DONE.
+Importing outline... DONE.
+Processing input files... DONE.
+Exporting back... DONE. (Height: 11.85mm Width: 19.6mm)
+Exporting front... DONE. (Height: 11.85mm Width: 19.6mm)
+Exporting outline... DONE. (Height: 11.85mm Width: 19.6mm) The board should be cut from the FRONT side. 
+Importing drill... DONE.
+Exporting milldrill... Exporting drill... DONE. The board should be drilled from the FRONT side.
+END.
+Importing front side... not specified.
+Importing back side... not specified.
+Importing outline... DONE.
+Processing input files... DONE.
+Exporting outline... DONE. (Height: 11.85mm Width: 19.6mm) The board should be cut from the FRONT side. 
+Importing drill... DONE.
+Exporting milldrill... Exporting drill... DONE. The board should be drilled from the FRONT side.
+END.
+#+end_example
+
+
+
+
 ** Example projects 
 
 The tool includes following example projects:
@@ -503,6 +647,7 @@ The tool includes following example projects:
   - SOIC8 package (F_Cu)
   - front copper track 0.25 (F_Cu)
   - back copper trac 0.25 (B_Cu)
+
 
 ** Development
 

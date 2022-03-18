@@ -23,7 +23,7 @@ PROBED_DIR=$ROOT/03-pgc
 
 # pcb2gcode options:
 
-CAM_OPTIONS_FILE=$ROOT/pcb2gcode.ini
+CAM_DEFAULT_PARAMS_FILE=$ROOT/pcb2gcode.ini
 CAM_CONTROL_TEMPLATE_FILE=$ROOT/pcb2gcode-control.template
 
 
@@ -34,11 +34,11 @@ LINUXCNC_RC_FILE=$ROOT/.linuxcncrc
 # ----------
 # app constants
 
-# cam control file is geeratod using 'CAM_CONTROL_TEMPLATE_FILE'
+# cam control file is gerated using 'CAM_CONTROL_TEMPLATE_FILE'
 CAM_CONTROL_FILE=/tmp/pcb2gcode-control.ini
 
 
-     # Facts
+# Facts
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
      # self reflection I know my version
@@ -99,8 +99,9 @@ EOF
          docker DOCKER_OPTS run $APPI CMD_AND_OPTIONS ...
 
          where CMD_AND_OPTIONS one of follwoing operations:
-         o cam PROJECT [PARAMS]: create gcode for PROJECT Gerber -files using 
-                                 cam PARAMS (default pcb2gcode.ini)
+         o cam PROJECT [USER]:   create gcode for PROJECT Gerber -files
+                                 USER -specific cam parameters replace default paramerters
+                                 ($CAM_DEFAULT_PARAMS_FILE, $CAM_CONTROL_TEMPLATE_FILE)
          o simulator           : start 'linuxcnc'
 
          or one of data management utilities:
@@ -112,7 +113,7 @@ EOF
          o --help              : this help text
          o usage               : workflow example (w. example of multiple commands on one line)
          o cam-help            : help on pcb2gcode CAM options to put into
-                                 $CAM_OPTIONS_FILE -file and open image explaining
+                                 $CAM_DEFAULT_PARAMS_FILE -file and open image explaining
                                  dimension options
          o releases            : output RELEASES document
          o Dockerfile          : show Dockerfile used
@@ -163,7 +164,7 @@ EOF
          mkdir_if_not_exist $ROOT/linuxcnc/configs/sim.axis
 
          # Copy default config files respective places
-         mkfile_if_not_exist $CAM_OPTIONS_FILE $ETOOL_BIN/$(basename $CAM_OPTIONS_FILE)
+         mkfile_if_not_exist $CAM_DEFAULT_PARAMS_FILE $ETOOL_BIN/$(basename $CAM_DEFAULT_PARAMS_FILE)
          mkfile_if_not_exist $LINUXCNC_INI_FILE $ETOOL_BIN/$(basename $LINUXCNC_INI_FILE)
          mkfile_if_not_exist $LINUXCNC_TOOL_TABLE_FILE $ETOOL_BIN/$(basename $LINUXCNC_TOOL_TABLE_FILE)
          mkfile_if_not_exist $CAM_CONTROL_TEMPLATE_FILE $ETOOL_BIN/$(basename $CAM_CONTROL_TEMPLATE_FILE)
@@ -207,20 +208,30 @@ EOF
                ;;
              cam)
                initApp
-
+               if [ $# -lt 1 ]; then
+                   die "cam PROJECT [USER]: No PROJECT given"
+               fi
                PROJECT=$1; shift
 
-               # optional PARAMS
-               PARAMS=$CAM_OPTIONS_FILE
+               # dafault values
+               CONTROL_TEMPLATE=$CAM_CONTROL_TEMPLATE_FILE
+               PARAMS=$CAM_DEFAULT_PARAMS_FILE
+
+               # optional USER
                if [ $# -ge 1 ]; then
                    if [ "$1" != '--' ]; then
-                      PARAMS=$1
+                       PARAMS=$ROOT/pcb2gcode-${1}.ini
+                       CONTROL_TEMPLATE=$ROOT/pcb2gcode-control-${1}.template
+                       # files must exist
+                       [ -f $CONTROL_TEMPLATE ] || die "Control template file $CONTROL_TEMPLATE does not exist - invalid USER parameter $1"
+                       [ -f $PARAMS ] || die "Cam parameter file $PARAMS not exist - invalid USER parameter $1"
                    fi
                    shift
                fi
-               
+
                # read template, evaluate in two passes below
-               read -r -d '' TMPL <$CAM_CONTROL_TEMPLATE_FILE || true
+               read -r -d '' TMPL <$CONTROL_TEMPLATE || true
+               echo pcb2gcode using configuration files $CONTROL_TEMPLATE, $PARAMS
 
                # Ref env context promises in 'pcb2gcode-control.template'
                
