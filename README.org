@@ -1,4 +1,4 @@
-#+PROPERTY: header-args+ :var  ETOOL_DOCKER_TAG="4"
+#+PROPERTY: header-args+ :var  ETOOL_DOCKER_TAG="5"
 * marcus2002/etool - Docker mapping Gerber files to gcode with simulator support
 :PROPERTIES:
 :TOC:      :include all
@@ -201,6 +201,7 @@ Following table summarizes configuration files initialized under
 :header-args:bash+: :dir  "."
 :END:
 
+
 *** Install system tools 
 
 **** Ubuntu/Linux
@@ -239,6 +240,7 @@ defaults write org.xquartz.X11 enable_iglx -bool true
 and restarting XQuartz again. However, it may be this does not fix the
 problem persistently, and XQuartz must be restarted again, after each
 X11 session launch.
+
 
 
 *** Pull ~etool~ Docker from docker.io repo
@@ -528,7 +530,7 @@ Docker finds configuration files for ~pcb2gcode~ CAM -tool in ~/etool~
 directory mapped to a host directory in ~docker run~ -command. For
 example, this README uses following command
 
-#+BEGIN_SRC bash :eval no-export :results output :noweb yes :export results
+#+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports results
 echo '<<run-etool>>'
 #+END_SRC
 
