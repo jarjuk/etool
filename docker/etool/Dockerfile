@@ -138,6 +138,13 @@ RUN \
 RUN mkdir /pcbGcodeZprobing
 COPY pcbGcodeZprobing.py /pcbGcodeZprobing
 
+# Common dev tools
+RUN \
+         apt-get update \
+      && apt-get install -y \
+         firefox
+     
+
 # ------------------------------------------------------------------
 # Add drivers needed on MacOs
 RUN \
@@ -145,6 +152,29 @@ RUN \
      &&  apt-get install -y \
           mesa-utils \
           libgl1-mesa-glx
+
+# ------------------------------------------------------------------
+# make image-to-gcode (in linuxcnc) avaibale
+
+# install conda
+RUN  \
+     wget https://repo.anaconda.com/miniconda/Miniconda3-py38_4.10.3-Linux-x86_64.sh \
+     && chmod +x Miniconda3-py38_4.10.3-Linux-x86_64.sh \
+     && ./Miniconda3-py38_4.10.3-Linux-x86_64.sh  -b -p /miniconda
+
+ENV PATH=/miniconda/bin:${PATH}
+
+COPY image-to-gcode.yaml /miniconda
+
+RUN conda env create -f /miniconda/image-to-gcode.yaml
+
+# image-to-gcode configs in /etool directory
+# 
+# os.path.expanduser("~/.image2gcoderc")
+# os.path.expanduser("/etool/image2gcoderc")
+
+RUN sed -i -e 's!~/\.!/etool/!' /emc/bin/image-to-gcode
+
 # ------------------------------------------------------------------
 # Examples and other resources
 
@@ -172,6 +202,7 @@ COPY \
       .linuxcncrc \
       pcb2gcode.ini \
       pcb2gcode-control.template \
+      pcbGcodeZprobing.py \
       Dockerfile \
       /etool-bin/
 

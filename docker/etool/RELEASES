@@ -1,3 +1,12 @@
+* marcus2002/etool:5/2022-
+
+- rename command cam --> gerber
+- added:  01-image -directory
+- added: command image-help
+- pcbGcodeZprobing.py: support for G2/G3
+- pcbGcodeZprobing.py: O200 subru parameter #5/z_dest
+
+
 * marcus2002/etool:4/2022-03-18
 
 - User specific CAM -configuration

@@ -68,6 +68,9 @@ V 0.1: experimental, Feb 2015
 
 """
 Patched https://github.com/hase-berlin/pcbGcodeZprobing
+- Added support for G2/G3
+- O200 parameter  #5/z_dest added
+- Added debug ouput
 - 
 """
 
@@ -239,6 +242,7 @@ O200 sub (etch subroutine)
      #<y_start>         = #2
      #<x_dest>          = #3
      #<y_dest>          = #4
+     #<z_dest>          = #5
      #<distance>        = sqrt[ [#<x_dest> - #<x_start>]**2 + [#<y_dest> - #<y_start>]**2 ]
      #<waypoint_number> = fix[#<distance> / [#<_x_step_size>/2]]
      #<x_step>          = [[#<x_dest> - #<x_start>] / [#<waypoint_number> + 1]]
@@ -266,7 +270,8 @@ O200 sub (etch subroutine)
           #<b3>         =  [#<F01> - #<F00>]
           #<b4>         =  [#<F00> - #<F10> - #<F01> + #<F11>]
           #<z_adj>      =  [#<b1> + #<b2>*#<_cell_x_w> + #<b3>*#<_cell_y_w> + #<b4>*#<_cell_x_w>*#<_cell_y_w>]
-          #<z_etch>     =  [#<_etch_depth> + #<z_adj>]
+          (#<z_etch>     =  [#<_etch_depth> + #<z_adj>])
+          #<z_etch>     =  [#<z_dest> + #<z_adj>]
 
           (ignore trivial z axis moves)
           O202 if [abs[#<z_etch> - #<_last_z_etch> ] lt #<_z_trivial>]
@@ -402,17 +407,30 @@ O001 endwhile
         if match:
             Y_dest = float(match.group(1))
 
+        # and also the Z coordinate
+        zmatch = re.match(".*Z(-*\d*\.*\d*)",line)
+        if zmatch:
+            Z_dest = float(zmatch.group(1))
+
         # if the move as a milling move (G01), replace it with a subroutine call
         if Gval == 1:
-            print('O200 call [%.4f] [%.4f] [%.4f] [%.4f]\n' % (X_start, Y_start, X_dest, Y_dest),end="")
-            # patched
-            Gval = None
+            print( "( Gval==1 start: %s )" % line.strip()  )
+            print('O200 call [%.4f] [%.4f] [%.4f] [%.4f] [%.4f]\n' % (X_start, Y_start, X_dest, Y_dest, Z_dest),end="")
+            print( "( Gval==1 end)\n" )
         #if this is a rapid to a new position (G00 X* Y*), then need to move to new position, then output a subroutine call to get to proper Z depth for that position, before making G01 move to next destination
         elif Gval == 0 and xmatch:
-            print(line)
-            print('O200 call [%.4f] [%.4f] [%.4f] [%.4f]\n' % (X_dest, Y_dest, X_dest, Y_dest),end="")
-            # patched
-            Gval = None
+            print( "( Gval==0 start: %s )" % line.strip()  )
+            print( line, end="")
+            print('O200 call [%.4f] [%.4f] [%.4f] [%.4f] [%.4f]\n' % (X_dest, Y_dest, X_dest, Y_dest, Z_dest),end="")
+            print( "( Gval==0 end)\n" )
+        # if circle move with Z_dest =gradual decent to milling Z
+        # --> call O200 (X,Y) = position X,Y with Z_start
+        # --> call O200 (X,Y) = position X,Y with Z_end
+        elif (Gval == 2 or Gval == 3) and zmatch:
+            print( "( Gval==2/3 start: %s )" % line.strip()  )
+            print('O200 call [%.4f] [%.4f] [%.4f] [%.4f] [%.4f]\n' % (X_dest, Y_dest, X_dest, Y_dest, Z_start),end="")
+            print('O200 call [%.4f] [%.4f] [%.4f] [%.4f] [%.4f]\n' % (X_dest, Y_dest, X_dest, Y_dest, Z_dest),end="")
+            print( "( Gval==2/3 end)\n" )
         # anything that is not a G1/G01, or not a G00 X* is simply copied to output
         else:
             print(line)

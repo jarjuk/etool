@@ -17,6 +17,7 @@ EXAMPLE_DIR=/resources
 
 ROOT="/etool"
 GERBERS_DIR=$ROOT/01-gerber
+IMAGES_DIR=$ROOT/01-image
 CAM_OUTPUT_DIR=$ROOT/02-ngc
 PROBED_DIR=$ROOT/03-pgc
 # MILLING_DIR=$ROOT/04-cnc
@@ -63,13 +64,13 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
          \$ETOOL cleanup               # clean working directories
          \$ETOOL ls                    # empty directories
          \$ETOOL example pad2pad       # init example 'pad2pad'
-         \$ETOOL ls                    # directory $GERBERS_DIR populated
-         \$ETOOL cam pad2pad           # create gCode
+         \$ETOOL ls                    # expect to see directory $GERBERS_DIR populated
+         \$ETOOL gerber pad2pad        # create gCode for gerber
          \$ETOOL simulator             # start linuxcnc for simulating gcode
 
          The commands can be given as a one-liner. For example, for the command above:
 
-         \$ETOOL cleanup ls example pad2pad ls cam pad2pad -- simulator
+         \$ETOOL cleanup ls example pad2pad ls gerber pad2pad -- simulator
          
          Notice! Separator '--' in cam -command signaling end of optional parameters
 EOF
@@ -99,24 +100,25 @@ EOF
          docker DOCKER_OPTS run $APPI CMD_AND_OPTIONS ...
 
          where CMD_AND_OPTIONS one of follwoing operations:
-         o cam PROJECT [USER]:   create gcode for PROJECT Gerber -files
-                                 USER -specific cam parameters replace default paramerters
-                                 ($CAM_DEFAULT_PARAMS_FILE, $CAM_CONTROL_TEMPLATE_FILE)
-         o simulator           : start 'linuxcnc'
+         o gerber PROJECT [USER] :   create gcode for PROJECT Gerber -files
+                                     USER -specific cam parameters replace default paramerters
+                                     ($CAM_DEFAULT_PARAMS_FILE, $CAM_CONTROL_TEMPLATE_FILE)
+         o simulator             : start 'linuxcnc'
 
          or one of data management utilities:
-         o ls                  : list data files in $ROOT -data directories
-         o cleanup             : remove files from $ROOT -data directories ($GERBERS_DIR, $CAM_OUTPUT_DIR)
-         o example PROJECT     : copy example PROJECT Gerber files to  $GERBERS_DIR
+         o ls                    : list data files in $ROOT -data directories
+         o cleanup               : remove files from $ROOT -data directories 
+                                   $GERBERS_DIR, $IMAGES_DIR, $CAM_OUTPUT_DIR
+         o example PROJECT       : copy example PROJECT Gerber files to  $GERBERS_DIR
 
          or one of miscallaneous commands:
-         o --help              : this help text
-         o usage               : workflow example (w. example of multiple commands on one line)
-         o cam-help            : help on pcb2gcode CAM options to put into
-                                 $CAM_DEFAULT_PARAMS_FILE -file and open image explaining
-                                 dimension options
-         o releases            : output RELEASES document
-         o Dockerfile          : show Dockerfile used
+         o --help                : this help text
+         o usage                 : workflow example (w. example of multiple commands on one line)
+         o gerber-help           : help on pcb2gcode options to put into
+                                   $CAM_DEFAULT_PARAMS_FILE -file and open image explaining
+                                   dimension options
+         o releases              : output RELEASES document
+         o Dockerfile            : show Dockerfile used
 
          and DOCKER_OPTS options for 'docker run' -command, particularly
          o --rm                             : cleanup after Docker finished
@@ -126,7 +128,6 @@ EOF
          o -v HOSTD:/etool                  : data directory HOSTD (must exist,
                                               owned by --user), structure is initialized
          
-  
 EOF
 
        # undocumented
@@ -151,6 +152,29 @@ EOF
        [ ! -f $file ] && cp $content $file && echo File $file created || echo File $file exits - not modified
      }
 
+     addProbe() {
+         # Add probe support to 'file'
+         # 
+         # Output: probeFile and noPropeFile
+         local file=$1
+         local ext="${file##*.}"
+         local stem="${file%.*}"
+         
+         local noProbeFile=$stem-noProbe.$ext
+         local probeFile=$stem-Probe.$ext
+         local probeAdder=$ETOOL_BIN/pcbGcodeZprobing.py
+         
+         if [ -f $ROOT/pcbGcodeZprobing.py ]; then
+             # override with user code
+             probeAdder=$ROOT/pcbGcodeZprobing.py
+         fi
+         
+         mv $file $noProbeFile
+         python $probeAdder $noProbeFile > $probeFile
+         echo "Gcode with probe support:       $probeFile"
+         echo "Gcode without probe (original): $noProbeFile"
+     }
+
      # ------------------------------------------------------------------
      # Init context - only if not exist
      INIT_DONE=0
@@ -158,6 +182,7 @@ EOF
          # only once
          if [ $INIT_DONE != 0 ]; then return; fi
          mkdir_if_not_exist $GERBERS_DIR
+         mkdir_if_not_exist $IMAGES_DIR
          mkdir_if_not_exist $CAM_OUTPUT_DIR
          # mkdir_if_not_exist $PROBED_DIR
          # mkdir_if_not_exist $MILLING_DIR
@@ -191,7 +216,7 @@ EOF
          case "$CMD" in
              ls)
                initApp
-               ls -l $GERBERS_DIR $CAM_OUTPUT_DIR  # $PROBED_DIR
+               ls -l $GERBERS_DIR $IMAGES_DIR $CAM_OUTPUT_DIR  # $PROBED_DIR
                ;;
              --)
                shift
@@ -207,9 +232,35 @@ EOF
                pcb2gcode ${pars[@]}
                ;;
              cam)
+               die 'No such command "cam", use "gerber" instead'
+               ;;
+             image)
+                 initApp
+                 if [ $# -lt 1 ]; then
+                   die "image IMAGE: No IMAGE given"
+                 fi
+                 eval "$(conda shell.bash hook)"
+                 # conda run -n ebench
+                 conda activate image-2-gcode
+                 # conda env list
+                 IMAGE=$1; shift
+                 [ -f $IMAGES_DIR/$IMAGE ] || die "Image $IMAGE not found $IMAGES_DIR- use ls -command to check images"
+                 
+                 # filename sans extension
+                 OUTPUT="${IMAGE%.*}.ngc"
+
+                 # Start 'image-to-gcode' in linuxcnc
+                 . $EMC/scripts/rip-environment
+                 python $EMC/bin/image-to-gcode $IMAGES_DIR/$IMAGE >  $CAM_OUTPUT_DIR/$OUTPUT
+                 # cancel -> exit status != 0 -> TRAP -> this line not reached
+                 addProbe $CAM_OUTPUT_DIR/$OUTPUT
+
+                 ls $CAM_OUTPUT_DIR/*
+                 ;;
+             gerber)
                initApp
                if [ $# -lt 1 ]; then
-                   die "cam PROJECT [USER]: No PROJECT given"
+                   die "gerber PROJECT [USER]: No PROJECT given"
                fi
                PROJECT=$1; shift
 
@@ -247,10 +298,13 @@ EOF
                echo "${TMPL@P}" > $CAM_CONTROL_FILE
                pcb2gcode --config $CAM_CONTROL_FILE,$PARAMS
                ;;
-             cam-help)
+             cam-help|gerber-help)
                pcb2gcode --help
                # Show image explaining cam dimensions
                inkscape /resources/pcb2gcode/options.svg
+               ;;
+             image-help)
+               firefox /resources/doc/Image-to-gcode.html
                ;;
              probe)
                  initApp
@@ -305,8 +359,8 @@ EOF
                ;;
              cleanup)
                initApp
-               rm -f $GERBERS_DIR/* $CAM_OUTPUT_DIR/*  # $PROBED_DIR/*
-               ls $GERBERS_DIR
+               rm -f $GERBERS_DIR/* $IMAGES_DIR/* $CAM_OUTPUT_DIR/*  # $PROBED_DIR/*
+               ls $GERBERS_DIR $IMAGES_DIR
                ;;
              exe)
                initApp

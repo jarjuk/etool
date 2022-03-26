@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TAG=4
+TAG=5
 # Changes this to choose correct version
 ETOOL_DIR=$HOME/.etool
 
