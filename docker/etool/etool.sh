@@ -239,10 +239,6 @@ EOF
                  if [ $# -lt 1 ]; then
                    die "image IMAGE: No IMAGE given"
                  fi
-                 eval "$(conda shell.bash hook)"
-                 # conda run -n ebench
-                 conda activate image-2-gcode
-                 # conda env list
                  IMAGE=$1; shift
                  [ -f $IMAGES_DIR/$IMAGE ] || die "Image $IMAGE not found $IMAGES_DIR- use ls -command to check images"
                  

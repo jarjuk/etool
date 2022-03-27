@@ -1,3 +1,9 @@
+2022-03-27  jj  <jj@santtu>
+
+	* docker/etool/Dockerfile (ENV TZ): Conda not nededd
+
+	* docker/etool/etool.sh (initApp): conda not needed
+
 2022-03-07  jj  <jj@santtu>
 
 	* docker/etool/etool.sh (initApp): CAM->PROJECT

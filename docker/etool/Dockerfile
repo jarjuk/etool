@@ -157,16 +157,16 @@ RUN \
 # make image-to-gcode (in linuxcnc) avaibale
 
 # install conda
-RUN  \
-     wget https://repo.anaconda.com/miniconda/Miniconda3-py38_4.10.3-Linux-x86_64.sh \
-     && chmod +x Miniconda3-py38_4.10.3-Linux-x86_64.sh \
-     && ./Miniconda3-py38_4.10.3-Linux-x86_64.sh  -b -p /miniconda
+# RUN  \
+#      wget https://repo.anaconda.com/miniconda/Miniconda3-py38_4.10.3-Linux-x86_64.sh \
+#      && chmod +x Miniconda3-py38_4.10.3-Linux-x86_64.sh \
+#      && ./Miniconda3-py38_4.10.3-Linux-x86_64.sh  -b -p /miniconda
 
-ENV PATH=/miniconda/bin:${PATH}
+# ENV PATH=/miniconda/bin:${PATH}
 
-COPY image-to-gcode.yaml /miniconda
+# COPY image-to-gcode.yaml /miniconda
 
-RUN conda env create -f /miniconda/image-to-gcode.yaml
+# RUN conda env create -f /miniconda/image-to-gcode.yaml
 
 # image-to-gcode configs in /etool directory
 # 
