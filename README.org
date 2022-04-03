@@ -29,7 +29,6 @@
 :END:
 
 
-
 ** Features
 
  - [X] Tools packaged into the Docker container
@@ -70,7 +69,7 @@ Command line usage
 #+RESULTS:
 #+begin_example
 
-         marcus2002/etool:4
+         marcus2002/etool:5
 
          A tool for mapping Gerber files to gcode for CNC
          machining and launching linuxcnc -simulator for validating
@@ -81,24 +80,27 @@ Command line usage
          docker DOCKER_OPTS run marcus2002/etool CMD_AND_OPTIONS ...
 
          where CMD_AND_OPTIONS one of follwoing operations:
-         o cam PROJECT [USER]:   create gcode for PROJECT Gerber -files
-                                 USER -specific cam parameters replace default paramerters
-                                 (/etool/pcb2gcode.ini, /etool/pcb2gcode-control.template)
-         o simulator           : start 'linuxcnc'
+         o gerber PROJECT [USER] :   create gcode for PROJECT Gerber -files
+                                     USER -specific cam parameters replace default paramerters
+                                     (/etool/pcb2gcode.ini, /etool/pcb2gcode-control.template)
+         o simulator             : start 'linuxcnc'
 
          or one of data management utilities:
-         o ls                  : list data files in /etool -data directories
-         o cleanup             : remove files from /etool -data directories (/etool/01-gerber, /etool/02-ngc)
-         o example PROJECT     : copy example PROJECT Gerber files to  /etool/01-gerber
+         o ls                    : list data files in /etool -data directories
+         o cleanup               : remove files from /etool -data directories 
+                                   /etool/01-gerber, /etool/01-image, /etool/02-ngc
+         o example TYPE PROJECT  : copy example PROJECT of TYPE input directory
+                                   TYPE is 'gerber' or 'image', with respective input direcotories
+                                   01-gerber and 01-image
 
          or one of miscallaneous commands:
-         o --help              : this help text
-         o usage               : workflow example (w. example of multiple commands on one line)
-         o cam-help            : help on pcb2gcode CAM options to put into
-                                 /etool/pcb2gcode.ini -file and open image explaining
-                                 dimension options
-         o releases            : output RELEASES document
-         o Dockerfile          : show Dockerfile used
+         o --help                : this help text
+         o usage                 : workflow example (w. example of multiple commands on one line)
+         o gerber-help           : help on pcb2gcode options to put into
+                                   /etool/pcb2gcode.ini -file and open image explaining
+                                   dimension options
+         o releases              : output RELEASES document
+         o Dockerfile            : show Dockerfile used
 
          and DOCKER_OPTS options for 'docker run' -command, particularly
          o --rm                             : cleanup after Docker finished
@@ -108,23 +110,22 @@ Command line usage
          o -v HOSTD:/etool                  : data directory HOSTD (must exist,
                                               owned by --user), structure is initialized
          
-  
          Example usage:
 
          mkdir $HOME/.etool           # create working directory
 
-         export ETOOL='docker run --rm --user 1000:1000 -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.etool:/etool marcus2002/etool:4'
+         export ETOOL='docker run --rm --user 1000:1000 -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.etool:/etool marcus2002/etool:5'
 
          $ETOOL cleanup               # clean working directories
          $ETOOL ls                    # empty directories
          $ETOOL example pad2pad       # init example 'pad2pad'
-         $ETOOL ls                    # directory /etool/01-gerber populated
-         $ETOOL cam pad2pad           # create gCode
+         $ETOOL ls                    # expect to see directory /etool/01-gerber populated
+         $ETOOL gerber pad2pad        # create gCode for gerber
          $ETOOL simulator             # start linuxcnc for simulating gcode
 
          The commands can be given as a one-liner. For example, for the command above:
 
-         $ETOOL cleanup ls example pad2pad ls cam pad2pad -- simulator
+         $ETOOL cleanup ls example pad2pad ls gerber pad2pad -- simulator
          
          Notice! Separator '--' in cam -command signaling end of optional parameters
 #+end_example
@@ -336,6 +337,7 @@ structure. Command ~ls~ shows empty directories ~/etool/01-gerber~ and
 #+RESULTS:
 #+begin_example
 Directory /etool/01-gerber created
+Directory /etool/01-image created
 Directory /etool/02-ngc created
 Directory /etool/linuxcnc/configs/sim.axis created
 File /etool/pcb2gcode.ini created
@@ -346,6 +348,9 @@ File /etool/.linuxcncrc created
 /etool/01-gerber:
 total 0
 
+/etool/01-image:
+total 0
+
 /etool/02-ngc:
 total 0
 #+end_example
@@ -353,12 +358,13 @@ total 0
 Using ~<<run-etool>>~ to populate example Gerbers for ~soic~ -project:
 
 #+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
-<<run-etool>> example soic
+<<run-etool>> example gerber soic
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
 Directory /etool/01-gerber exits - not modified
+Directory /etool/01-image exits - not modified
 Directory /etool/02-ngc exits - not modified
 Directory /etool/linuxcnc/configs/sim.axis exits - not modified
 File /etool/pcb2gcode.ini exits - not modified
@@ -382,16 +388,17 @@ soic-PTH.drl
 soic-job.gbrjob
 #+end_example
 
-Using ~cam~-command in ~<<run-etool>>~ to create gcode files for
+Using ~gerber~-command in ~<<run-etool>>~ to create gcode files for
 ~soic~ -project:
 
 #+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
-<<run-etool>> cam soic
+<<run-etool>> gerber soic
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
 Directory /etool/01-gerber exits - not modified
+Directory /etool/01-image exits - not modified
 Directory /etool/02-ngc exits - not modified
 Directory /etool/linuxcnc/configs/sim.axis exits - not modified
 File /etool/pcb2gcode.ini exits - not modified
@@ -399,6 +406,7 @@ File /etool/linuxcnc/configs/sim.axis/axis_etool.ini exits - not modified
 File /etool/linuxcnc/configs/sim.axis/sim_mm.tbl exits - not modified
 File /etool/pcb2gcode-control.template exits - not modified
 File /etool/.linuxcncrc exits - not modified
+pcb2gcode using configuration files /etool/pcb2gcode-control.template, /etool/pcb2gcode.ini
 Importing front side... DONE.
 Importing back side... DONE.
 Importing outline... DONE.
@@ -429,6 +437,7 @@ After ~cam~ command, directory ~/etool/02-ngc~ contains gcode in ~ngc~
 #+RESULTS:
 #+begin_example
 Directory /etool/01-gerber exits - not modified
+Directory /etool/01-image exits - not modified
 Directory /etool/02-ngc exits - not modified
 Directory /etool/linuxcnc/configs/sim.axis exits - not modified
 File /etool/pcb2gcode.ini exits - not modified
@@ -437,46 +446,49 @@ File /etool/linuxcnc/configs/sim.axis/sim_mm.tbl exits - not modified
 File /etool/pcb2gcode-control.template exits - not modified
 File /etool/.linuxcncrc exits - not modified
 /etool/01-gerber:
-total 104
--rw-r--r-- 1 1000 1000  1794 Mar 18 10:49 soic-B_Cu.gbr
--rw-r--r-- 1 1000 1000  1156 Mar 18 10:49 soic-B_Mask.gbr
--rw-r--r-- 1 1000 1000   541 Mar 18 10:49 soic-B_Paste.gbr
--rw-r--r-- 1 1000 1000   542 Mar 18 10:49 soic-B_SilkS.gbr
--rw-r--r-- 1 1000 1000   749 Mar 18 10:49 soic-Edge_Cuts.gbr
--rw-r--r-- 1 1000 1000  5822 Mar 18 10:49 soic-F_Cu.gbr
--rw-r--r-- 1 1000 1000  3735 Mar 18 10:49 soic-F_Mask.gbr
--rw-r--r-- 1 1000 1000  3120 Mar 18 10:49 soic-F_Paste.gbr
--rw-r--r-- 1 1000 1000  7142 Mar 18 10:49 soic-F_SilkS.gbr
--rw-r--r-- 1 1000 1000 25676 Mar 18 10:49 soic-NPTH-drl_map.ps
--rw-r--r-- 1 1000 1000   413 Mar 18 10:49 soic-NPTH.drl
--rw-r--r-- 1 1000 1000 20129 Mar 18 10:49 soic-PTH-drl_map.ps
--rw-r--r-- 1 1000 1000   476 Mar 18 10:49 soic-PTH.drl
--rw-r--r-- 1 1000 1000  2491 Mar 18 10:49 soic-job.gbrjob
+total 112
+-rw-r--r-- 1 1000 1000  1925 Apr  3 19:01 soic-B_Cu.gbr
+-rw-r--r-- 1 1000 1000  1156 Apr  3 19:01 soic-B_Mask.gbr
+-rw-r--r-- 1 1000 1000   541 Apr  3 19:01 soic-B_Paste.gbr
+-rw-r--r-- 1 1000 1000   542 Apr  3 19:01 soic-B_SilkS.gbr
+-rw-r--r-- 1 1000 1000   749 Apr  3 19:01 soic-Edge_Cuts.gbr
+-rw-r--r-- 1 1000 1000  5999 Apr  3 19:01 soic-F_Cu.gbr
+-rw-r--r-- 1 1000 1000  3735 Apr  3 19:01 soic-F_Mask.gbr
+-rw-r--r-- 1 1000 1000  3120 Apr  3 19:01 soic-F_Paste.gbr
+-rw-r--r-- 1 1000 1000  7142 Apr  3 19:01 soic-F_SilkS.gbr
+-rw-r--r-- 1 1000 1000 25676 Apr  3 19:01 soic-NPTH-drl_map.ps
+-rw-r--r-- 1 1000 1000   413 Apr  3 19:01 soic-NPTH.drl
+-rw-r--r-- 1 1000 1000 26682 Apr  3 19:01 soic-PTH-drl_map.ps
+-rw-r--r-- 1 1000 1000   504 Apr  3 19:01 soic-PTH.drl
+-rw-r--r-- 1 1000 1000  2491 Apr  3 19:01 soic-job.gbrjob
+
+/etool/01-image:
+total 0
 
 /etool/02-ngc:
-total 1000
--rw-r--r-- 1 1000 1000    519 Mar 18 10:49 original_drill.svg
--rw-r--r-- 1 1000 1000   4883 Mar 18 10:49 outp0_original_back.svg
--rw-r--r-- 1 1000 1000    522 Mar 18 10:49 outp0_original_outline.svg
--rw-r--r-- 1 1000 1000  10369 Mar 18 10:49 outp1_original_front.svg
--rw-r--r-- 1 1000 1000    522 Mar 18 10:49 outp2_original_outline.svg
--rw-r--r-- 1 1000 1000   4883 Mar 18 10:49 outp3_masked_back.svg
--rw-r--r-- 1 1000 1000  10369 Mar 18 10:49 outp4_masked_front.svg
--rw-r--r-- 1 1000 1000  93263 Mar 18 10:49 processed_back.svg
--rw-r--r-- 1 1000 1000  51889 Mar 18 10:49 processed_back_final.svg
--rw-r--r-- 1 1000 1000 178520 Mar 18 10:49 processed_front.svg
--rw-r--r-- 1 1000 1000 106002 Mar 18 10:49 processed_front_final.svg
--rw-r--r-- 1 1000 1000   2192 Mar 18 10:49 processed_outline.svg
--rw-r--r-- 1 1000 1000  52971 Mar 18 10:49 soic-B_Cu.ngc
--rw-r--r-- 1 1000 1000   3638 Mar 18 10:49 soic-Edge_Cuts.ngc
--rw-r--r-- 1 1000 1000 104655 Mar 18 10:49 soic-F_Cu.ngc
--rw-r--r-- 1 1000 1000    774 Mar 18 10:49 soic-NPTH.ngc
--rw-r--r-- 1 1000 1000    857 Mar 18 10:49 soic-PTH.ngc
--rw-r--r-- 1 1000 1000  78833 Mar 18 10:49 traced_back.svg
--rw-r--r-- 1 1000 1000  37459 Mar 18 10:49 traced_back_final.svg
--rw-r--r-- 1 1000 1000 150513 Mar 18 10:49 traced_front.svg
--rw-r--r-- 1 1000 1000  77995 Mar 18 10:49 traced_front_final.svg
--rw-r--r-- 1 1000 1000   1790 Mar 18 10:49 traced_outline.svg
+total 1064
+-rw-r--r-- 1 1000 1000    519 Apr  3 19:01 original_drill.svg
+-rw-r--r-- 1 1000 1000   5385 Apr  3 19:01 outp0_original_back.svg
+-rw-r--r-- 1 1000 1000    522 Apr  3 19:01 outp0_original_outline.svg
+-rw-r--r-- 1 1000 1000  10781 Apr  3 19:01 outp1_original_front.svg
+-rw-r--r-- 1 1000 1000    522 Apr  3 19:01 outp2_original_outline.svg
+-rw-r--r-- 1 1000 1000   5385 Apr  3 19:01 outp3_masked_back.svg
+-rw-r--r-- 1 1000 1000  10781 Apr  3 19:01 outp4_masked_front.svg
+-rw-r--r-- 1 1000 1000 102618 Apr  3 19:01 processed_back.svg
+-rw-r--r-- 1 1000 1000  57744 Apr  3 19:01 processed_back_final.svg
+-rw-r--r-- 1 1000 1000 186448 Apr  3 19:01 processed_front.svg
+-rw-r--r-- 1 1000 1000 110442 Apr  3 19:01 processed_front_final.svg
+-rw-r--r-- 1 1000 1000   2192 Apr  3 19:01 processed_outline.svg
+-rw-r--r-- 1 1000 1000  59075 Apr  3 19:01 soic-B_Cu.ngc
+-rw-r--r-- 1 1000 1000   3638 Apr  3 19:01 soic-Edge_Cuts.ngc
+-rw-r--r-- 1 1000 1000 108922 Apr  3 19:01 soic-F_Cu.ngc
+-rw-r--r-- 1 1000 1000    774 Apr  3 19:01 soic-NPTH.ngc
+-rw-r--r-- 1 1000 1000    877 Apr  3 19:01 soic-PTH.ngc
+-rw-r--r-- 1 1000 1000  87019 Apr  3 19:01 traced_back.svg
+-rw-r--r-- 1 1000 1000  42145 Apr  3 19:01 traced_back_final.svg
+-rw-r--r-- 1 1000 1000 157279 Apr  3 19:01 traced_front.svg
+-rw-r--r-- 1 1000 1000  81273 Apr  3 19:01 traced_front_final.svg
+-rw-r--r-- 1 1000 1000   1790 Apr  3 19:01 traced_outline.svg
 #+end_example
 
 
@@ -515,6 +527,7 @@ Finally, ~cleanup~ -command empties data directories, and ~ls~
 #+RESULTS:
 #+begin_example
 Directory /etool/01-gerber exits - not modified
+Directory /etool/01-image exits - not modified
 Directory /etool/02-ngc exits - not modified
 Directory /etool/linuxcnc/configs/sim.axis exits - not modified
 File /etool/pcb2gcode.ini exits - not modified
@@ -523,11 +536,18 @@ File /etool/linuxcnc/configs/sim.axis/sim_mm.tbl exits - not modified
 File /etool/pcb2gcode-control.template exits - not modified
 File /etool/.linuxcncrc exits - not modified
 /etool/01-gerber:
+
+/etool/01-image:
+/etool/01-gerber:
+total 0
+
+/etool/01-image:
 total 0
 
 /etool/02-ngc:
 total 0
 #+end_example
+
 
 ** User specific CAM configuration
 
@@ -552,6 +572,7 @@ ls $(pwd)/tmp/etool
 
 #+RESULTS:
 : 01-gerber
+: 01-image
 : 02-ngc
 : linuxcnc
 : pcb2gcode-control.template
@@ -578,6 +599,7 @@ ls $(pwd)/tmp/etool
 
 #+RESULTS:
 : 01-gerber
+: 01-image
 : 02-ngc
 : linuxcnc
 : pcb2gcode-control.template
@@ -592,12 +614,13 @@ the output specifying configuration files
 ~/etool/pcb2gcode-USER1.ini~.
 
 #+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
-<<run-etool>> example pad2pad cam pad2pad USER1 :exports both
+<<run-etool>> example gerber pad2pad gerber pad2pad USER1
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
 Directory /etool/01-gerber exits - not modified
+Directory /etool/01-image exits - not modified
 Directory /etool/02-ngc exits - not modified
 Directory /etool/linuxcnc/configs/sim.axis exits - not modified
 File /etool/pcb2gcode.ini exits - not modified
@@ -641,11 +664,9 @@ END.
 #+end_example
 
 
-
-
 ** Example projects 
 
-The tool includes following example projects:
+The tool includes following example gerbers projects:
 - ~pad2pad~
   - 2 pads 2x1 mm, (F_Cu)
   - track width 0.5 mm
@@ -663,6 +684,12 @@ The tool includes following example projects:
   - 1 via between F_Cu/B_Cu
   - back copper trac 0.25 (B_Cu)
 
+
+The tool includes following example image:
+- hello.eps
+  - 9 x 25 mm black and white text Hello
+- sing.png
+  - 857 x 854 px 50 km/h traffic sign
 
 ** Development
 

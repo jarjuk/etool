@@ -1,21 +1,26 @@
  FROM ubuntu:18.04
 
  # Tools for installing packages
- RUN apt-get update && \
+ #  
+ RUN \
+     apt-get update && \
      apt-get install -y \
      curl \
      wget \
      git \
+     firefox \
      gnupg2  gnupg
 
  # Common dev tools
- RUN apt-get install -y \
+ #       
+ RUN \
+      apt-get install -y \
       build-essential \
       linux-headers-$(uname -r) \
       dkms 
 
 
- ENV LANG C.UTF-8
+ENV LANG C.UTF-8
 
 # End of common Dockerfile 
 
@@ -135,21 +140,15 @@ RUN \
 
 # RUN git clone https://github.com/hase-berlin/pcbGcodeZprobing
 # Use pathced 'pcbGcodeZprobing'
-RUN mkdir /pcbGcodeZprobing
-COPY pcbGcodeZprobing.py /pcbGcodeZprobing
+# RUN mkdir /pcbGcodeZprobing
+# COPY pcbGcodeZprobing.py /pcbGcodeZprobing
 
-# Common dev tools
-RUN \
-         apt-get update \
-      && apt-get install -y \
-         firefox
-     
 
 # ------------------------------------------------------------------
 # Add drivers needed on MacOs
+#      apt-get update \
 RUN \
-     apt-get update \
-     &&  apt-get install -y \
+     apt-get install -y \
           mesa-utils \
           libgl1-mesa-glx
 
@@ -157,22 +156,21 @@ RUN \
 # make image-to-gcode (in linuxcnc) avaibale
 
 # install conda
-# RUN  \
-#      wget https://repo.anaconda.com/miniconda/Miniconda3-py38_4.10.3-Linux-x86_64.sh \
-#      && chmod +x Miniconda3-py38_4.10.3-Linux-x86_64.sh \
-#      && ./Miniconda3-py38_4.10.3-Linux-x86_64.sh  -b -p /miniconda
+RUN  \
+     wget https://repo.anaconda.com/miniconda/Miniconda3-py38_4.10.3-Linux-x86_64.sh \
+     && chmod +x Miniconda3-py38_4.10.3-Linux-x86_64.sh \
+     && ./Miniconda3-py38_4.10.3-Linux-x86_64.sh  -b -p /miniconda
 
-# ENV PATH=/miniconda/bin:${PATH}
+ENV PATH=/miniconda/bin:${PATH}
 
-# COPY image-to-gcode.yaml /miniconda
+COPY image-to-gcode.yaml /miniconda
 
-# RUN conda env create -f /miniconda/image-to-gcode.yaml
+RUN conda env create -f /miniconda/image-to-gcode.yaml
 
 # image-to-gcode configs in /etool directory
 # 
 # os.path.expanduser("~/.image2gcoderc")
 # os.path.expanduser("/etool/image2gcoderc")
-
 RUN sed -i -e 's!~/\.!/etool/!' /emc/bin/image-to-gcode
 
 # ------------------------------------------------------------------

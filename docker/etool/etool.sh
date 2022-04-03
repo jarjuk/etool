@@ -109,7 +109,9 @@ EOF
          o ls                    : list data files in $ROOT -data directories
          o cleanup               : remove files from $ROOT -data directories 
                                    $GERBERS_DIR, $IMAGES_DIR, $CAM_OUTPUT_DIR
-         o example PROJECT       : copy example PROJECT Gerber files to  $GERBERS_DIR
+         o example TYPE PROJECT  : copy example PROJECT of TYPE input directory
+                                   TYPE is 'gerber' or 'image', with respective input direcotories
+                                   01-gerber and 01-image
 
          or one of miscallaneous commands:
          o --help                : this help text
@@ -245,6 +247,11 @@ EOF
                  # filename sans extension
                  OUTPUT="${IMAGE%.*}.ngc"
 
+                 # using conda here (could not find pillow/Image otherwise)
+                 eval "$(conda shell.bash hook)"
+                 # conda run -n ebench
+                 conda activate image-2-gcode
+
                  # Start 'image-to-gcode' in linuxcnc
                  . $EMC/scripts/rip-environment
                  python $EMC/bin/image-to-gcode $IMAGES_DIR/$IMAGE >  $CAM_OUTPUT_DIR/$OUTPUT
@@ -342,16 +349,27 @@ EOF
                  version
                  ;;
              example)
+               if [ $# -lt 1 ]; then
+                   die "usage: example TYPE PROJECT"
+               fi
+               TYPE=$1; shift
+               case $TYPE in
+                   gerber|image)
+                   ;;
+                   *)
+                       die "example TYPE PROJECT: $TYPE not one of image,gerber"
+                   ;;
+               esac
                EXAMPLE=$1; shift
                initApp
                # Expect to find /resources/EXAMPLE-gerber
-               if [ ! -d $EXAMPLE_DIR/$EXAMPLE-gerber ]; then
+               if [ ! -d $EXAMPLE_DIR/$EXAMPLE-$TYPE ]; then
                    # List /resource/xxxx-gerber
-                   echo No such example $EXAMPLE - valid examples $(ls -1 $EXAMPLE_DIR/ | grep -e 'gerber$' | sed 's!-gerber!!')
+                   echo No such example $EXAMPLE - valid examples $(ls -1 $EXAMPLE_DIR/ | grep -e "${TYPE}$" | sed "s!-$TYPE!!")
                    exit 1
                fi
-               cp $EXAMPLE_DIR/${EXAMPLE}-gerber/* $GERBERS_DIR/
-               ls $GERBERS_DIR
+               cp $EXAMPLE_DIR/${EXAMPLE}-$TYPE/* $ROOT/01-$TYPE
+               ls $ROOT/01-$TYPE
                ;;
              cleanup)
                initApp

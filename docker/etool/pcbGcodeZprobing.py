@@ -156,23 +156,25 @@ def main():
         # - followed by zero or more digits
         # phew!
         # the parenthesis capture the sub-string that matched in that position so we can refer to it as match.group(2)
-        match = re.match("G(\d.*)X(-*\d*\.*\d*)", line)
+        # match = re.match("G(\d.*)X(-*\d*\.*\d*)", line)
+        match = re.match(".* X(-*\d*\.*\d*)", line)
         if match:  # we found an X value
             #debug output, if you want to experiment with the regex
             #print(match.group(0))
             #print(match.group(1))
             #print(match.group(2))
-            val = float(match.group(2))
+            val = float(match.group(1))
             XMin = min(XMin, val)
             XMax = max(XMax, val)
         # repeat regex-magic for an Y value
-        match = re.match("G(\d.*)Y(-*\d*\.*\d*)", line)
+        # match = re.match("G(\d.*)Y(-*\d*\.*\d*)", line)
+        match = re.match(".* Y(-*\d*\.*\d*)", line)
         if match:  # we found an Y value
             #debug output, if you want to experiment with the regex
             #print(match.group(0))
             #print(match.group(1))
             #print(match.group(2))
-            val = float(match.group(2))
+            val = float(match.group(1))
             YMin = min(YMin, val)
             YMax = max(YMax, val)
     # now we know the dimension of the board and can create teh probing grid
@@ -323,9 +325,9 @@ O001 endwhile
 ( with an adjusted etch move in the format: O200 sub [x_start] [y_start] [aa] [bb]  )
 ( O200 is the etch subroutine                                                       )
 
-(  M-S-G, remove Probe, insert tool, prepare for milling)
+( MSG, remove Probe, insert tool, prepare for milling)
 
-( M00 )
+M00
 ( S20000 )
 ( M3 )
 
@@ -418,11 +420,11 @@ O001 endwhile
             print('O200 call [%.4f] [%.4f] [%.4f] [%.4f] [%.4f]\n' % (X_start, Y_start, X_dest, Y_dest, Z_dest),end="")
             print( "( Gval==1 end)\n" )
         #if this is a rapid to a new position (G00 X* Y*), then need to move to new position, then output a subroutine call to get to proper Z depth for that position, before making G01 move to next destination
-        elif Gval == 0 and xmatch:
-            print( "( Gval==0 start: %s )" % line.strip()  )
-            print( line, end="")
-            print('O200 call [%.4f] [%.4f] [%.4f] [%.4f] [%.4f]\n' % (X_dest, Y_dest, X_dest, Y_dest, Z_dest),end="")
-            print( "( Gval==0 end)\n" )
+        # elif Gval == 0 and xmatch:
+        #     print( "( Gval==0 start: %s )" % line.strip()  )
+        #     print( line, end="")
+        #     print('O200 call [%.4f] [%.4f] [%.4f] [%.4f] [%.4f]\n' % (X_dest, Y_dest, X_dest, Y_dest, Z_dest),end="")
+        #     print( "( Gval==0 end)\n" )
         # if circle move with Z_dest =gradual decent to milling Z
         # --> call O200 (X,Y) = position X,Y with Z_start
         # --> call O200 (X,Y) = position X,Y with Z_end

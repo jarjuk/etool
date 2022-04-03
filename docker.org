@@ -13,7 +13,7 @@ echo Current ETOOL_DOCKER_TAG=$ETOOL_DOCKER_TAG
 #+END_SRC
 
 #+RESULTS:
-: Current ETOOL_DOCKER_TAG=4
+: Current ETOOL_DOCKER_TAG=5
 
 Build ~marcus2002/etool:$ETOOL_DOCKER_TAG~
 
@@ -23,8 +23,102 @@ docker build -t marcus2002/etool:$ETOOL_DOCKER_TAG .  2>&1; echo $?
 #+END_SRC
 
 #+RESULTS:
-: docker build -t marcus2002/etool:5 .
-: 0
+#+begin_example
+Sending build context to Docker daemon  604.7kB
+Step 1/30 : FROM ubuntu:18.04
+ ---> c3c304cb4f22
+Step 2/30 : RUN      apt-get update &&      apt-get install -y      curl      wget      git      firefox      gnupg2  gnupg
+ ---> Using cache
+ ---> 7cc598253208
+Step 3/30 : RUN       apt-get install -y       build-essential       linux-headers-$(uname -r)       dkms
+ ---> Using cache
+ ---> 4c8fe93966d5
+Step 4/30 : ENV LANG C.UTF-8
+ ---> Using cache
+ ---> 3594c356ca03
+Step 5/30 : ENV TZ=Europe/Helsinki
+ ---> Using cache
+ ---> 794b0a667a65
+Step 6/30 : RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+ ---> Using cache
+ ---> 08f48055e6d7
+Step 7/30 : RUN apt-get -y install     tzdata
+ ---> Using cache
+ ---> e0c20cca1d96
+Step 8/30 : RUN     sudo cp /etc/apt/sources.list /etc/apt/sources.list.orig     &&   sed -i -e'/bionic main restricted/s!# deb-src!deb-src!'                       -e'/bionic-updates main restricted/s!# deb-src!deb-src!'                 -e'/bionic universe/s!# deb-src!deb-src!'                 -e'/bionic-updates universe/s!# deb-src!deb-src!'                 /etc/apt/sources.list     && apt-get update
+ ---> Using cache
+ ---> f0ddaab0ba6a
+Step 9/30 : RUN apt-get -y install    devscripts    build-essential     dpkg-dev    debhelper    dh-python    libudev-dev    libxenomai-dev    tcl8.6-dev    tk8.6-dev    libreadline-gplv2-dev    asciidoc dblatex    docbook-xsl    dvipng    graphviz    groff    inkscape    python-lxml    source-highlight    w3c-linkchecker    xsltproc    texlive-extra-utils    texlive-font-utils    texlive-fonts-recommended texlive-lang-cyrillic texlive-lang-french texlive-lang-german texlive-lang-polish texlive-lang-spanish    texlive-latex-recommended asciidoc-dblatex python python-dev python-tk libxmu-dev    libglu1-mesa-dev libgl1-mesa-dev    libgtk2.0-dev intltool autoconf libboost-python-dev    libmodbus-dev    libusb-1.0-0-dev yapps2    iptables netcat psmisc desktop-file-utils
+ ---> Using cache
+ ---> 19bff1f85198
+Step 10/30 : RUN     git clone https://github.com/LinuxCNC/linuxcnc.git emc     && cd emc     && git checkout 2.8
+ ---> Using cache
+ ---> 7be732559061
+Step 11/30 : RUN diff /etc/apt/sources.list /etc/apt/sources.list.orig 2>&1; echo $?
+ ---> Using cache
+ ---> 1ffd00e5e0fa
+Step 12/30 : RUN apt-get install -y              bwidget              libtk-img              tclx              python-gtk2
+ ---> Using cache
+ ---> 1a4cabef310b
+Step 13/30 : RUN    cd emc    && debian/configure uspace    && dpkg-checkbuilddeps    && cd src    && ./autogen.sh    && ./configure --with-realtime=uspace    && make
+ ---> Using cache
+ ---> bef9ce317234
+Step 14/30 : RUN      git clone  https://github.com/pcb2gcode/pcb2gcode      && cd pcb2gcode      && git checkout e53eae9b8d490f76be6d1716dcf3b6c0ff5aad92
+ ---> Using cache
+ ---> c64f12fc3fb0
+Step 15/30 : RUn apt-get install -y              build-essential              automake              autoconf              autoconf-archive              libtool              libboost-program-options-dev              libgtkmm-2.4-dev              gerbv              librsvg2-dev
+ ---> Using cache
+ ---> 58fd6f8c4dd7
+Step 16/30 : RUN         cd /pcb2gcode      && autoreconf -fvi      && ./configure      &&  make      && make install
+ ---> Using cache
+ ---> 81e4018148ee
+Step 17/30 : RUN      apt-get install -y           mesa-utils           libgl1-mesa-glx
+ ---> Using cache
+ ---> 3ad59be194fb
+Step 18/30 : RUN       wget https://repo.anaconda.com/miniconda/Miniconda3-py38_4.10.3-Linux-x86_64.sh      && chmod +x Miniconda3-py38_4.10.3-Linux-x86_64.sh      && ./Miniconda3-py38_4.10.3-Linux-x86_64.sh  -b -p /miniconda
+ ---> Using cache
+ ---> a05e2e016de8
+Step 19/30 : ENV PATH=/miniconda/bin:${PATH}
+ ---> Using cache
+ ---> 56add20fdb9e
+Step 20/30 : COPY image-to-gcode.yaml /miniconda
+ ---> Using cache
+ ---> d17735e6131b
+Step 21/30 : RUN conda env create -f /miniconda/image-to-gcode.yaml
+ ---> Using cache
+ ---> 3a4f11757533
+Step 22/30 : RUN sed -i -e 's!~/\.!/etool/!' /emc/bin/image-to-gcode
+ ---> Using cache
+ ---> ca77c60ba5b7
+Step 23/30 : COPY resources/ /resources
+ ---> Using cache
+ ---> 540de6058acc
+Step 24/30 : WORKDIR /etool
+ ---> Using cache
+ ---> 8c2b16228ffa
+Step 25/30 : ENV HOME=/etool
+ ---> Using cache
+ ---> 7606bcbc8739
+Step 26/30 : RUN mkdir /etool-bin
+ ---> Using cache
+ ---> 72e4eff51281
+Step 27/30 : ENV PATH=/etool-bin:/emc/scripts:${PATH}
+ ---> Using cache
+ ---> 37ebd7cc5e0e
+Step 28/30 : COPY       etool.sh       RELEASES       VERSION       axis_etool.ini       sim_mm.tbl       .linuxcncrc       pcb2gcode.ini       pcb2gcode-control.template       pcbGcodeZprobing.py       Dockerfile       /etool-bin/
+ ---> da36e2bc875b
+Step 29/30 : ENTRYPOINT [ "etool.sh" ]
+ ---> Running in f7a4583212a4
+Removing intermediate container f7a4583212a4
+ ---> 5e40af89d31d
+Step 30/30 : CMD [ "usage"]
+ ---> Running in d7fad7f02509
+Removing intermediate container d7fad7f02509
+ ---> 8acd15aa1946
+Successfully built 8acd15aa1946
+Successfully tagged marcus2002/etool:5
+0
+#+end_example
 
 
 
@@ -39,70 +133,71 @@ docker push marcus2002/etool:$ETOOL_DOCKER_TAG
 #+RESULTS:
 #+begin_example
 The push refers to repository [docker.io/marcus2002/etool]
-50f243da7866: Preparing
-7c7b3719f971: Preparing
-77b41d008850: Preparing
-0ac2e71f1e6c: Preparing
-c2bbd67ba1ea: Preparing
-1d621ba72a94: Preparing
-4fa2fddd8c11: Preparing
-1afcc6b88e74: Preparing
-d277f19c5cf3: Preparing
-b5cbc5447c49: Preparing
-0ccbdce5bfb8: Preparing
-f6775943028b: Preparing
-bdece7ab0b8d: Preparing
-f917492a171c: Preparing
-56fcf7e0a24b: Preparing
-c2d80069578c: Preparing
-d47b9f8f5b5e: Preparing
-1d621ba72a94: Waiting
-650e4da91065: Preparing
-1433bbf12295: Preparing
-4fa2fddd8c11: Waiting
+9f71ce580191: Preparing
+803aecb3766d: Preparing
+7e37d0a6eb06: Preparing
+c4b6a2a72524: Preparing
+3b22d8ac3ce7: Preparing
+c7b431d854c4: Preparing
+c7b431d854c4: Waiting
+9fe6b9504481: Preparing
+7ee55c2bca71: Preparing
+9fe6b9504481: Waiting
+3acfdd0f3904: Preparing
+3acfdd0f3904: Waiting
+26ea7e9d7dec: Preparing
+f468744fe40e: Preparing
+f7796040f39a: Preparing
+5f33de21d5e4: Preparing
+26ea7e9d7dec: Waiting
+c565f1658936: Preparing
+8bb60776ecad: Preparing
+af35473f5650: Preparing
+f7796040f39a: Waiting
+f468744fe40e: Waiting
+af0578af57dd: Preparing
+29c6035e734e: Preparing
+c565f1658936: Waiting
+42b24cc756dd: Preparing
+295c8f7cfc4e: Preparing
+eaeb62911195: Preparing
+af35473f5650: Waiting
 28ba7458d04b: Preparing
+42b24cc756dd: Waiting
 838a37a24627: Preparing
-1afcc6b88e74: Waiting
 a6ebef4a95c3: Preparing
+295c8f7cfc4e: Waiting
 b7f7d2967507: Preparing
-d277f19c5cf3: Waiting
-b5cbc5447c49: Waiting
-d47b9f8f5b5e: Waiting
-650e4da91065: Waiting
-0ccbdce5bfb8: Waiting
-56fcf7e0a24b: Waiting
-f6775943028b: Waiting
-bdece7ab0b8d: Waiting
-c2d80069578c: Waiting
-f917492a171c: Waiting
-838a37a24627: Waiting
-1433bbf12295: Waiting
-a6ebef4a95c3: Waiting
+eaeb62911195: Waiting
 28ba7458d04b: Waiting
-c2bbd67ba1ea: Layer already exists
-1d621ba72a94: Layer already exists
-4fa2fddd8c11: Layer already exists
-1afcc6b88e74: Layer already exists
-d277f19c5cf3: Layer already exists
-77b41d008850: Pushed
-0ac2e71f1e6c: Pushed
-50f243da7866: Pushed
-b5cbc5447c49: Layer already exists
-7c7b3719f971: Pushed
-0ccbdce5bfb8: Layer already exists
-f6775943028b: Layer already exists
-bdece7ab0b8d: Layer already exists
-f917492a171c: Layer already exists
-56fcf7e0a24b: Layer already exists
-c2d80069578c: Layer already exists
-d47b9f8f5b5e: Layer already exists
-650e4da91065: Layer already exists
-1433bbf12295: Layer already exists
+af0578af57dd: Waiting
+838a37a24627: Waiting
+3b22d8ac3ce7: Pushed
+9f71ce580191: Pushed
+803aecb3766d: Pushed
+7e37d0a6eb06: Pushed
+c4b6a2a72524: Pushed
+9fe6b9504481: Pushed
+3acfdd0f3904: Pushed
+f468744fe40e: Pushed
+5f33de21d5e4: Pushed
+26ea7e9d7dec: Pushed
+c565f1658936: Pushed
+f7796040f39a: Pushed
+af0578af57dd: Pushed
+29c6035e734e: Pushed
+42b24cc756dd: Pushed
+295c8f7cfc4e: Pushed
+c7b431d854c4: Pushed
 28ba7458d04b: Layer already exists
 838a37a24627: Layer already exists
 a6ebef4a95c3: Layer already exists
 b7f7d2967507: Layer already exists
-4: digest: sha256:281331687cb3dc4239c6036d46fcc1c11c8958da5c8517e385479ae432892bc2 size: 5148
+7ee55c2bca71: Pushed
+8bb60776ecad: Pushed
+eaeb62911195: Pushed
+af35473f5650: Pushed
+5: digest: sha256:d18640defc5a61c15a6f3424d70c3ac48e0039cbb5e50cc6339c3b0cbfd9b20d size: 5577
 #+end_example
 
 
