@@ -91,7 +91,7 @@ EOF
          
          cat <<EOF
 
-         A tool for mapping Gerber files to gcode for CNC
+         A tool for mapping Gerber/image files to gcode for CNC
          machining and launching linuxcnc -simulator for validating
          CNC execution paths.
 
@@ -106,6 +106,9 @@ EOF
          o adrill PROJECT        : convert PTH -drill file to alignement PTH-ALIGN drill file,
                                    used for two sided boards
          o simulator             : start 'linuxcnc'
+
+         or image cam operation:
+         o image IMAGE           : convert IMAGE to gcode 
 
          or one of data management utilities:
          o ls                    : list data files in $ROOT -data directories

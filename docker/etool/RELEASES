@@ -17,6 +17,7 @@
 - rename command cam --> gerber
 - added:  01-image -directory
 - added: command image-help
+- added: command image
 - pcbGcodeZprobing.py: support for G2/G3
 - pcbGcodeZprobing.py: O200 subru parameter #5/z_dest
 - change: example TYPE PROJECT

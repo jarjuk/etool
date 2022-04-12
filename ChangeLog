@@ -1,3 +1,7 @@
+2022-04-12  jj  <jj@santtu>
+
+	* README.org: Feature image added
+
 2022-03-27  jj  <jj@santtu>
 
 	* docker/etool/Dockerfile (ENV TZ): Conda not nededd
