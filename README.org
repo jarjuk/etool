@@ -33,7 +33,7 @@
 
  - [X] Tools packaged into the Docker container
    - [X] [[https://github.com/pcb2gcode/pcb2gcode%20][pcb2gcode]] : Tool for mapping Gerber files to gcode
-   - [X] [[https://www.linuxcnc.org/docs/2.4/html/gui_image-to-gcode.html][image-to-gcode]]: Tool to convert image to gcode 
+   - [X] [[https://www.linuxcnc.org/docs/2.4/html/gui_image-to-gcode.html][image-to-gcode]]: Tool to convert image to gcode
    - [X] [[https://linuxcnc.org/][linuxcnc]]: Simulator for validating CNC execution paths
    - [X] [[file:docker/etool/etool.sh][etool.sh]]: Simple bash script for managing configuration and
      diretory structures
@@ -93,11 +93,11 @@ Command line usage
          o simulator             : start 'linuxcnc'
 
          or image cam operation:
-         o image IMAGE           : convert IMAGE to gcode 
+         o image IMAGE           : convert IMAGE to gcode
 
          or one of data management utilities:
          o ls                    : list data files in /etool -data directories
-         o cleanup               : remove files from /etool -data directories 
+         o cleanup               : remove files from /etool -data directories
                                    /etool/01-gerber, /etool/01-image, /etool/02-ngc
          o example TYPE PROJECT  : copy example PROJECT of TYPE input directory
                                    TYPE is 'gerber' or 'image', with respective input direcotories
@@ -119,7 +119,7 @@ Command line usage
          o -v /tmp/.X11-unix:/tmp/.X11-unix : allow Docker to open X11 apps
          o -v HOSTD:/etool                  : data directory HOSTD (must exist,
                                               owned by --user), structure is initialized
-         
+
          Example usage:
 
          mkdir $HOME/.etool           # create working directory
@@ -136,7 +136,7 @@ Command line usage
          The commands can be given as a one-liner. For example, for the command above:
 
          $ETOOL cleanup ls example gerber pad2pad ls gerber pad2pad -- simulator
-         
+
          Notice! Separator '--' in cam -command signaling end of optional parameters
 #+end_example
 
@@ -152,15 +152,26 @@ Following box and line diagram gives an overview of ~marcus2002/etool~
    subdirectory structure and configurations. These configurations are
    accessed by the tools packaged within the container. Configuration
    files are documentend in the following chapter.
-2) Gerber files in *01-gerber* subdirectory. These files are created
-   using plot command in KiCAD EDA -tool, or using ~example~ -command
-   in ~marcus2002/etool~.
-3) gcode files in *02-ngc* subdirectory. These files are produced with
-   ~cam~ -command in ~marcus2002/etool~.
+
+2.1) Gerber files in *01-gerber* subdirectory. These files are created
+     using plot command in KiCAD EDA -tool, or using ~example~
+     -command in ~marcus2002/etool~.
+
+2.2) gcode files in *02-ngc* subdirectory. These files are produced
+     with ~gerber~ -command in ~marcus2002/etool~.
+
+3.1) Image files in *01-image* subdirectory. These files are created
+     using drawing tool e.g. inkscape.
+
+3.2) gcode files in *02-ngc* subdirectory. These files are produced with
+    ~image~ -command in ~marcus2002/etool~.
+
 4) gcode files in *02-ngc* -subdirectory read by ~linuxcnc~ -simulator
    packaged within in ~marcus2002/etool~ docker container.
+
 5) gcode files in *02-ngc* -subdirectory copied to CNC for milling,
    drilling, and edge cutting.
+
 
 #+begin_example
             +-----------------+      +--------------------------------+
@@ -177,21 +188,30 @@ Following box and line diagram gives an overview of ~marcus2002/etool~
 |etool -directory|    |   |                once |       |          | for simulation
 |                +----|---|---------------------|-------|---+      |
 |                     |   |                     V       |   |      |
-|                     |   |                   configuration |      |
-|                     |   |                                 |      |
-|         +-----------V---V-+        +-----------------+    |      |
-|         | 01-gerber       |        | 02-ngc          |    |      |
-|         |                 |  cam   |                 |-----------+
-|         | Gerber-files    |--------> gcode -files    |    |
-|         |                 |        |                 |    |
-|         +-----------------+        +-----------------+    |
-+----------------------------------------------|------------+
-                                               | copy to CNC for
-                                               | milling, drilling & cutting
-                                               |
-                                      +--------V--------+
-                                      | CNC machine     |
-                                      | - linuxcnc      |
+|     +-------------------+                   configuration |      |
+|     |               |   |                                 |      |
+|     |   +-----------V---V-+        +-----------------+    |      |
+|     |   | 01-gerber       |        | 02-ngc          |    |      |
+|     |   |                 |  gerber|                 |-----------+
+|     |   | Gerber-files    |--------> gcode -files    |    |
+|     |   |                 |  +---->|                 |    |
+|     |   +-----------------+  |     +-----------------+    |
+|     |                        |                            |
+|     |                        |                            |
+| +---V-------------+          |                            |
+| | 01-image        | image    |                            |
+| |                 |----------+                            |
+| | Images files    |                                       |
+| |                 |                                       |
+| +----------A------+                                       |
+|            |                                              |
++------------|---------------------------------|------------+
+             |                                 | copy to CNC for
+    +-----------------+                        | milling, drilling & cutting
+    | Drawing tool    |                        |
+    | e.g. inkscape   |               +--------V--------+
+    |                 |               | CNC machine     |
+    +-----------------+               | - linuxcnc      |
                                       |                 |
                                       +-----------------+
 #+end_example
@@ -215,7 +235,7 @@ Following table summarizes configuration files initialized under
 :END:
 
 
-*** Install system tools 
+*** Install system tools
 
 **** Ubuntu/Linux
 
@@ -320,7 +340,7 @@ the command
 :          marcus2002/etool:3
 
 
-** Example ~etool~ -workflow 
+** Example ~etool~ -workflow
 
 Using data directory ~tmp/etool~ for tesing. Reset directory and
 remove old existing directory
@@ -425,7 +445,7 @@ Importing outline... DONE.
 Processing input files... DONE.
 Exporting back... DONE. (Height: 15.1mm Width: 34.1mm)
 Exporting front... DONE. (Height: 15.1mm Width: 34.1mm)
-Exporting outline... DONE. (Height: 15.1mm Width: 34.1mm) The board should be cut from the FRONT side. 
+Exporting outline... DONE. (Height: 15.1mm Width: 34.1mm) The board should be cut from the FRONT side.
 Importing drill... DONE.
 Exporting milldrill... Exporting drill... DONE. The board should be drilled from the FRONT side.
 END.
@@ -433,7 +453,7 @@ Importing front side... not specified.
 Importing back side... not specified.
 Importing outline... DONE.
 Processing input files... DONE.
-Exporting outline... DONE. (Height: 15.1mm Width: 34.1mm) The board should be cut from the FRONT side. 
+Exporting outline... DONE. (Height: 15.1mm Width: 34.1mm) The board should be cut from the FRONT side.
 Importing drill... DONE.
 Exporting milldrill... Exporting drill... DONE. The board should be drilled from the FRONT side.
 END.
@@ -751,7 +771,7 @@ Importing outline... DONE.
 Processing input files... DONE.
 Exporting back... DONE. (Height: 11.85mm Width: 19.6mm)
 Exporting front... DONE. (Height: 11.85mm Width: 19.6mm)
-Exporting outline... DONE. (Height: 11.85mm Width: 19.6mm) The board should be cut from the FRONT side. 
+Exporting outline... DONE. (Height: 11.85mm Width: 19.6mm) The board should be cut from the FRONT side.
 Importing drill... DONE.
 Exporting milldrill... Exporting drill... DONE. The board should be drilled from the FRONT side.
 END.
@@ -759,7 +779,7 @@ Importing front side... not specified.
 Importing back side... not specified.
 Importing outline... DONE.
 Processing input files... DONE.
-Exporting outline... DONE. (Height: 11.85mm Width: 19.6mm) The board should be cut from the FRONT side. 
+Exporting outline... DONE. (Height: 11.85mm Width: 19.6mm) The board should be cut from the FRONT side.
 Importing drill... DONE.
 Exporting milldrill... Exporting drill... DONE. The board should be drilled from the FRONT side.
 END.
@@ -770,7 +790,7 @@ Notice, how the output above refers to configuration files
 ~/etool/pcb2gcode-USER1.ini~.
 
 
-** Example projects 
+** Example projects
 
 The tool includes following example gerbers projects:
 - ~pad2pad~
@@ -786,7 +806,7 @@ The tool includes following example gerbers projects:
   - one sided, B_Cu
 - ~soic~
   - 2 x Mounting hole 2.5 mm (NPTH)
-  - Pin header 1x4, 1.27 mm 
+  - Pin header 1x4, 1.27 mm
   - 1 via between F_Cu/B_Cu
   - Pin header 1x4, 2 mm
   - SOIC8 package (F_Cu)
