@@ -70,7 +70,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
          The commands can be given as a one-liner. For example, for the command above:
 
-         \$ETOOL cleanup ls example pad2pad ls gerber pad2pad -- simulator
+         \$ETOOL cleanup ls example gerber pad2pad ls gerber pad2pad -- simulator
          
          Notice! Separator '--' in cam -command signaling end of optional parameters
 EOF
@@ -100,9 +100,11 @@ EOF
          docker DOCKER_OPTS run $APPI CMD_AND_OPTIONS ...
 
          where CMD_AND_OPTIONS one of follwoing operations:
-         o gerber PROJECT [USER] :   create gcode for PROJECT Gerber -files
-                                     USER -specific cam parameters replace default paramerters
-                                     ($CAM_DEFAULT_PARAMS_FILE, $CAM_CONTROL_TEMPLATE_FILE)
+         o gerber PROJECT [USER] : create gcode for PROJECT Gerber -files
+                                   USER -specific cam parameters replace default paramerters
+                                   ($CAM_DEFAULT_PARAMS_FILE, $CAM_CONTROL_TEMPLATE_FILE)
+         o adrill PROJECT        : convert PTH -drill file to alignement PTH-ALIGN drill file,
+                                   used for two sided boards
          o simulator             : start 'linuxcnc'
 
          or one of data management utilities:
@@ -267,7 +269,7 @@ EOF
                fi
                PROJECT=$1; shift
 
-               # dafault values
+               # default values
                CONTROL_TEMPLATE=$CAM_CONTROL_TEMPLATE_FILE
                PARAMS=$CAM_DEFAULT_PARAMS_FILE
 
@@ -301,6 +303,17 @@ EOF
                echo "${TMPL@P}" > $CAM_CONTROL_FILE
                pcb2gcode --config $CAM_CONTROL_FILE,$PARAMS
                ;;
+             adrill)  # alignment drilling
+                 if [ $# -lt 1 ]; then
+                     die "adrill PROJECT: No PROJECT given"
+                 fi
+                 PROJECT=$1; shift
+                 PTH_PATH=$CAM_OUTPUT_DIR/${PROJECT}-PTH.ngc
+                 if [ ! -f $PTH_PATH ]; then
+                     die "adrill PROJECT: No PTH_FILE found $PTH_PATH"
+                 fi
+                 $ETOOL_BIN/adrill.sh $PTH_PATH
+                 ;; 
              cam-help|gerber-help)
                pcb2gcode --help
                # Show image explaining cam dimensions
@@ -382,7 +395,7 @@ EOF
                CMD=$1; shift
                pars=()
                while [ $# -ge 1 ]; do
-                   if [ "$1" = '--' ]; then break; fi
+                   if [ "$1" = '--' ]; then shift; break; fi
                    pars+=" $1"; shift
                done
                eval $CMD ${pars[@]}

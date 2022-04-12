@@ -1,4 +1,4 @@
-#+PROPERTY: header-args+ :var  ETOOL_DOCKER_TAG="5"
+#+PROPERTY: header-args+ :var  ETOOL_DOCKER_TAG="6"
 * marcus2002/etool - Docker mapping Gerber files to gcode with simulator support
 :PROPERTIES:
 :TOC:      :include all
@@ -411,9 +411,9 @@ Importing front side... DONE.
 Importing back side... DONE.
 Importing outline... DONE.
 Processing input files... DONE.
-Exporting back... DONE. (Height: 17.1mm Width: 37.76mm)
-Exporting front... DONE. (Height: 17.1mm Width: 37.76mm)
-Exporting outline... DONE. (Height: 17.1mm Width: 37.76mm) The board should be cut from the FRONT side. 
+Exporting back... DONE. (Height: 15.1mm Width: 34.1mm)
+Exporting front... DONE. (Height: 15.1mm Width: 34.1mm)
+Exporting outline... DONE. (Height: 15.1mm Width: 34.1mm) The board should be cut from the FRONT side. 
 Importing drill... DONE.
 Exporting milldrill... Exporting drill... DONE. The board should be drilled from the FRONT side.
 END.
@@ -421,7 +421,7 @@ Importing front side... not specified.
 Importing back side... not specified.
 Importing outline... DONE.
 Processing input files... DONE.
-Exporting outline... DONE. (Height: 17.1mm Width: 37.76mm) The board should be cut from the FRONT side. 
+Exporting outline... DONE. (Height: 15.1mm Width: 34.1mm) The board should be cut from the FRONT side. 
 Importing drill... DONE.
 Exporting milldrill... Exporting drill... DONE. The board should be drilled from the FRONT side.
 END.
@@ -446,53 +446,146 @@ File /etool/linuxcnc/configs/sim.axis/sim_mm.tbl exits - not modified
 File /etool/pcb2gcode-control.template exits - not modified
 File /etool/.linuxcncrc exits - not modified
 /etool/01-gerber:
-total 112
--rw-r--r-- 1 1000 1000  1925 Apr  3 19:01 soic-B_Cu.gbr
--rw-r--r-- 1 1000 1000  1156 Apr  3 19:01 soic-B_Mask.gbr
--rw-r--r-- 1 1000 1000   541 Apr  3 19:01 soic-B_Paste.gbr
--rw-r--r-- 1 1000 1000   542 Apr  3 19:01 soic-B_SilkS.gbr
--rw-r--r-- 1 1000 1000   749 Apr  3 19:01 soic-Edge_Cuts.gbr
--rw-r--r-- 1 1000 1000  5999 Apr  3 19:01 soic-F_Cu.gbr
--rw-r--r-- 1 1000 1000  3735 Apr  3 19:01 soic-F_Mask.gbr
--rw-r--r-- 1 1000 1000  3120 Apr  3 19:01 soic-F_Paste.gbr
--rw-r--r-- 1 1000 1000  7142 Apr  3 19:01 soic-F_SilkS.gbr
--rw-r--r-- 1 1000 1000 25676 Apr  3 19:01 soic-NPTH-drl_map.ps
--rw-r--r-- 1 1000 1000   413 Apr  3 19:01 soic-NPTH.drl
--rw-r--r-- 1 1000 1000 26682 Apr  3 19:01 soic-PTH-drl_map.ps
--rw-r--r-- 1 1000 1000   504 Apr  3 19:01 soic-PTH.drl
--rw-r--r-- 1 1000 1000  2491 Apr  3 19:01 soic-job.gbrjob
+total 100
+-rw-r--r-- 1 1000 1000  1953 Apr 12 11:35 soic-B_Cu.gbr
+-rw-r--r-- 1 1000 1000  1035 Apr 12 11:35 soic-B_Mask.gbr
+-rw-r--r-- 1 1000 1000   541 Apr 12 11:35 soic-B_Paste.gbr
+-rw-r--r-- 1 1000 1000   542 Apr 12 11:35 soic-B_SilkS.gbr
+-rw-r--r-- 1 1000 1000   749 Apr 12 11:35 soic-Edge_Cuts.gbr
+-rw-r--r-- 1 1000 1000  5874 Apr 12 11:35 soic-F_Cu.gbr
+-rw-r--r-- 1 1000 1000  3504 Apr 12 11:35 soic-F_Mask.gbr
+-rw-r--r-- 1 1000 1000  3010 Apr 12 11:35 soic-F_Paste.gbr
+-rw-r--r-- 1 1000 1000  6174 Apr 12 11:35 soic-F_SilkS.gbr
+-rw-r--r-- 1 1000 1000 15377 Apr 12 11:35 soic-NPTH-drl_map.ps
+-rw-r--r-- 1 1000 1000   377 Apr 12 11:35 soic-NPTH.drl
+-rw-r--r-- 1 1000 1000 27525 Apr 12 11:35 soic-PTH-drl_map.ps
+-rw-r--r-- 1 1000 1000   532 Apr 12 11:35 soic-PTH.drl
+-rw-r--r-- 1 1000 1000  2491 Apr 12 11:35 soic-job.gbrjob
 
 /etool/01-image:
 total 0
 
 /etool/02-ngc:
-total 1064
--rw-r--r-- 1 1000 1000    519 Apr  3 19:01 original_drill.svg
--rw-r--r-- 1 1000 1000   5385 Apr  3 19:01 outp0_original_back.svg
--rw-r--r-- 1 1000 1000    522 Apr  3 19:01 outp0_original_outline.svg
--rw-r--r-- 1 1000 1000  10781 Apr  3 19:01 outp1_original_front.svg
--rw-r--r-- 1 1000 1000    522 Apr  3 19:01 outp2_original_outline.svg
--rw-r--r-- 1 1000 1000   5385 Apr  3 19:01 outp3_masked_back.svg
--rw-r--r-- 1 1000 1000  10781 Apr  3 19:01 outp4_masked_front.svg
--rw-r--r-- 1 1000 1000 102618 Apr  3 19:01 processed_back.svg
--rw-r--r-- 1 1000 1000  57744 Apr  3 19:01 processed_back_final.svg
--rw-r--r-- 1 1000 1000 186448 Apr  3 19:01 processed_front.svg
--rw-r--r-- 1 1000 1000 110442 Apr  3 19:01 processed_front_final.svg
--rw-r--r-- 1 1000 1000   2192 Apr  3 19:01 processed_outline.svg
--rw-r--r-- 1 1000 1000  59075 Apr  3 19:01 soic-B_Cu.ngc
--rw-r--r-- 1 1000 1000   3638 Apr  3 19:01 soic-Edge_Cuts.ngc
--rw-r--r-- 1 1000 1000 108922 Apr  3 19:01 soic-F_Cu.ngc
--rw-r--r-- 1 1000 1000    774 Apr  3 19:01 soic-NPTH.ngc
--rw-r--r-- 1 1000 1000    877 Apr  3 19:01 soic-PTH.ngc
--rw-r--r-- 1 1000 1000  87019 Apr  3 19:01 traced_back.svg
--rw-r--r-- 1 1000 1000  42145 Apr  3 19:01 traced_back_final.svg
--rw-r--r-- 1 1000 1000 157279 Apr  3 19:01 traced_front.svg
--rw-r--r-- 1 1000 1000  81273 Apr  3 19:01 traced_front_final.svg
--rw-r--r-- 1 1000 1000   1790 Apr  3 19:01 traced_outline.svg
+total 628
+-rw-r--r-- 1 1000 1000    412 Apr 12 11:35 original_drill.svg
+-rw-r--r-- 1 1000 1000   5311 Apr 12 11:35 outp0_original_back.svg
+-rw-r--r-- 1 1000 1000    522 Apr 12 11:35 outp0_original_outline.svg
+-rw-r--r-- 1 1000 1000  10814 Apr 12 11:35 outp1_original_front.svg
+-rw-r--r-- 1 1000 1000    522 Apr 12 11:35 outp2_original_outline.svg
+-rw-r--r-- 1 1000 1000   5312 Apr 12 11:35 outp3_masked_back.svg
+-rw-r--r-- 1 1000 1000  10817 Apr 12 11:35 outp4_masked_front.svg
+-rw-r--r-- 1 1000 1000  61352 Apr 12 11:35 processed_back.svg
+-rw-r--r-- 1 1000 1000  37440 Apr 12 11:35 processed_back_final.svg
+-rw-r--r-- 1 1000 1000 111087 Apr 12 11:35 processed_front.svg
+-rw-r--r-- 1 1000 1000  68775 Apr 12 11:35 processed_front_final.svg
+-rw-r--r-- 1 1000 1000   2192 Apr 12 11:35 processed_outline.svg
+-rw-r--r-- 1 1000 1000  30502 Apr 12 11:35 soic-B_Cu.ngc
+-rw-r--r-- 1 1000 1000   3707 Apr 12 11:35 soic-Edge_Cuts.ngc
+-rw-r--r-- 1 1000 1000  50815 Apr 12 11:35 soic-F_Cu.ngc
+-rw-r--r-- 1 1000 1000    737 Apr 12 11:35 soic-NPTH.ngc
+-rw-r--r-- 1 1000 1000    902 Apr 12 11:35 soic-PTH.ngc
+-rw-r--r-- 1 1000 1000  45597 Apr 12 11:35 traced_back.svg
+-rw-r--r-- 1 1000 1000  21685 Apr 12 11:35 traced_back_final.svg
+-rw-r--r-- 1 1000 1000  80755 Apr 12 11:35 traced_front.svg
+-rw-r--r-- 1 1000 1000  38443 Apr 12 11:35 traced_front_final.svg
+-rw-r--r-- 1 1000 1000   1770 Apr 12 11:35 traced_outline.svg
+#+end_example
+
+Soic -project uses two sided PCB layout. To align board in milling,
+the PCB design is symmetrical along Y-axis with origin on lower edge
+of the PCB board. The design contains two alignement vias on the
+Y-axis. First via is in position (0mm,-3mm) and the second is located
+on the Y-axis, 3mm above the board top edge on Y=14mm. These vias are
+drilled to -4.5mm *into the supporting plane* (= use thich enough
+sacrifial plane where PCB is attached to avoid damages).
+
+The crux of this drilling operation is gcode snippet shown below
+
+#+begin_example
+G81 R2.00000  Z-4.5000  F30.00000 X0.00000 Y-3.0000
+X0.00000 Y14.00000
+G80
+#+end_example
+
+To create alignement drilling ~<<run-etool>>~ provides command
+~adrill~. To create ~PTH-ALIGN.ngc~ for soic project run
+
+#+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
+ <<run-etool>> adrill soic
+#+END_SRC
+
+#+RESULTS:
+: PTH_DRILL=/etool/02-ngc/soic-PTH.ngc, ALIGN_DRILL=/etool/02-ngc/soic-PTH-ALIGN.ngc
+
+and use ~ls~ command to inspect directory ~02-ngc~ and validate the
+file ~soic-PTH-ALIGN.ngc~ was created.
+#+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
+  <<run-etool>> ls
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Directory /etool/01-gerber exits - not modified
+Directory /etool/01-image exits - not modified
+Directory /etool/02-ngc exits - not modified
+Directory /etool/linuxcnc/configs/sim.axis exits - not modified
+File /etool/pcb2gcode.ini exits - not modified
+File /etool/linuxcnc/configs/sim.axis/axis_etool.ini exits - not modified
+File /etool/linuxcnc/configs/sim.axis/sim_mm.tbl exits - not modified
+File /etool/pcb2gcode-control.template exits - not modified
+File /etool/.linuxcncrc exits - not modified
+/etool/01-gerber:
+total 100
+-rw-r--r-- 1 1000 1000  1953 Apr 12 11:35 soic-B_Cu.gbr
+-rw-r--r-- 1 1000 1000  1035 Apr 12 11:35 soic-B_Mask.gbr
+-rw-r--r-- 1 1000 1000   541 Apr 12 11:35 soic-B_Paste.gbr
+-rw-r--r-- 1 1000 1000   542 Apr 12 11:35 soic-B_SilkS.gbr
+-rw-r--r-- 1 1000 1000   749 Apr 12 11:35 soic-Edge_Cuts.gbr
+-rw-r--r-- 1 1000 1000  5874 Apr 12 11:35 soic-F_Cu.gbr
+-rw-r--r-- 1 1000 1000  3504 Apr 12 11:35 soic-F_Mask.gbr
+-rw-r--r-- 1 1000 1000  3010 Apr 12 11:35 soic-F_Paste.gbr
+-rw-r--r-- 1 1000 1000  6174 Apr 12 11:35 soic-F_SilkS.gbr
+-rw-r--r-- 1 1000 1000 15377 Apr 12 11:35 soic-NPTH-drl_map.ps
+-rw-r--r-- 1 1000 1000   377 Apr 12 11:35 soic-NPTH.drl
+-rw-r--r-- 1 1000 1000 27525 Apr 12 11:35 soic-PTH-drl_map.ps
+-rw-r--r-- 1 1000 1000   532 Apr 12 11:35 soic-PTH.drl
+-rw-r--r-- 1 1000 1000  2491 Apr 12 11:35 soic-job.gbrjob
+
+/etool/01-image:
+total 0
+
+/etool/02-ngc:
+total 632
+-rw-r--r-- 1 1000 1000    412 Apr 12 11:35 original_drill.svg
+-rw-r--r-- 1 1000 1000   5311 Apr 12 11:35 outp0_original_back.svg
+-rw-r--r-- 1 1000 1000    522 Apr 12 11:35 outp0_original_outline.svg
+-rw-r--r-- 1 1000 1000  10814 Apr 12 11:35 outp1_original_front.svg
+-rw-r--r-- 1 1000 1000    522 Apr 12 11:35 outp2_original_outline.svg
+-rw-r--r-- 1 1000 1000   5312 Apr 12 11:35 outp3_masked_back.svg
+-rw-r--r-- 1 1000 1000  10817 Apr 12 11:35 outp4_masked_front.svg
+-rw-r--r-- 1 1000 1000  61352 Apr 12 11:35 processed_back.svg
+-rw-r--r-- 1 1000 1000  37440 Apr 12 11:35 processed_back_final.svg
+-rw-r--r-- 1 1000 1000 111087 Apr 12 11:35 processed_front.svg
+-rw-r--r-- 1 1000 1000  68775 Apr 12 11:35 processed_front_final.svg
+-rw-r--r-- 1 1000 1000   2192 Apr 12 11:35 processed_outline.svg
+-rw-r--r-- 1 1000 1000  30502 Apr 12 11:35 soic-B_Cu.ngc
+-rw-r--r-- 1 1000 1000   3707 Apr 12 11:35 soic-Edge_Cuts.ngc
+-rw-r--r-- 1 1000 1000  50815 Apr 12 11:35 soic-F_Cu.ngc
+-rw-r--r-- 1 1000 1000    737 Apr 12 11:35 soic-NPTH.ngc
+-rw-r--r-- 1 1000 1000   1158 Apr 12 11:38 soic-PTH-ALIGN.ngc
+-rw-r--r-- 1 1000 1000    902 Apr 12 11:35 soic-PTH.ngc
+-rw-r--r-- 1 1000 1000  45597 Apr 12 11:35 traced_back.svg
+-rw-r--r-- 1 1000 1000  21685 Apr 12 11:35 traced_back_final.svg
+-rw-r--r-- 1 1000 1000  80755 Apr 12 11:35 traced_front.svg
+-rw-r--r-- 1 1000 1000  38443 Apr 12 11:35 traced_front_final.svg
+-rw-r--r-- 1 1000 1000   1770 Apr 12 11:35 traced_outline.svg
 #+end_example
 
 
-Simulator command
+
+
+Use ~simulator~ command to start linuxcnc simulator. Especially,
+validate gcode in ~PTH-ALIGN.ngc~ file
 #+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports code
 <<run-etool>> simulator
 #+END_SRC
@@ -668,21 +761,26 @@ END.
 
 The tool includes following example gerbers projects:
 - ~pad2pad~
-  - 2 pads 2x1 mm, (F_Cu)
+  - Resistor, Led size 0805
+  - pin-header, 2.54 grid
+  - grid 2.54 mm
   - track width 0.5 mm
+  - 0,0 is lower left corner
 - ~dip~
   - track width 0.5mm (B_Cu)
   - 2x pin-header 1x4, 1.27mm grid, (PTH-drilling)
-  - DIP8 package, (B_Cu)
+  - DIP8 package
+  - one sided, B_Cu
 - ~soic~
   - 2 x Mounting hole 2.5 mm (NPTH)
-  - 2 x Alignement hole 2.1 mm (NPTH)
   - Pin header 1x4, 1.27 mm 
+  - 1 via between F_Cu/B_Cu
   - Pin header 1x4, 2 mm
   - SOIC8 package (F_Cu)
-  - front copper track 0.25 (F_Cu)
-  - 1 via between F_Cu/B_Cu
-  - back copper trac 0.25 (B_Cu)
+  - two sided 30 mm x 11 mm
+     - 2 x Alignement vias
+     - front copper track 0.25 (F_Cu)
+     - back copper track 0.25 (B_Cu)
 
 
 The tool includes following example image:
@@ -690,6 +788,7 @@ The tool includes following example image:
   - 9 x 25 mm black and white text Hello
 - sing.png
   - 857 x 854 px 50 km/h traffic sign
+
 
 ** Development
 

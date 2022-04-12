@@ -1,3 +1,17 @@
+* marcus2002/etool:6/2022-xx-xx
+
+- Command: adrill added
+
+- Example pad2pad R-LED + pin-header 
+
+- Fixed pcb2gcode parameters
+  - zcut=-1.7mm            # cutting depth
+  - drill-feed=30 mm/min   # drill feed [mm/m]
+  - isolation-width=0.4mm  # min width between copper surfaces
+  - mill-diameters=0.25mm  # diameters of mill bits
+  - milling-overlap=9%    # overlap milling passes, [%/mm]
+
+
 * marcus2002/etool:5/2022-04-03
 
 - rename command cam --> gerber

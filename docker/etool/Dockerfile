@@ -193,6 +193,7 @@ ENV PATH=/etool-bin:/emc/scripts:${PATH}
 
 COPY \
       etool.sh \
+      adrill.sh \
       RELEASES \
       VERSION \
       axis_etool.ini \

@@ -1,7 +1,7 @@
 * ~etool~ Docker
   :PROPERTIES:
   :header-args+: :dir  docker/etool
-  :header-args+: :var  ETOOL_DOCKER_TAG="5"
+  :header-args+: :var  ETOOL_DOCKER_TAG="6"
   :END:
 
 
@@ -13,7 +13,7 @@ echo Current ETOOL_DOCKER_TAG=$ETOOL_DOCKER_TAG
 #+END_SRC
 
 #+RESULTS:
-: Current ETOOL_DOCKER_TAG=5
+: Current ETOOL_DOCKER_TAG=6
 
 Build ~marcus2002/etool:$ETOOL_DOCKER_TAG~
 
@@ -24,7 +24,7 @@ docker build -t marcus2002/etool:$ETOOL_DOCKER_TAG .  2>&1; echo $?
 
 #+RESULTS:
 #+begin_example
-Sending build context to Docker daemon  604.7kB
+Sending build context to Docker daemon  608.3kB
 Step 1/30 : FROM ubuntu:18.04
  ---> c3c304cb4f22
 Step 2/30 : RUN      apt-get update &&      apt-get install -y      curl      wget      git      firefox      gnupg2  gnupg
@@ -92,31 +92,31 @@ Step 22/30 : RUN sed -i -e 's!~/\.!/etool/!' /emc/bin/image-to-gcode
  ---> ca77c60ba5b7
 Step 23/30 : COPY resources/ /resources
  ---> Using cache
- ---> 540de6058acc
+ ---> a79be305a46a
 Step 24/30 : WORKDIR /etool
  ---> Using cache
- ---> 8c2b16228ffa
+ ---> e11800a34657
 Step 25/30 : ENV HOME=/etool
  ---> Using cache
- ---> 7606bcbc8739
+ ---> 2027b49cacf7
 Step 26/30 : RUN mkdir /etool-bin
  ---> Using cache
- ---> 72e4eff51281
+ ---> a666d3aa323c
 Step 27/30 : ENV PATH=/etool-bin:/emc/scripts:${PATH}
  ---> Using cache
- ---> 37ebd7cc5e0e
-Step 28/30 : COPY       etool.sh       RELEASES       VERSION       axis_etool.ini       sim_mm.tbl       .linuxcncrc       pcb2gcode.ini       pcb2gcode-control.template       pcbGcodeZprobing.py       Dockerfile       /etool-bin/
- ---> da36e2bc875b
+ ---> 2ed202c6493f
+Step 28/30 : COPY       etool.sh       adrill.sh       RELEASES       VERSION       axis_etool.ini       sim_mm.tbl       .linuxcncrc       pcb2gcode.ini       pcb2gcode-control.template       pcbGcodeZprobing.py       Dockerfile       /etool-bin/
+ ---> a9a92e5b677d
 Step 29/30 : ENTRYPOINT [ "etool.sh" ]
- ---> Running in f7a4583212a4
-Removing intermediate container f7a4583212a4
- ---> 5e40af89d31d
+ ---> Running in 6e7e705c06da
+Removing intermediate container 6e7e705c06da
+ ---> 960c4c6fe8fa
 Step 30/30 : CMD [ "usage"]
- ---> Running in d7fad7f02509
-Removing intermediate container d7fad7f02509
- ---> 8acd15aa1946
-Successfully built 8acd15aa1946
-Successfully tagged marcus2002/etool:5
+ ---> Running in 80af6f1bf546
+Removing intermediate container 80af6f1bf546
+ ---> 9e513406f311
+Successfully built 9e513406f311
+Successfully tagged marcus2002/etool:6
 0
 #+end_example
 
