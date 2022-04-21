@@ -1,7 +1,7 @@
 * ~etool~ Docker
   :PROPERTIES:
   :header-args+: :dir  docker/etool
-  :header-args+: :var  ETOOL_DOCKER_TAG="6"
+  :header-args+: :var  ETOOL_DOCKER_TAG="7"
   :END:
 
 
@@ -106,16 +106,16 @@ Step 27/30 : ENV PATH=/etool-bin:/emc/scripts:${PATH}
  ---> Using cache
  ---> 2ed202c6493f
 Step 28/30 : COPY       etool.sh       adrill.sh       RELEASES       VERSION       axis_etool.ini       sim_mm.tbl       .linuxcncrc       pcb2gcode.ini       pcb2gcode-control.template       pcbGcodeZprobing.py       Dockerfile       /etool-bin/
- ---> 1446d750b68e
+ ---> 448ed4b125d6
 Step 29/30 : ENTRYPOINT [ "etool.sh" ]
- ---> Running in 1a4645a84b1e
-Removing intermediate container 1a4645a84b1e
- ---> b47e6abebe5e
+ ---> Running in 3ff7ea91c9b5
+Removing intermediate container 3ff7ea91c9b5
+ ---> 579343698c25
 Step 30/30 : CMD [ "usage"]
- ---> Running in 3a311e61e397
-Removing intermediate container 3a311e61e397
- ---> 0cb4c1d9565f
-Successfully built 0cb4c1d9565f
+ ---> Running in 2fe231f321c3
+Removing intermediate container 2fe231f321c3
+ ---> 3619e013f458
+Successfully built 3619e013f458
 Successfully tagged marcus2002/etool:6
 0
 #+end_example
@@ -125,6 +125,15 @@ Successfully tagged marcus2002/etool:6
 
 ** Push to docker repo
 
+#+BEGIN_SRC bash :eval no-export :results output :exports output
+echo Current ETOOL_DOCKER_TAG=$ETOOL_DOCKER_TAG
+#+END_SRC
+
+#+RESULTS:
+: Current ETOOL_DOCKER_TAG=6
+
+
+
  *Warning makes it public*
 #+BEGIN_SRC bash :eval no-export :results output
 docker push marcus2002/etool:$ETOOL_DOCKER_TAG
@@ -133,71 +142,73 @@ docker push marcus2002/etool:$ETOOL_DOCKER_TAG
 #+RESULTS:
 #+begin_example
 The push refers to repository [docker.io/marcus2002/etool]
-9f71ce580191: Preparing
-803aecb3766d: Preparing
-7e37d0a6eb06: Preparing
-c4b6a2a72524: Preparing
+ea12651ad567: Preparing
+ffecf5e1e9a3: Preparing
+9c3f761293a2: Preparing
+7361d6b96acf: Preparing
 3b22d8ac3ce7: Preparing
 c7b431d854c4: Preparing
 c7b431d854c4: Waiting
 9fe6b9504481: Preparing
 7ee55c2bca71: Preparing
-9fe6b9504481: Waiting
 3acfdd0f3904: Preparing
+9fe6b9504481: Waiting
+7ee55c2bca71: Waiting
 3acfdd0f3904: Waiting
 26ea7e9d7dec: Preparing
 f468744fe40e: Preparing
+26ea7e9d7dec: Waiting
 f7796040f39a: Preparing
 5f33de21d5e4: Preparing
-26ea7e9d7dec: Waiting
+f468744fe40e: Waiting
+f7796040f39a: Waiting
 c565f1658936: Preparing
 8bb60776ecad: Preparing
-af35473f5650: Preparing
-f7796040f39a: Waiting
-f468744fe40e: Waiting
-af0578af57dd: Preparing
-29c6035e734e: Preparing
 c565f1658936: Waiting
+af35473f5650: Preparing
+af0578af57dd: Preparing
+af35473f5650: Waiting
+8bb60776ecad: Waiting
+29c6035e734e: Preparing
 42b24cc756dd: Preparing
 295c8f7cfc4e: Preparing
+af0578af57dd: Waiting
 eaeb62911195: Preparing
-af35473f5650: Waiting
 28ba7458d04b: Preparing
 42b24cc756dd: Waiting
+eaeb62911195: Waiting
+295c8f7cfc4e: Waiting
 838a37a24627: Preparing
 a6ebef4a95c3: Preparing
-295c8f7cfc4e: Waiting
 b7f7d2967507: Preparing
-eaeb62911195: Waiting
-28ba7458d04b: Waiting
-af0578af57dd: Waiting
 838a37a24627: Waiting
-3b22d8ac3ce7: Pushed
-9f71ce580191: Pushed
-803aecb3766d: Pushed
-7e37d0a6eb06: Pushed
-c4b6a2a72524: Pushed
-9fe6b9504481: Pushed
-3acfdd0f3904: Pushed
-f468744fe40e: Pushed
-5f33de21d5e4: Pushed
-26ea7e9d7dec: Pushed
-c565f1658936: Pushed
-f7796040f39a: Pushed
-af0578af57dd: Pushed
-29c6035e734e: Pushed
-42b24cc756dd: Pushed
-295c8f7cfc4e: Pushed
-c7b431d854c4: Pushed
+b7f7d2967507: Waiting
+3b22d8ac3ce7: Layer already exists
+c7b431d854c4: Layer already exists
+9fe6b9504481: Layer already exists
+ffecf5e1e9a3: Pushed
+9c3f761293a2: Pushed
+ea12651ad567: Pushed
+7ee55c2bca71: Layer already exists
+7361d6b96acf: Pushed
+3acfdd0f3904: Layer already exists
+26ea7e9d7dec: Layer already exists
+f468744fe40e: Layer already exists
+f7796040f39a: Layer already exists
+5f33de21d5e4: Layer already exists
+c565f1658936: Layer already exists
+8bb60776ecad: Layer already exists
+af35473f5650: Layer already exists
+29c6035e734e: Layer already exists
+42b24cc756dd: Layer already exists
+af0578af57dd: Layer already exists
 28ba7458d04b: Layer already exists
+295c8f7cfc4e: Layer already exists
 838a37a24627: Layer already exists
 a6ebef4a95c3: Layer already exists
+eaeb62911195: Layer already exists
 b7f7d2967507: Layer already exists
-7ee55c2bca71: Pushed
-8bb60776ecad: Pushed
-eaeb62911195: Pushed
-af35473f5650: Pushed
-5: digest: sha256:d18640defc5a61c15a6f3424d70c3ac48e0039cbb5e50cc6339c3b0cbfd9b20d size: 5577
+6: digest: sha256:9a2d1da46b6176008ccc02a6604f962c6112e3df00ec884cd4c51a078f3cbf3c size: 5577
 #+end_example
 
 

@@ -1,4 +1,13 @@
-* marcus2002/etool:6/2022-xx-xx
+* marcus2002/etool:7/2022-xx-xx
+
+- Windows 10 pro/wls2/VcXsrv simulator command did not show machine: added LIBGL_ALWAYS_INDIRECT=1 to etool.cmd
+- Change pcb2gcode parameters
+   - add +tile-x=1               # number of tiling columns. Default value is 1
+   - add +tile-y=1               # number of tiling rows. Default value is 1
+
+
+* marcus2002/etool:6/2022-04-20
+
 
 - Command: adrill added
 

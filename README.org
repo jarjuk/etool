@@ -1,12 +1,12 @@
-#+PROPERTY: header-args+ :var  ETOOL_DOCKER_TAG="6"
+#+PROPERTY: header-args+ :var  ETOOL_DOCKER_TAG="7"
 * marcus2002/etool - Docker mapping Gerber files to gcode with simulator support
 :PROPERTIES:
 :TOC:      :include all
 :END:
 
- ~marcus2002/etool~ - a tool for mapping Gerber files to gcode for CNC
- machining, and launching linuxcnc -simulator for validating
- CNC execution paths.
+ ~marcus2002/etool~ - a tool for mapping Gerber files, or image files,
+ to gcode for CNC machining, and launching linuxcnc -simulator for
+ validating CNC execution paths.
 
 :CONTENTS:
 - [[#marcus2002etool---docker-mapping-gerber-files-to-gcode-with-simulator-support][marcus2002/etool - Docker mapping Gerber files to gcode with simulator support]]
@@ -242,6 +242,7 @@ Following table summarizes configuration files initialized under
 - Install Docker: https://docs.docker.com/engine/install/ubuntu/
 - Post installation steps for Linux: https://docs.docker.com/engine/install/linux-postinstall/
 
+
 **** Windows 10
 
 - Install Docker Desktop on Windows: https://docs.docker.com/desktop/windows/install/
@@ -252,8 +253,14 @@ Following table summarizes configuration files initialized under
   - When launching VcXsrv choose 'disable access control checked' to
     allow Docker to open X11 windows
 
+*Windows 10 problems*:
+- linuxcnc simulator machinen preview did not work. Patched
+  [[file:etool.cmd]] to set environment variable
+  ~LIBGL_ALWAYS_INDIRECT=1~. In spite of this "fix" need to click DRO
+  tab to make linuxcnc to refresh machine preview.
 
-**** TODO Install MacOs
+
+**** Install MacOs
 
 - Install Docker Desktop on Mac: https://docs.docker.com/desktop/mac/install/
 - Install X11 support on Mac: https://www.xquartz.org/
