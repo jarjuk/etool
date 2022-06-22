@@ -1,9 +1,14 @@
 * marcus2002/etool:7/2022-xx-xx
 
+- typo & doc & etc
+  -- etool.sh usage example: example pad2pad --> example gerber pad2pad
+  -- pcb2gcode.ini: example hacklab milling bit, XUCHUAN PCB milling bit
+
 - Windows 10 pro/wls2/VcXsrv simulator command did not show machine: added LIBGL_ALWAYS_INDIRECT=1 to etool.cmd
 - Change pcb2gcode parameters
    - add +tile-x=1               # number of tiling columns. Default value is 1
    - add +tile-y=1               # number of tiling rows. Default value is 1
+- bridges=1.5mm --> 1mm
 
 
 * marcus2002/etool:6/2022-04-20

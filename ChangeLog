@@ -1,3 +1,9 @@
+2022-05-25  jj  <jj@santtu>
+
+	* docker/etool/pcb2gcode.ini (milling-bit examples):
+
+	* docker/etool/etool.sh (usage_example): fixed usasage example
+
 2022-04-12  jj  <jj@santtu>
 
 	* README.org: Feature image added

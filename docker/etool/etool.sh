@@ -57,16 +57,16 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
          cat <<EOF
          Example usage:
 
-         mkdir \$HOME/.etool           # create working directory
+         mkdir \$HOME/.etool             # create working directory
 
          export ETOOL='docker run --rm --user 1000:1000 -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v \$HOME/.etool:/etool marcus2002/etool:$(tag_version)'
 
-         \$ETOOL cleanup               # clean working directories
-         \$ETOOL ls                    # empty directories
-         \$ETOOL example pad2pad       # init example 'pad2pad'
-         \$ETOOL ls                    # expect to see directory $GERBERS_DIR populated
-         \$ETOOL gerber pad2pad        # create gCode for gerber
-         \$ETOOL simulator             # start linuxcnc for simulating gcode
+         \$ETOOL cleanup                 # clean working directories
+         \$ETOOL ls                      # empty directories
+         \$ETOOL example gerber pad2pad  # init example 'pad2pad'
+         \$ETOOL ls                      # expect to see directory $GERBERS_DIR populated
+         \$ETOOL gerber pad2pad          # create gCode for gerber
+         \$ETOOL simulator               # start linuxcnc for simulating gcode
 
          The commands can be given as a one-liner. For example, for the command above:
 
