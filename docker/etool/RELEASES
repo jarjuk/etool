@@ -5,11 +5,22 @@
   -- pcb2gcode.ini: example hacklab milling bit, XUCHUAN PCB milling bit
 
 - Windows 10 pro/wls2/VcXsrv simulator command did not show machine: added LIBGL_ALWAYS_INDIRECT=1 to etool.cmd
+
 - Change pcb2gcode parameters
    - add +tile-x=1               # number of tiling columns. Default value is 1
    - add +tile-y=1               # number of tiling rows. Default value is 1
 - bridges=1.5mm --> 1mm
 
+- Schema examples
+  - dip version B
+    -- Front silk text width/height/thickness: 1.5/1.5/0.2
+    -- Front silk corner markers added
+  - soic version B
+    -- Front & back silk texts
+    -- Front & back corner markers added
+
+- Features added:
+  - producude png into 02-silk files for B_SilS and F_SilS
 
 * marcus2002/etool:6/2022-04-20
 

@@ -1,3 +1,20 @@
+2022-07-04  jj  <jj@santtu>
+
+	* README.org: document 02-silk directory
+
+	* docker/etool/etool.sh (initApp): manage SILK_OUTPUT_DIR
+
+	* docker/etool/RELEASES: producude png into 02-silk files for
+	B_SilS and F_SilS
+
+2022-06-27  jj  <jj@santtu>
+
+	* etool.sh (TAG): defaults TAG=7
+
+2022-06-22  jj  <jj@santtu>
+
+	* schema/dip/dip.kicad_pcb: B-version with Fron silk
+
 2022-05-25  jj  <jj@santtu>
 
 	* docker/etool/pcb2gcode.ini (milling-bit examples):

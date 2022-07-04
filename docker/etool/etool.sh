@@ -19,6 +19,7 @@ ROOT="/etool"
 GERBERS_DIR=$ROOT/01-gerber
 IMAGES_DIR=$ROOT/01-image
 CAM_OUTPUT_DIR=$ROOT/02-ngc
+SILK_OUTPUT_DIR=$ROOT/02-silk
 PROBED_DIR=$ROOT/03-pgc
 # MILLING_DIR=$ROOT/04-cnc
 
@@ -31,6 +32,9 @@ CAM_CONTROL_TEMPLATE_FILE=$ROOT/pcb2gcode-control.template
 LINUXCNC_INI_FILE=$ROOT/linuxcnc/configs/sim.axis/axis_etool.ini
 LINUXCNC_TOOL_TABLE_FILE=$ROOT/linuxcnc/configs/sim.axis/sim_mm.tbl
 LINUXCNC_RC_FILE=$ROOT/.linuxcncrc
+
+SILK_IMAGE_TYPE=png
+SILK_IMAGE_DPI=1200
 
 # ----------
 # app constants
@@ -63,16 +67,17 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
          \$ETOOL cleanup                 # clean working directories
          \$ETOOL ls                      # empty directories
-         \$ETOOL example gerber pad2pad  # init example 'pad2pad'
+         \$ETOOL example gerber soic     # init example 'soic'
          \$ETOOL ls                      # expect to see directory $GERBERS_DIR populated
-         \$ETOOL gerber pad2pad          # create gCode for gerber
+         \$ETOOL gerber soic             # create gCode for project 'soic'
+         \$ETOOL adrill soic             # create gcode for alignment create for project 'soic'
          \$ETOOL simulator               # start linuxcnc for simulating gcode
 
          The commands can be given as a one-liner. For example, for the command above:
 
-         \$ETOOL cleanup ls example gerber pad2pad ls gerber pad2pad -- simulator
+         \$ETOOL cleanup ls example gerber soic ls gerber soic --  adrill soic simulator
          
-         Notice! Separator '--' in cam -command signaling end of optional parameters
+         Notice! Separator '--' in cam -command signals end of optional parameters
 EOF
      }
 
@@ -100,20 +105,21 @@ EOF
          docker DOCKER_OPTS run $APPI CMD_AND_OPTIONS ...
 
          where CMD_AND_OPTIONS one of follwoing operations:
-         o gerber PROJECT [USER] : create gcode for PROJECT Gerber -files
+         o gerber PROJECT [USER] : create gcode for PROJECT Gerber -files into $CAM_OUTPUT_DIR -dir
+                                   and $SILK_IMAGE_TYPE image files for laser engraving into $SILK_OUTPUT_DIR -dir.
                                    USER -specific cam parameters replace default paramerters
                                    ($CAM_DEFAULT_PARAMS_FILE, $CAM_CONTROL_TEMPLATE_FILE)
          o adrill PROJECT        : convert PTH -drill file to alignement PTH-ALIGN drill file,
-                                   used for two sided boards
+                                   used for two sided boards in $CAM_OUTPUT_DIR -dir
          o simulator             : start 'linuxcnc'
 
          or image cam operation:
-         o image IMAGE           : convert IMAGE to gcode 
+         o image IMAGE           : convert IMAGE in $IMAGES_DIR to gcode into $CAM_OUTPUT_DIR 
 
          or one of data management utilities:
          o ls                    : list data files in $ROOT -data directories
-         o cleanup               : remove files from $ROOT -data directories 
-                                   $GERBERS_DIR, $IMAGES_DIR, $CAM_OUTPUT_DIR
+         o cleanup               : remove files from $ROOT -data directories
+                                   $GERBERS_DIR, $IMAGES_DIR, $CAM_OUTPUT_DIR, and $SILK_OUTPUT_DIR
          o example TYPE PROJECT  : copy example PROJECT of TYPE input directory
                                    TYPE is 'gerber' or 'image', with respective input direcotories
                                    01-gerber and 01-image
@@ -182,6 +188,22 @@ EOF
          echo "Gcode without probe (original): $noProbeFile"
      }
 
+     silkImage() {
+         # extract image from gerber, adjust DPI (because gerbv seems to leave out DPI paramter)
+         # background silks are un-mirrored
+         local silk_stem=$1; shift
+         local flip=$1; shift
+         echo "Convert Gerber  $GERBERS_DIR/${silk_stem}.gbr to $SILK_IMAGE_TYPE -image $SILK_OUTPUT_DIR/${silk_stem}.$SILK_IMAGE_TYPE"
+         gerbv  -x $SILK_IMAGE_TYPE --dpi=$SILK_IMAGE_DPI -o $SILK_OUTPUT_DIR/${silk_stem}-tmp.$SILK_IMAGE_TYPE $GERBERS_DIR/${silk_stem}.gbr
+         if [ ! -z "$flip" ]; then
+             # back side silp mirrored in gerber -> flip/flop 
+             convert $flip -units PixelsPerInch $SILK_OUTPUT_DIR/${silk_stem}-tmp.$SILK_IMAGE_TYPE -density $SILK_IMAGE_DPI $SILK_OUTPUT_DIR/${silk_stem}-tmp2.$SILK_IMAGE_TYPE
+             mv $SILK_OUTPUT_DIR/${silk_stem}-tmp2.$SILK_IMAGE_TYPE $SILK_OUTPUT_DIR/${silk_stem}-tmp.$SILK_IMAGE_TYPE
+         fi
+         convert -units PixelsPerInch $SILK_OUTPUT_DIR/${silk_stem}-tmp.$SILK_IMAGE_TYPE -density $SILK_IMAGE_DPI $SILK_OUTPUT_DIR/${silk_stem}.$SILK_IMAGE_TYPE
+         rm -f $SILK_OUTPUT_DIR/${silk_stem}-tmp.$SILK_IMAGE_TYPE
+     }
+
      # ------------------------------------------------------------------
      # Init context - only if not exist
      INIT_DONE=0
@@ -191,6 +213,7 @@ EOF
          mkdir_if_not_exist $GERBERS_DIR
          mkdir_if_not_exist $IMAGES_DIR
          mkdir_if_not_exist $CAM_OUTPUT_DIR
+         mkdir_if_not_exist $SILK_OUTPUT_DIR
          # mkdir_if_not_exist $PROBED_DIR
          # mkdir_if_not_exist $MILLING_DIR
          mkdir_if_not_exist $ROOT/linuxcnc/configs/sim.axis
@@ -223,7 +246,7 @@ EOF
          case "$CMD" in
              ls)
                initApp
-               ls -l $GERBERS_DIR $IMAGES_DIR $CAM_OUTPUT_DIR  # $PROBED_DIR
+               ls -l $GERBERS_DIR $IMAGES_DIR $CAM_OUTPUT_DIR $SILK_OUTPUT_DIR  # $PROBED_DIR
                ;;
              --)
                shift
@@ -294,17 +317,23 @@ EOF
 
                # Ref env context promises in 'pcb2gcode-control.template'
                
-               # PASS1 - comment out PASS2
+               # PASS1 - comment out PASS2 and run 'pcb2gcode'
                PASS1=""
                PASS2="# "
                echo "${TMPL@P}" > $CAM_CONTROL_FILE
                pcb2gcode --config $CAM_CONTROL_FILE,$PARAMS
 
-               # PASS1 - comment out PASS1
+               # PASS1 - comment out PASS1 and return 'pcb2gcode'
                PASS1="# "
                PASS2=""
                echo "${TMPL@P}" > $CAM_CONTROL_FILE
                pcb2gcode --config $CAM_CONTROL_FILE,$PARAMS
+
+               # producde silḱ
+               F_SILK=${PROJECT}-F_SilkS
+               B_SILK=${PROJECT}-B_SilkS
+               silkImage $F_SILK ""
+               silkImage $B_SILK "-flop"
                ;;
              adrill)  # alignment drilling
                  if [ $# -lt 1 ]; then
@@ -389,7 +418,7 @@ EOF
                ;;
              cleanup)
                initApp
-               rm -f $GERBERS_DIR/* $IMAGES_DIR/* $CAM_OUTPUT_DIR/*  # $PROBED_DIR/*
+               rm -f $GERBERS_DIR/* $IMAGES_DIR/* $CAM_OUTPUT_DIR/*  $SILK_OUTPUT_DIR/* # $PROBED_DIR/*
                ls $GERBERS_DIR $IMAGES_DIR
                ;;
              exe)

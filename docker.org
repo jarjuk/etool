@@ -13,7 +13,7 @@ echo Current ETOOL_DOCKER_TAG=$ETOOL_DOCKER_TAG
 #+END_SRC
 
 #+RESULTS:
-: Current ETOOL_DOCKER_TAG=6
+: Current ETOOL_DOCKER_TAG=7
 
 Build ~marcus2002/etool:$ETOOL_DOCKER_TAG~
 
@@ -24,7 +24,7 @@ docker build -t marcus2002/etool:$ETOOL_DOCKER_TAG .  2>&1; echo $?
 
 #+RESULTS:
 #+begin_example
-Sending build context to Docker daemon  608.3kB
+Sending build context to Docker daemon  626.7kB
 Step 1/30 : FROM ubuntu:18.04
  ---> c3c304cb4f22
 Step 2/30 : RUN      apt-get update &&      apt-get install -y      curl      wget      git      firefox      gnupg2  gnupg
@@ -92,31 +92,31 @@ Step 22/30 : RUN sed -i -e 's!~/\.!/etool/!' /emc/bin/image-to-gcode
  ---> ca77c60ba5b7
 Step 23/30 : COPY resources/ /resources
  ---> Using cache
- ---> a79be305a46a
+ ---> a9b19077624a
 Step 24/30 : WORKDIR /etool
  ---> Using cache
- ---> e11800a34657
+ ---> 84d2f5da3e56
 Step 25/30 : ENV HOME=/etool
  ---> Using cache
- ---> 2027b49cacf7
+ ---> fa756b11e3d0
 Step 26/30 : RUN mkdir /etool-bin
  ---> Using cache
- ---> a666d3aa323c
+ ---> 224133ac00e4
 Step 27/30 : ENV PATH=/etool-bin:/emc/scripts:${PATH}
  ---> Using cache
- ---> 2ed202c6493f
+ ---> a0252fe7b405
 Step 28/30 : COPY       etool.sh       adrill.sh       RELEASES       VERSION       axis_etool.ini       sim_mm.tbl       .linuxcncrc       pcb2gcode.ini       pcb2gcode-control.template       pcbGcodeZprobing.py       Dockerfile       /etool-bin/
- ---> 448ed4b125d6
+ ---> 9ce2b6749ee8
 Step 29/30 : ENTRYPOINT [ "etool.sh" ]
- ---> Running in 3ff7ea91c9b5
-Removing intermediate container 3ff7ea91c9b5
- ---> 579343698c25
+ ---> Running in ddd667fb162b
+Removing intermediate container ddd667fb162b
+ ---> 66b9945e0761
 Step 30/30 : CMD [ "usage"]
- ---> Running in 2fe231f321c3
-Removing intermediate container 2fe231f321c3
- ---> 3619e013f458
-Successfully built 3619e013f458
-Successfully tagged marcus2002/etool:6
+ ---> Running in a6d0a6341fab
+Removing intermediate container a6d0a6341fab
+ ---> dcc3b7d793e9
+Successfully built dcc3b7d793e9
+Successfully tagged marcus2002/etool:7
 0
 #+end_example
 

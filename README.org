@@ -5,8 +5,8 @@
 :END:
 
  ~marcus2002/etool~ - a tool for mapping Gerber files, or image files,
- to gcode for CNC machining, and launching linuxcnc -simulator for
- validating CNC execution paths.
+ to gcode for CNC machining and for laser engraving. Provides [[https://linuxcnc.org/][linuxcnc]]
+ -simulator for validating CNC execution paths.
 
 :CONTENTS:
 - [[#marcus2002etool---docker-mapping-gerber-files-to-gcode-with-simulator-support][marcus2002/etool - Docker mapping Gerber files to gcode with simulator support]]
@@ -43,11 +43,15 @@
      - [X] Accept project Gerber files from [[https://www.kicad.org/][Kicad EDA -tool]]
      - [X] Proviso for accepting project Gerber files from EDA tools using
        [[file:docker/etool/pcb2gcode-control.template][different naming scheme]]
-   - [X] gerber -command converting project Gerger files to gcode
-     - [X] [[file:docker/etool/pcb2gcode.ini][opinionated subset]] of ~pcb2gcode~ configurations for
-       initialize configuration (possible to add other [[https://github.com/pcb2gcode/pcb2gcode/wiki][~pcb2gcode~ CLI
-       configuration options]])
-     - [X] set ~pcb2gcode~  autolevelling [on/off]
+   - [X] gerber -command
+     - [X] converting project Gerger files to gcode
+       - [X] [[file:docker/etool/pcb2gcode.ini][opinionated subset]] of ~pcb2gcode~ configurations for
+         initialize configuration (possible to add other [[https://github.com/pcb2gcode/pcb2gcode/wiki][~pcb2gcode~ CLI
+         configuration options]])
+       - [X] set ~pcb2gcode~  autolevelling [on/off]
+     - [X] converting Gerber files to png files for laser engraving
+       - [X] Front and Back silk gerber layers converted to PNG -files
+       - [X] Back silk images flopped around from  mirror position
    - [X] [[file:docker/etool/pcb2gcode-control.template][Gcode output]]:
      - [X] Front, Back, EdgeCut, PTH drill, NPTH drill -gcode files
      - [X] Scrit to create alignment drilling PTH-ALIGN.ngc from PTH.nfc
@@ -74,7 +78,7 @@ Command line usage
 #+RESULTS:
 #+begin_example
 
-         marcus2002/etool:6
+         marcus2002/etool:7
 
          A tool for mapping Gerber/image files to gcode for CNC
          machining and launching linuxcnc -simulator for validating
@@ -85,7 +89,8 @@ Command line usage
          docker DOCKER_OPTS run marcus2002/etool CMD_AND_OPTIONS ...
 
          where CMD_AND_OPTIONS one of follwoing operations:
-         o gerber PROJECT [USER] : create gcode for PROJECT Gerber -files
+         o gerber PROJECT [USER] : create gcode for PROJECT Gerber -files into /etool/02-ngc -dir
+                                   and png image files for laser engraving into /etool/02-silk -dir
                                    USER -specific cam parameters replace default paramerters
                                    (/etool/pcb2gcode.ini, /etool/pcb2gcode-control.template)
          o adrill PROJECT        : convert PTH -drill file to alignement PTH-ALIGN drill file,
@@ -98,7 +103,7 @@ Command line usage
          or one of data management utilities:
          o ls                    : list data files in /etool -data directories
          o cleanup               : remove files from /etool -data directories
-                                   /etool/01-gerber, /etool/01-image, /etool/02-ngc
+                                   /etool/01-gerber, /etool/01-image, /etool/02-ngc, /etool/02-silk
          o example TYPE PROJECT  : copy example PROJECT of TYPE input directory
                                    TYPE is 'gerber' or 'image', with respective input direcotories
                                    01-gerber and 01-image
@@ -122,16 +127,16 @@ Command line usage
 
          Example usage:
 
-         mkdir $HOME/.etool           # create working directory
+         mkdir $HOME/.etool             # create working directory
 
-         export ETOOL='docker run --rm --user 1000:1000 -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.etool:/etool marcus2002/etool:6'
+         export ETOOL='docker run --rm --user 1000:1000 -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.etool:/etool marcus2002/etool:7'
 
-         $ETOOL cleanup               # clean working directories
-         $ETOOL ls                    # empty directories
-         $ETOOL example pad2pad       # init example 'pad2pad'
-         $ETOOL ls                    # expect to see directory /etool/01-gerber populated
-         $ETOOL gerber pad2pad        # create gCode for gerber
-         $ETOOL simulator             # start linuxcnc for simulating gcode
+         $ETOOL cleanup                 # clean working directories
+         $ETOOL ls                      # empty directories
+         $ETOOL example gerber pad2pad  # init example 'pad2pad'
+         $ETOOL ls                      # expect to see directory /etool/01-gerber populated
+         $ETOOL gerber pad2pad          # create gCode for gerber
+         $ETOOL simulator               # start linuxcnc for simulating gcode
 
          The commands can be given as a one-liner. For example, for the command above:
 
@@ -153,67 +158,75 @@ Following box and line diagram gives an overview of ~marcus2002/etool~
    accessed by the tools packaged within the container. Configuration
    files are documentend in the following chapter.
 
+2) Gerber to gcode and image conversion
+
 2.1) Gerber files in *01-gerber* subdirectory. These files are created
      using plot command in KiCAD EDA -tool, or using ~example~
      -command in ~marcus2002/etool~.
 
-2.2) gcode files in *02-ngc* subdirectory. These files are produced
-     with ~gerber~ -command in ~marcus2002/etool~.
+2.2) Output produced with ~gerber~ -command in ~marcus2002/etool~:
+     gcode files in *02-ngc* subdirectory.
+
+2.3) Output produced with ~gerber~ -command in ~marcus2002/etool~: png
+     files for front and back Gerber -layers in *01-silk* subdirectory.
+
+3) Image to gcode conversion
 
 3.1) Image files in *01-image* subdirectory. These files are created
      using drawing tool e.g. inkscape.
 
-3.2) gcode files in *02-ngc* subdirectory. These files are produced with
-    ~image~ -command in ~marcus2002/etool~.
+3.2) Output produced with ~image~ -command in ~marcus2002/etool~: gcode
+     files in *02-ngc* subdirectory.
 
 4) gcode files in *02-ngc* -subdirectory read by ~linuxcnc~ -simulator
    packaged within in ~marcus2002/etool~ docker container.
 
-5) gcode files in *02-ngc* -subdirectory copied to CNC for milling,
+5) gcode files in *02-ngc* -subdirectory copied for CNC for milling,
    drilling, and edge cutting.
+
+6) Imange files in *02-silk* -subdirectory copied for laser engraving
 
 
 #+begin_example
-            +-----------------+      +--------------------------------+
-            | EDA -tool e.g.  |      | marcus2002/etool -container    |
-            | Kicad           |      | - pcb2gcode                    |
-            |                 |      | - linuxcnc -simulator          |
-            |                 |      | - etool.sh -script             |
-            |                 |      | - initial configuration        |
-            +-----------------+      +--------------------------------+
-                 plot |                   |     |       ^          ^
-                      |   +---------------+     |       |          |
-                      |   | example command     |       |tool      |
-+----------------+    |   |                init |       |access    | file read
-|etool -directory|    |   |                once |       |          | for simulation
-|                +----|---|---------------------|-------|---+      |
-|                     |   |                     V       |   |      |
-|     +-------------------+                   configuration |      |
-|     |               |   |                                 |      |
-|     |   +-----------V---V-+        +-----------------+    |      |
-|     |   | 01-gerber       |        | 02-ngc          |    |      |
-|     |   |                 |  gerber|                 |-----------+
-|     |   | Gerber-files    |--------> gcode -files    |    |
-|     |   |                 |  +---->|                 |    |
-|     |   +-----------------+  |     +-----------------+    |
-|     |                        |                            |
-|     |                        |                            |
-| +---V-------------+          |                            |
-| | 01-image        | image    |                            |
-| |                 |----------+                            |
-| | Images files    |                                       |
-| |                 |                                       |
-| +----------A------+                                       |
-|            |                                              |
-+------------|---------------------------------|------------+
-             |                                 | copy to CNC for
-    +-----------------+                        | milling, drilling & cutting
-    | Drawing tool    |                        |
-    | e.g. inkscape   |               +--------V--------+
-    |                 |               | CNC machine     |
-    +-----------------+               | - linuxcnc      |
-                                      |                 |
-                                      +-----------------+
+                                     +--------------------------------+
+                                     | marcus2002/etool -container    |
+                                     | - pcb2gcode                    |
+        +-----------------+          | - linuxcnc -simulator          |
+        | EDA -tool e.g.  |          | - etool.sh -script             |
+        | Kicad           |          | - initial configuration        |
+        |                 |          +--------------------------------+
+        +-----------------+               |     |       ^          ^
+                   | +-----------------+  |     |       |          |
+                   | | Drawing tool    |  |     |       |          |
+                   | | e.g. inkscape   |  |     |       |          |
+                   | |                 |  |     |       |          |
+                   | +-----------------+  |     |       |          |
+             plot  |    |                 |     |       |          |
+          command  |    | +---------------+     |       |          |
+                   |    | | example command     |       |tool      |
++----------------+ |    | |                init |       |access    | file read
+|etool -directory| |    | |                once |       |          | for simulation
+|                +-|-- -|-|---------------------|-------|---+      |
+|   +--------------+    | |                     V       |   |      |
+|   | +-----------------|-+                   configuration |      |
+|   | |                 | |                                 |      |
+|   | |   +-------------V-V-+        +-----------------+    |      |
+|   | |   | 01-image        |        | 02-ngc          |    |      |
+|   | |   |                 |  image |                 |-----------+
+|   | |   | Image files     |--------> gcode -files    |    |   +-----------------+
+|   | |   |                 |  +---->|                 |--------> CNC machine     |
+|   | |   +-----------------+  |     +-----------------+    |   | - linuxcnc      |
+|   | |                        |                            |   |                 |
+|   | |                        |     +-----------------+    |   +-----------------+
+| +-V-V-------------+          |     | 02-silk         |    |
+| | 01-gerber       | gerber   |     |                 |    |   +-----------------+
+| |                 |----------+-----> png -files      |    |   | Laser engraving |
+| | Gerber files    |                |                 |------->|                 |
+| |                 |                +-----------------+    |   |                 |
+| +-----------------+                                       |   +-----------------+
+|                                                           |
++-----------------------------------------------------------+
+
 #+end_example
 
 
@@ -291,7 +304,7 @@ echo ETOOL_DOCKER_TAG=$ETOOL_DOCKER_TAG
 #+END_SRC
 
 #+RESULTS:
-: ETOOL_DOCKER_TAG=2
+: ETOOL_DOCKER_TAG=7
 
 
 Pull ~marcus2002/etool:$ETOOL_DOCKER_TAG~ from Docker hub
@@ -344,7 +357,7 @@ the command
 #+END_SRC
 
 #+RESULTS:
-:          marcus2002/etool:3
+:          marcus2002/etool:7
 
 
 ** Example ~etool~ -workflow
@@ -366,8 +379,8 @@ docker run --rm --user $(id -u):$(id -g) -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tm
 
 
 Calling ~<<run-etool>>~ for the first time inializes directory
-structure. Command ~ls~ shows empty directories ~/etool/01-gerber~ and
-~/etool/02-ngc~:
+structure. Command ~ls~ shows empty directories ~/etool/01-gerber~, 
+~/etool/02-ngc~, and ~/etool/02-silk~:
 
 #+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
 <<run-etool>> ls
@@ -378,6 +391,7 @@ structure. Command ~ls~ shows empty directories ~/etool/01-gerber~ and
 Directory /etool/01-gerber created
 Directory /etool/01-image created
 Directory /etool/02-ngc created
+Directory /etool/02-silk created
 Directory /etool/linuxcnc/configs/sim.axis created
 File /etool/pcb2gcode.ini created
 File /etool/linuxcnc/configs/sim.axis/axis_etool.ini created
@@ -392,9 +406,12 @@ total 0
 
 /etool/02-ngc:
 total 0
+
+/etool/02-silk:
+total 0
 #+end_example
 
-Using ~<<run-etool>>~ to populate example Gerbers for ~soic~ -project:
+Use ~<<run-etool>>~ to populate example Gerbers for ~soic~ -project:
 
 #+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
 <<run-etool>> example gerber soic
@@ -405,6 +422,7 @@ Using ~<<run-etool>>~ to populate example Gerbers for ~soic~ -project:
 Directory /etool/01-gerber exits - not modified
 Directory /etool/01-image exits - not modified
 Directory /etool/02-ngc exits - not modified
+Directory /etool/02-silk exits - not modified
 Directory /etool/linuxcnc/configs/sim.axis exits - not modified
 File /etool/pcb2gcode.ini exits - not modified
 File /etool/linuxcnc/configs/sim.axis/axis_etool.ini exits - not modified
@@ -427,8 +445,9 @@ soic-PTH.drl
 soic-job.gbrjob
 #+end_example
 
-Using ~gerber~-command in ~<<run-etool>>~ to create gcode files for
-~soic~ -project:
+Using ~gerber~-command in ~<<run-etool>>~ for ~soic~ -project to
+create gcode files into ~02-ngc~ directory, and png files into
+~02-silk~ directory
 
 #+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
 <<run-etool>> gerber soic
@@ -439,6 +458,7 @@ Using ~gerber~-command in ~<<run-etool>>~ to create gcode files for
 Directory /etool/01-gerber exits - not modified
 Directory /etool/01-image exits - not modified
 Directory /etool/02-ngc exits - not modified
+Directory /etool/02-silk exits - not modified
 Directory /etool/linuxcnc/configs/sim.axis exits - not modified
 File /etool/pcb2gcode.ini exits - not modified
 File /etool/linuxcnc/configs/sim.axis/axis_etool.ini exits - not modified
@@ -452,7 +472,7 @@ Importing outline... DONE.
 Processing input files... DONE.
 Exporting back... DONE. (Height: 15.1mm Width: 34.1mm)
 Exporting front... DONE. (Height: 15.1mm Width: 34.1mm)
-Exporting outline... DONE. (Height: 15.1mm Width: 34.1mm) The board should be cut from the FRONT side.
+Exporting outline... DONE. (Height: 15.1mm Width: 34.1mm) The board should be cut from the FRONT side. 
 Importing drill... DONE.
 Exporting milldrill... Exporting drill... DONE. The board should be drilled from the FRONT side.
 END.
@@ -460,14 +480,17 @@ Importing front side... not specified.
 Importing back side... not specified.
 Importing outline... DONE.
 Processing input files... DONE.
-Exporting outline... DONE. (Height: 15.1mm Width: 34.1mm) The board should be cut from the FRONT side.
+Exporting outline... DONE. (Height: 15.1mm Width: 34.1mm) The board should be cut from the FRONT side. 
 Importing drill... DONE.
 Exporting milldrill... Exporting drill... DONE. The board should be drilled from the FRONT side.
 END.
+Convert Gerber  /etool/01-gerber/soic-F_SilkS.gbr to png -image /etool/02-silk/soic-F_SilkS.png
+Convert Gerber  /etool/01-gerber/soic-B_SilkS.gbr to png -image /etool/02-silk/soic-B_SilkS.png
 #+end_example
 
 After ~cam~ command, directory ~/etool/02-ngc~ contains gcode in ~ngc~
--files.
+-files, and directory ~/etool/02-silk~ ~png~ -files for gerber silk
+layers:
 
 #+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
 <<run-etool>> ls
@@ -478,6 +501,7 @@ After ~cam~ command, directory ~/etool/02-ngc~ contains gcode in ~ngc~
 Directory /etool/01-gerber exits - not modified
 Directory /etool/01-image exits - not modified
 Directory /etool/02-ngc exits - not modified
+Directory /etool/02-silk exits - not modified
 Directory /etool/linuxcnc/configs/sim.axis exits - not modified
 File /etool/pcb2gcode.ini exits - not modified
 File /etool/linuxcnc/configs/sim.axis/axis_etool.ini exits - not modified
@@ -485,49 +509,54 @@ File /etool/linuxcnc/configs/sim.axis/sim_mm.tbl exits - not modified
 File /etool/pcb2gcode-control.template exits - not modified
 File /etool/.linuxcncrc exits - not modified
 /etool/01-gerber:
-total 100
--rw-r--r-- 1 1000 1000  1953 Apr 12 11:35 soic-B_Cu.gbr
--rw-r--r-- 1 1000 1000  1035 Apr 12 11:35 soic-B_Mask.gbr
--rw-r--r-- 1 1000 1000   541 Apr 12 11:35 soic-B_Paste.gbr
--rw-r--r-- 1 1000 1000   542 Apr 12 11:35 soic-B_SilkS.gbr
--rw-r--r-- 1 1000 1000   749 Apr 12 11:35 soic-Edge_Cuts.gbr
--rw-r--r-- 1 1000 1000  5874 Apr 12 11:35 soic-F_Cu.gbr
--rw-r--r-- 1 1000 1000  3504 Apr 12 11:35 soic-F_Mask.gbr
--rw-r--r-- 1 1000 1000  3010 Apr 12 11:35 soic-F_Paste.gbr
--rw-r--r-- 1 1000 1000  6174 Apr 12 11:35 soic-F_SilkS.gbr
--rw-r--r-- 1 1000 1000 15377 Apr 12 11:35 soic-NPTH-drl_map.ps
--rw-r--r-- 1 1000 1000   377 Apr 12 11:35 soic-NPTH.drl
--rw-r--r-- 1 1000 1000 27525 Apr 12 11:35 soic-PTH-drl_map.ps
--rw-r--r-- 1 1000 1000   532 Apr 12 11:35 soic-PTH.drl
--rw-r--r-- 1 1000 1000  2491 Apr 12 11:35 soic-job.gbrjob
+total 112
+-rw-r--r-- 1 1000 1000  1953 Jul  4 11:11 soic-B_Cu.gbr
+-rw-r--r-- 1 1000 1000  1035 Jul  4 11:11 soic-B_Mask.gbr
+-rw-r--r-- 1 1000 1000   541 Jul  4 11:11 soic-B_Paste.gbr
+-rw-r--r-- 1 1000 1000 12476 Jul  4 11:11 soic-B_SilkS.gbr
+-rw-r--r-- 1 1000 1000   749 Jul  4 11:11 soic-Edge_Cuts.gbr
+-rw-r--r-- 1 1000 1000  5874 Jul  4 11:11 soic-F_Cu.gbr
+-rw-r--r-- 1 1000 1000  3504 Jul  4 11:11 soic-F_Mask.gbr
+-rw-r--r-- 1 1000 1000  3010 Jul  4 11:11 soic-F_Paste.gbr
+-rw-r--r-- 1 1000 1000  5682 Jul  4 11:11 soic-F_SilkS.gbr
+-rw-r--r-- 1 1000 1000 15377 Jul  4 11:11 soic-NPTH-drl_map.ps
+-rw-r--r-- 1 1000 1000   377 Jul  4 11:11 soic-NPTH.drl
+-rw-r--r-- 1 1000 1000 27525 Jul  4 11:11 soic-PTH-drl_map.ps
+-rw-r--r-- 1 1000 1000   532 Jul  4 11:11 soic-PTH.drl
+-rw-r--r-- 1 1000 1000  2491 Jul  4 11:11 soic-job.gbrjob
 
 /etool/01-image:
 total 0
 
 /etool/02-ngc:
-total 628
--rw-r--r-- 1 1000 1000    412 Apr 12 11:35 original_drill.svg
--rw-r--r-- 1 1000 1000   5311 Apr 12 11:35 outp0_original_back.svg
--rw-r--r-- 1 1000 1000    522 Apr 12 11:35 outp0_original_outline.svg
--rw-r--r-- 1 1000 1000  10814 Apr 12 11:35 outp1_original_front.svg
--rw-r--r-- 1 1000 1000    522 Apr 12 11:35 outp2_original_outline.svg
--rw-r--r-- 1 1000 1000   5312 Apr 12 11:35 outp3_masked_back.svg
--rw-r--r-- 1 1000 1000  10817 Apr 12 11:35 outp4_masked_front.svg
--rw-r--r-- 1 1000 1000  61352 Apr 12 11:35 processed_back.svg
--rw-r--r-- 1 1000 1000  37440 Apr 12 11:35 processed_back_final.svg
--rw-r--r-- 1 1000 1000 111087 Apr 12 11:35 processed_front.svg
--rw-r--r-- 1 1000 1000  68775 Apr 12 11:35 processed_front_final.svg
--rw-r--r-- 1 1000 1000   2192 Apr 12 11:35 processed_outline.svg
--rw-r--r-- 1 1000 1000  30502 Apr 12 11:35 soic-B_Cu.ngc
--rw-r--r-- 1 1000 1000   3707 Apr 12 11:35 soic-Edge_Cuts.ngc
--rw-r--r-- 1 1000 1000  50815 Apr 12 11:35 soic-F_Cu.ngc
--rw-r--r-- 1 1000 1000    737 Apr 12 11:35 soic-NPTH.ngc
--rw-r--r-- 1 1000 1000    902 Apr 12 11:35 soic-PTH.ngc
--rw-r--r-- 1 1000 1000  45597 Apr 12 11:35 traced_back.svg
--rw-r--r-- 1 1000 1000  21685 Apr 12 11:35 traced_back_final.svg
--rw-r--r-- 1 1000 1000  80755 Apr 12 11:35 traced_front.svg
--rw-r--r-- 1 1000 1000  38443 Apr 12 11:35 traced_front_final.svg
--rw-r--r-- 1 1000 1000   1770 Apr 12 11:35 traced_outline.svg
+total 624
+-rw-r--r-- 1 1000 1000    412 Jul  4 11:12 original_drill.svg
+-rw-r--r-- 1 1000 1000   5311 Jul  4 11:12 outp0_original_back.svg
+-rw-r--r-- 1 1000 1000    522 Jul  4 11:12 outp0_original_outline.svg
+-rw-r--r-- 1 1000 1000  10814 Jul  4 11:12 outp1_original_front.svg
+-rw-r--r-- 1 1000 1000    522 Jul  4 11:12 outp2_original_outline.svg
+-rw-r--r-- 1 1000 1000   5312 Jul  4 11:12 outp3_masked_back.svg
+-rw-r--r-- 1 1000 1000  10817 Jul  4 11:12 outp4_masked_front.svg
+-rw-r--r-- 1 1000 1000  61090 Jul  4 11:12 processed_back.svg
+-rw-r--r-- 1 1000 1000  37018 Jul  4 11:12 processed_back_final.svg
+-rw-r--r-- 1 1000 1000 109965 Jul  4 11:12 processed_front.svg
+-rw-r--r-- 1 1000 1000  68915 Jul  4 11:12 processed_front_final.svg
+-rw-r--r-- 1 1000 1000   2192 Jul  4 11:12 processed_outline.svg
+-rw-r--r-- 1 1000 1000  29533 Jul  4 11:12 soic-B_Cu.ngc
+-rw-r--r-- 1 1000 1000   3707 Jul  4 11:12 soic-Edge_Cuts.ngc
+-rw-r--r-- 1 1000 1000  50897 Jul  4 11:12 soic-F_Cu.ngc
+-rw-r--r-- 1 1000 1000    737 Jul  4 11:12 soic-NPTH.ngc
+-rw-r--r-- 1 1000 1000    902 Jul  4 11:12 soic-PTH.ngc
+-rw-r--r-- 1 1000 1000  45335 Jul  4 11:12 traced_back.svg
+-rw-r--r-- 1 1000 1000  21263 Jul  4 11:12 traced_back_final.svg
+-rw-r--r-- 1 1000 1000  79633 Jul  4 11:12 traced_front.svg
+-rw-r--r-- 1 1000 1000  38583 Jul  4 11:12 traced_front_final.svg
+-rw-r--r-- 1 1000 1000   1770 Jul  4 11:12 traced_outline.svg
+
+/etool/02-silk:
+total 12
+-rw-r--r-- 1 1000 1000 4744 Jul  4 11:12 soic-B_SilkS.png
+-rw-r--r-- 1 1000 1000 3437 Jul  4 11:12 soic-F_SilkS.png
 #+end_example
 
 Soic -project uses two sided PCB layout. To align board in milling,
@@ -535,8 +564,9 @@ the PCB design is symmetrical along Y-axis with origin on lower edge
 of the PCB board. The design contains two alignement vias on the
 Y-axis. First via is in position (0mm,-3mm) and the second is located
 on the Y-axis, 3mm above the board top edge on Y=14mm. These vias are
-drilled to -4.5mm *into the supporting plane* (= use thich enough
-sacrifial plane where PCB is attached to avoid damages).
+drilled to -4.5mm *into the supporting plane* (= use thick enough
+sacrifial plane where PCB is attached to avoid drilling into CNC
+table).
 
 The crux of this drilling operation is gcode snippet shown below
 
@@ -547,17 +577,18 @@ G80
 #+end_example
 
 To create alignement drilling ~<<run-etool>>~ provides command
-~adrill~. To create ~PTH-ALIGN.ngc~ for soic project run
+~adrill~. 
+
+For example, to create ~PTH-ALIGN.ngc~ for soic project run:
 
 #+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
- <<run-etool>> adrill soic
+<<run-etool>> adrill soic
 #+END_SRC
 
 #+RESULTS:
 : PTH_DRILL=/etool/02-ngc/soic-PTH.ngc, ALIGN_DRILL=/etool/02-ngc/soic-PTH-ALIGN.ngc
 
-and use ~ls~ command to inspect directory ~02-ngc~ and validate the
-file ~soic-PTH-ALIGN.ngc~ was created.
+Command ~ls~ shows new file ~soic-PTH-ALIGN.ngc~ in directory ~02-ngc~:
 #+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports both
   <<run-etool>> ls
 #+END_SRC
@@ -567,6 +598,7 @@ file ~soic-PTH-ALIGN.ngc~ was created.
 Directory /etool/01-gerber exits - not modified
 Directory /etool/01-image exits - not modified
 Directory /etool/02-ngc exits - not modified
+Directory /etool/02-silk exits - not modified
 Directory /etool/linuxcnc/configs/sim.axis exits - not modified
 File /etool/pcb2gcode.ini exits - not modified
 File /etool/linuxcnc/configs/sim.axis/axis_etool.ini exits - not modified
@@ -574,57 +606,66 @@ File /etool/linuxcnc/configs/sim.axis/sim_mm.tbl exits - not modified
 File /etool/pcb2gcode-control.template exits - not modified
 File /etool/.linuxcncrc exits - not modified
 /etool/01-gerber:
-total 100
--rw-r--r-- 1 1000 1000  1953 Apr 12 11:35 soic-B_Cu.gbr
--rw-r--r-- 1 1000 1000  1035 Apr 12 11:35 soic-B_Mask.gbr
--rw-r--r-- 1 1000 1000   541 Apr 12 11:35 soic-B_Paste.gbr
--rw-r--r-- 1 1000 1000   542 Apr 12 11:35 soic-B_SilkS.gbr
--rw-r--r-- 1 1000 1000   749 Apr 12 11:35 soic-Edge_Cuts.gbr
--rw-r--r-- 1 1000 1000  5874 Apr 12 11:35 soic-F_Cu.gbr
--rw-r--r-- 1 1000 1000  3504 Apr 12 11:35 soic-F_Mask.gbr
--rw-r--r-- 1 1000 1000  3010 Apr 12 11:35 soic-F_Paste.gbr
--rw-r--r-- 1 1000 1000  6174 Apr 12 11:35 soic-F_SilkS.gbr
--rw-r--r-- 1 1000 1000 15377 Apr 12 11:35 soic-NPTH-drl_map.ps
--rw-r--r-- 1 1000 1000   377 Apr 12 11:35 soic-NPTH.drl
--rw-r--r-- 1 1000 1000 27525 Apr 12 11:35 soic-PTH-drl_map.ps
--rw-r--r-- 1 1000 1000   532 Apr 12 11:35 soic-PTH.drl
--rw-r--r-- 1 1000 1000  2491 Apr 12 11:35 soic-job.gbrjob
+total 112
+-rw-r--r-- 1 1000 1000  1953 Jul  4 11:11 soic-B_Cu.gbr
+-rw-r--r-- 1 1000 1000  1035 Jul  4 11:11 soic-B_Mask.gbr
+-rw-r--r-- 1 1000 1000   541 Jul  4 11:11 soic-B_Paste.gbr
+-rw-r--r-- 1 1000 1000 12476 Jul  4 11:11 soic-B_SilkS.gbr
+-rw-r--r-- 1 1000 1000   749 Jul  4 11:11 soic-Edge_Cuts.gbr
+-rw-r--r-- 1 1000 1000  5874 Jul  4 11:11 soic-F_Cu.gbr
+-rw-r--r-- 1 1000 1000  3504 Jul  4 11:11 soic-F_Mask.gbr
+-rw-r--r-- 1 1000 1000  3010 Jul  4 11:11 soic-F_Paste.gbr
+-rw-r--r-- 1 1000 1000  5682 Jul  4 11:11 soic-F_SilkS.gbr
+-rw-r--r-- 1 1000 1000 15377 Jul  4 11:11 soic-NPTH-drl_map.ps
+-rw-r--r-- 1 1000 1000   377 Jul  4 11:11 soic-NPTH.drl
+-rw-r--r-- 1 1000 1000 27525 Jul  4 11:11 soic-PTH-drl_map.ps
+-rw-r--r-- 1 1000 1000   532 Jul  4 11:11 soic-PTH.drl
+-rw-r--r-- 1 1000 1000  2491 Jul  4 11:11 soic-job.gbrjob
 
 /etool/01-image:
 total 0
 
 /etool/02-ngc:
-total 632
--rw-r--r-- 1 1000 1000    412 Apr 12 11:35 original_drill.svg
--rw-r--r-- 1 1000 1000   5311 Apr 12 11:35 outp0_original_back.svg
--rw-r--r-- 1 1000 1000    522 Apr 12 11:35 outp0_original_outline.svg
--rw-r--r-- 1 1000 1000  10814 Apr 12 11:35 outp1_original_front.svg
--rw-r--r-- 1 1000 1000    522 Apr 12 11:35 outp2_original_outline.svg
--rw-r--r-- 1 1000 1000   5312 Apr 12 11:35 outp3_masked_back.svg
--rw-r--r-- 1 1000 1000  10817 Apr 12 11:35 outp4_masked_front.svg
--rw-r--r-- 1 1000 1000  61352 Apr 12 11:35 processed_back.svg
--rw-r--r-- 1 1000 1000  37440 Apr 12 11:35 processed_back_final.svg
--rw-r--r-- 1 1000 1000 111087 Apr 12 11:35 processed_front.svg
--rw-r--r-- 1 1000 1000  68775 Apr 12 11:35 processed_front_final.svg
--rw-r--r-- 1 1000 1000   2192 Apr 12 11:35 processed_outline.svg
--rw-r--r-- 1 1000 1000  30502 Apr 12 11:35 soic-B_Cu.ngc
--rw-r--r-- 1 1000 1000   3707 Apr 12 11:35 soic-Edge_Cuts.ngc
--rw-r--r-- 1 1000 1000  50815 Apr 12 11:35 soic-F_Cu.ngc
--rw-r--r-- 1 1000 1000    737 Apr 12 11:35 soic-NPTH.ngc
--rw-r--r-- 1 1000 1000   1158 Apr 12 11:38 soic-PTH-ALIGN.ngc
--rw-r--r-- 1 1000 1000    902 Apr 12 11:35 soic-PTH.ngc
--rw-r--r-- 1 1000 1000  45597 Apr 12 11:35 traced_back.svg
--rw-r--r-- 1 1000 1000  21685 Apr 12 11:35 traced_back_final.svg
--rw-r--r-- 1 1000 1000  80755 Apr 12 11:35 traced_front.svg
--rw-r--r-- 1 1000 1000  38443 Apr 12 11:35 traced_front_final.svg
--rw-r--r-- 1 1000 1000   1770 Apr 12 11:35 traced_outline.svg
+total 628
+-rw-r--r-- 1 1000 1000    412 Jul  4 11:12 original_drill.svg
+-rw-r--r-- 1 1000 1000   5311 Jul  4 11:12 outp0_original_back.svg
+-rw-r--r-- 1 1000 1000    522 Jul  4 11:12 outp0_original_outline.svg
+-rw-r--r-- 1 1000 1000  10814 Jul  4 11:12 outp1_original_front.svg
+-rw-r--r-- 1 1000 1000    522 Jul  4 11:12 outp2_original_outline.svg
+-rw-r--r-- 1 1000 1000   5312 Jul  4 11:12 outp3_masked_back.svg
+-rw-r--r-- 1 1000 1000  10817 Jul  4 11:12 outp4_masked_front.svg
+-rw-r--r-- 1 1000 1000  61090 Jul  4 11:12 processed_back.svg
+-rw-r--r-- 1 1000 1000  37018 Jul  4 11:12 processed_back_final.svg
+-rw-r--r-- 1 1000 1000 109965 Jul  4 11:12 processed_front.svg
+-rw-r--r-- 1 1000 1000  68915 Jul  4 11:12 processed_front_final.svg
+-rw-r--r-- 1 1000 1000   2192 Jul  4 11:12 processed_outline.svg
+-rw-r--r-- 1 1000 1000  29533 Jul  4 11:12 soic-B_Cu.ngc
+-rw-r--r-- 1 1000 1000   3707 Jul  4 11:12 soic-Edge_Cuts.ngc
+-rw-r--r-- 1 1000 1000  50897 Jul  4 11:12 soic-F_Cu.ngc
+-rw-r--r-- 1 1000 1000    737 Jul  4 11:12 soic-NPTH.ngc
+-rw-r--r-- 1 1000 1000   1158 Jul  4 11:15 soic-PTH-ALIGN.ngc
+-rw-r--r-- 1 1000 1000    902 Jul  4 11:12 soic-PTH.ngc
+-rw-r--r-- 1 1000 1000  45335 Jul  4 11:12 traced_back.svg
+-rw-r--r-- 1 1000 1000  21263 Jul  4 11:12 traced_back_final.svg
+-rw-r--r-- 1 1000 1000  79633 Jul  4 11:12 traced_front.svg
+-rw-r--r-- 1 1000 1000  38583 Jul  4 11:12 traced_front_final.svg
+-rw-r--r-- 1 1000 1000   1770 Jul  4 11:12 traced_outline.svg
+
+/etool/02-silk:
+total 12
+-rw-r--r-- 1 1000 1000 4744 Jul  4 11:12 soic-B_SilkS.png
+-rw-r--r-- 1 1000 1000 3437 Jul  4 11:12 soic-F_SilkS.png
 #+end_example
 
 
 
 
 Use ~simulator~ command to start linuxcnc simulator. Especially,
-validate gcode in ~PTH-ALIGN.ngc~ file
+validate gcode in ~PTH-ALIGN.ngc~ file.
+
+
+Running
+
 #+BEGIN_SRC bash :eval no-export :results output :noweb yes :exports code
 <<run-etool>> simulator
 #+END_SRC
@@ -661,6 +702,7 @@ Finally, ~cleanup~ -command empties data directories, and ~ls~
 Directory /etool/01-gerber exits - not modified
 Directory /etool/01-image exits - not modified
 Directory /etool/02-ngc exits - not modified
+Directory /etool/02-silk exits - not modified
 Directory /etool/linuxcnc/configs/sim.axis exits - not modified
 File /etool/pcb2gcode.ini exits - not modified
 File /etool/linuxcnc/configs/sim.axis/axis_etool.ini exits - not modified
@@ -677,6 +719,9 @@ total 0
 total 0
 
 /etool/02-ngc:
+total 0
+
+/etool/02-silk:
 total 0
 #+end_example
 
@@ -806,22 +851,30 @@ The tool includes following example gerbers projects:
   - grid 2.54 mm
   - track width 0.5 mm
   - 0,0 is lower left corner
+  - one sided, F_Cu
 - ~dip~
+  - Bottom Left corner (X,Y)=(0,0)
+  - Edge Cut: 40x20 mm
+  - Fab: board dimension
   - track width 0.5mm (B_Cu)
   - 2x pin-header 1x4, 1.27mm grid, (PTH-drilling)
   - DIP8 package
   - one sided, B_Cu
+  - Front silk:
+    - silk text width/height/thickness: 1.5/1.5/0.2
+    - edge markers on board cuts
 - ~soic~
+  - two sided 30 mm x 11 mm
+     - 2 x Alignement vias
+     - front copper track 0.25 (F_Cu)
+     - front silk text w. edge markers
+     - back copper track 0.25 (B_Cu)
+     - back silk (=mirrored) text w. edge markers
   - 2 x Mounting hole 2.5 mm (NPTH)
   - Pin header 1x4, 1.27 mm
   - 1 via between F_Cu/B_Cu
   - Pin header 1x4, 2 mm
   - SOIC8 package (F_Cu)
-  - two sided 30 mm x 11 mm
-     - 2 x Alignement vias
-     - front copper track 0.25 (F_Cu)
-     - back copper track 0.25 (B_Cu)
-
 
 The tool includes following example images for demonstrating ~image~
 command:

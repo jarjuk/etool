@@ -1,7 +1,8 @@
 #!/bin/bash
 
-TAG=6
 # Changes this to choose correct version
+TAG=7
+# Set data directory
 ETOOL_DIR=$HOME/.etool
 
 [ -d  $ETOOL_DIR ] || ( mkdir $ETOOL_DIR && echo Created ETOOL_DIR=$ETOOL_DIR )
