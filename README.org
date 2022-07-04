@@ -90,20 +90,20 @@ Command line usage
 
          where CMD_AND_OPTIONS one of follwoing operations:
          o gerber PROJECT [USER] : create gcode for PROJECT Gerber -files into /etool/02-ngc -dir
-                                   and png image files for laser engraving into /etool/02-silk -dir
+                                   and png image files for laser engraving into /etool/02-silk -dir.
                                    USER -specific cam parameters replace default paramerters
                                    (/etool/pcb2gcode.ini, /etool/pcb2gcode-control.template)
          o adrill PROJECT        : convert PTH -drill file to alignement PTH-ALIGN drill file,
-                                   used for two sided boards
+                                   used for two sided boards in /etool/02-ngc -dir
          o simulator             : start 'linuxcnc'
 
          or image cam operation:
-         o image IMAGE           : convert IMAGE to gcode
+         o image IMAGE           : convert IMAGE in /etool/01-image to gcode into /etool/02-ngc 
 
          or one of data management utilities:
          o ls                    : list data files in /etool -data directories
          o cleanup               : remove files from /etool -data directories
-                                   /etool/01-gerber, /etool/01-image, /etool/02-ngc, /etool/02-silk
+                                   /etool/01-gerber, /etool/01-image, /etool/02-ngc, and /etool/02-silk
          o example TYPE PROJECT  : copy example PROJECT of TYPE input directory
                                    TYPE is 'gerber' or 'image', with respective input direcotories
                                    01-gerber and 01-image
@@ -124,7 +124,7 @@ Command line usage
          o -v /tmp/.X11-unix:/tmp/.X11-unix : allow Docker to open X11 apps
          o -v HOSTD:/etool                  : data directory HOSTD (must exist,
                                               owned by --user), structure is initialized
-
+         
          Example usage:
 
          mkdir $HOME/.etool             # create working directory
@@ -133,16 +133,17 @@ Command line usage
 
          $ETOOL cleanup                 # clean working directories
          $ETOOL ls                      # empty directories
-         $ETOOL example gerber pad2pad  # init example 'pad2pad'
+         $ETOOL example gerber soic     # init example 'soic'
          $ETOOL ls                      # expect to see directory /etool/01-gerber populated
-         $ETOOL gerber pad2pad          # create gCode for gerber
+         $ETOOL gerber soic             # create gCode for project 'soic'
+         $ETOOL adrill soic             # create gcode for alignment create for project 'soic'
          $ETOOL simulator               # start linuxcnc for simulating gcode
 
          The commands can be given as a one-liner. For example, for the command above:
 
-         $ETOOL cleanup ls example gerber pad2pad ls gerber pad2pad -- simulator
-
-         Notice! Separator '--' in cam -command signaling end of optional parameters
+         $ETOOL cleanup ls example gerber soic ls gerber soic --  adrill soic simulator
+         
+         Notice! Separator '--' in cam -command signals end of optional parameters
 #+end_example
 
 
@@ -158,25 +159,25 @@ Following box and line diagram gives an overview of ~marcus2002/etool~
    accessed by the tools packaged within the container. Configuration
    files are documentend in the following chapter.
 
-2) Gerber to gcode and image conversion
+2) Gerber to gcode conversion
 
-2.1) Gerber files in *01-gerber* subdirectory. These files are created
-     using plot command in KiCAD EDA -tool, or using ~example~
-     -command in ~marcus2002/etool~.
+   1) Gerber files in *01-gerber* subdirectory. These files are created
+        using plot command in KiCAD EDA -tool, or using ~example~
+        -command in ~marcus2002/etool~.
 
-2.2) Output produced with ~gerber~ -command in ~marcus2002/etool~:
-     gcode files in *02-ngc* subdirectory.
+   2) Output produced with ~gerber~ -command in ~marcus2002/etool~:
+       gcode files in *02-ngc* subdirectory.
 
-2.3) Output produced with ~gerber~ -command in ~marcus2002/etool~: png
-     files for front and back Gerber -layers in *01-silk* subdirectory.
+   3) Output produced with ~gerber~ -command in ~marcus2002/etool~: png
+        files for front and back Gerber -layers in *01-silk* subdirectory.
 
 3) Image to gcode conversion
 
-3.1) Image files in *01-image* subdirectory. These files are created
-     using drawing tool e.g. inkscape.
+   1) Image files in *01-image* subdirectory. These files are created
+        using drawing tool e.g. inkscape.
 
-3.2) Output produced with ~image~ -command in ~marcus2002/etool~: gcode
-     files in *02-ngc* subdirectory.
+   2) Output produced with ~image~ -command in ~marcus2002/etool~: gcode
+      files in *02-ngc* subdirectory.
 
 4) gcode files in *02-ngc* -subdirectory read by ~linuxcnc~ -simulator
    packaged within in ~marcus2002/etool~ docker container.
