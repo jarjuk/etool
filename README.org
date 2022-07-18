@@ -737,23 +737,12 @@ total 0
  #+caption: V -milling bit
  [[file:pics-keep/v-bit2.png]]
 
- Figure 1 shows geometry for a V -milling bit with tip width
- \( w \) and tip angle \( \alpha \). When using engraving depth \( z
- \), the resulting groove has width of \( cut \).
+ Figure 1 shows geometry for a V -milling bit with tip width ~w~ and
+ tip angle ~\alpha~. When using engraving depth ~z~, the resulting
+ groove has width of ~cut~.
 
- From the geometry 
-
- \[ tan( \alpha/2 ) =   \frac{cut/2}{ h + z }  \], 
-
- where is $h$ can be calculated using tip width $w$ and tip angle
- $\alpha$
-
- \[ tan(\alpha/2) = \frac{w/2}{h}  \Leftrightarrow h = \frac{w}{2tan(\alpha/2)}\]
-
- Hence, 
-
- \[  cut = 2 tan(\alpha/2)[ h + z] = 2 tan(\alpha/2) [  \frac{w}{2 tan(\alpha/2)}  + z ] \]
-
+ #+caption: V -milling bit
+ [[file:pics-keep/latex-calc.png]]
 
  Python script for calculating cut width for V -milling bit with tip
  width ~w~, tip angle ~alpha~, and carving depth ~z~
@@ -1000,6 +989,25 @@ Ref: [[file:docker.org]]
 ** RELEASE -notes
 
 Ref: [[file:docker/etool/RELEASES]]
+
+
+* Notes                                                            :noexport:
+
+** Latex snippet
+
+  From the geometry 
+
+  \[ tan( \alpha/2 ) =   \frac{cut/2}{ h + z }  \], 
+
+  where is $h$ can be calculated using tip width $w$ and tip angle
+  $\alpha$
+
+  \[ tan(\alpha/2) = \frac{w/2}{h}  \Leftrightarrow h = \frac{w}{2tan(\alpha/2)}\]
+
+  Hence, 
+
+  \[  cut = 2 tan(\alpha/2)[ h + z] = 2 tan(\alpha/2) [  \frac{w}{2 tan(\alpha/2)}  + z ] \]
+
 
 
 * Fin                                                              :noexport:
