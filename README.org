@@ -22,6 +22,9 @@
     - [[#pull-etool-docker-from-dockerio-repo][Pull etool Docker from docker.io repo]]
     - [[#running-etool][Running etool]]
   - [[#example-etool--workflow][Example etool -workflow]]
+  - [[#default-cam-parameters][Default CAM parameters]]
+    - [[#carving-cut-width-and-cut-depth][Carving cut width and cut depth]]
+    - [[#carving-overlap][Carving overlap]]
   - [[#user-specific-cam-configuration][User specific CAM configuration]]
   - [[#example-projects][Example projects]]
   - [[#development][Development]]
@@ -725,6 +728,110 @@ total 0
 /etool/02-silk:
 total 0
 #+end_example
+
+
+** Default CAM parameters
+
+*** Carving cut width and cut depth
+
+ #+caption: V -milling bit
+ [[file:pics-keep/v-bit2.png]]
+
+ Figure 1 shows geometry for a V -milling bit with tip width
+ \( w \) and tip angle \( \alpha \). When using engraving depth \( z
+ \), the resulting groove has width of \( cut \).
+
+ From the geometry 
+
+ \[ tan( \alpha/2 ) =   \frac{cut/2}{ h + z }  \], 
+
+ where is $h$ can be calculated using tip width $w$ and tip angle
+ $\alpha$
+
+ \[ tan(\alpha/2) = \frac{w/2}{h}  \Leftrightarrow h = \frac{w}{2tan(\alpha/2)}\]
+
+ Hence, 
+
+ \[  cut = 2 tan(\alpha/2)[ h + z] = 2 tan(\alpha/2) [  \frac{w}{2 tan(\alpha/2)}  + z ] \]
+
+
+ Python script for calculating cut width for V -milling bit with tip
+ width ~w~, tip angle ~alpha~, and carving depth ~z~
+
+ #+BEGIN_SRC python :eval no-export :results output :noweb no :session *Python* :exports code
+ from  math import tan, radians
+ def cutWidth( alpha, w, z):
+    cut = 2*tan(radians(alpha)/2)*(w/2/tan(radians(alpha)/2) + z)
+    return cut
+ #+END_SRC
+
+
+Using the script above to calculate cut width for V -milling bit
+ - with tip angle ~alpha=60 deg~
+ - and tip width ~w=0.1 mm~
+ - carving into depth ~z=0.1 mm~
+
+ #+name: example1
+ #+BEGIN_SRC python :eval no-export :results output :noweb no :session *Python* :exports code
+ print( f"cut={cutWidth(alpha=60,w=0.1,z=.1):.4f}")
+ #+END_SRC
+
+returns ~cut~ witdh
+
+ #+RESULTS: example1
+ : cut=0.2155
+
+file:docker/etool/pcb2gcode.ini uses carving parameters:
+
+#+BEGIN_SRC bash :eval no-export :results output :exports results
+grep -E '^mill-diameters|^zwork' docker/etool/pcb2gcode.ini
+#+END_SRC
+
+#+RESULTS:
+: zwork=-0.1mm            # milling depth
+: mill-diameters=0.2155mm # milling cut
+
+
+
+*** Carving overlap
+
+Python script to calculate minimum overlap -% needed to achieve
+isolation width $i$ when carving $n$ grooves of width $cut$:
+
+#+BEGIN_SRC python :eval no-export :results output :noweb no :session *Python* :exports code
+  def overLap( i, cut, n):
+      """:return: (min) overLap -‰ needed to achive isolation 'i' when
+      carving 'n' grooves of width 'cut'
+
+      """
+      overLap = (n * cut - i)/(n*cut) * 100.0
+      return overLap
+#+END_SRC
+
+#+RESULTS:
+
+
+To achive isolation width ~0.4mm~, when carving ~2~ grooves of width
+~0.2155mm~ requires
+#+name: example2
+#+BEGIN_SRC python :eval no-export :results output :noweb no :session *Python* :exports results
+  print( f"{overLap(i=0.4, cut=0.2155, n=2):.1f}%")
+#+END_SRC
+
+overlap ‰ at least
+
+#+RESULTS: example2
+: 7.2%
+
+
+file:docker/etool/pcb2gcode.ini sets overlap percent:
+
+#+BEGIN_SRC bash :eval no-export :results output :exports results
+grep -E '^milling-overlap' docker/etool/pcb2gcode.ini
+#+END_SRC
+
+#+RESULTS:
+: milling-overlap=9%      # overlap milling passes, [%/mm]
 
 
 ** User specific CAM configuration

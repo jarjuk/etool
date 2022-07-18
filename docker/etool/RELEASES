@@ -19,8 +19,12 @@
     -- Front & back silk texts
     -- Front & back corner markers added
 
+- Default CAM paramters documented
+  - cut widh, cut depth
+  - carving overlap
+
 - Features added:
-  - producude png into 02-silk files for B_SilS and F_SilS
+  - produce png into 02-silk -directory for B_SilS and F_SilS -files in 01-gerber directory
 
 * marcus2002/etool:6/2022-04-20
 
