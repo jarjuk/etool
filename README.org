@@ -761,7 +761,7 @@ Using the script above to calculate cut width for V -milling bit
  - carving into depth ~z=0.1 mm~
 
  #+name: example1
- #+BEGIN_SRC python :eval no-export :results output :noweb no :session *Python* :exports code
+ #+BEGIN_SRC python :eval no-export :results output :noweb no :session *Python* :exports both
  print( f"cut={cutWidth(alpha=60,w=0.1,z=.1):.4f}")
  #+END_SRC
 
@@ -770,7 +770,8 @@ returns ~cut~ witdh
  #+RESULTS: example1
  : cut=0.2155
 
-file:docker/etool/pcb2gcode.ini uses carving parameters:
+Default CAM configuration [[file:docker/etool/pcb2gcode.ini]] defines
+carving parameters:
 
 #+BEGIN_SRC bash :eval no-export :results output :exports results
 grep -E '^mill-diameters|^zwork' docker/etool/pcb2gcode.ini
