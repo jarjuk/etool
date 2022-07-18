@@ -814,7 +814,8 @@ overlap ‰ at least
 : 7.2%
 
 
-file:docker/etool/pcb2gcode.ini sets overlap percent:
+Default CAM configuration [[file:docker/etool/pcb2gcode.ini]] sets overlap
+percent:
 
 #+BEGIN_SRC bash :eval no-export :results output :exports results
 grep -E '^milling-overlap' docker/etool/pcb2gcode.ini
