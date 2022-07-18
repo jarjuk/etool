@@ -814,14 +814,16 @@ overlap ‰ at least
 : 7.2%
 
 
-Default CAM configuration [[file:docker/etool/pcb2gcode.ini]] sets overlap
-percent:
+Default CAM configuration [[file:docker/etool/pcb2gcode.ini]] defines cut
+width, isolation width, and overlap percent as shown below
 
 #+BEGIN_SRC bash :eval no-export :results output :exports results
-grep -E '^milling-overlap' docker/etool/pcb2gcode.ini
+grep -E '^mill-diameters|^isolation-width|^milling-overlap' docker/etool/pcb2gcode.ini
 #+END_SRC
 
 #+RESULTS:
+: isolation-width=0.4mm  # min width between copper surfaces
+: mill-diameters=0.2155mm # milling cut
 : milling-overlap=9%      # overlap milling passes, [%/mm]
 
 
