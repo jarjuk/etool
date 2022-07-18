@@ -948,6 +948,7 @@ Notice, how the output above refers to configuration files
 The tool includes following example gerbers projects:
 - ~pad2pad~
   - Resistor, Led size 0805
+  - Edge Cut: 10x10 mm
   - pin-header, 2.54 grid
   - grid 2.54 mm
   - track width 0.5 mm
