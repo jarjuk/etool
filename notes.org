@@ -1,0 +1,18 @@
+* Notes                                                            :noexport:
+
+** Latex snippet
+
+  From the geometry 
+
+  \[ tan( \alpha/2 ) =   \frac{cut/2}{ h + z }  \], 
+
+  where is $h$ can be calculated using tip width $w$ and tip angle
+  $\alpha$
+
+  \[ tan(\alpha/2) = \frac{w/2}{h}  \Leftrightarrow h = \frac{w}{2tan(\alpha/2)}\]
+
+  Hence, 
+
+  \[  cut = 2 tan(\alpha/2)[ h + z] = 2 tan(\alpha/2) [  \frac{w}{2 tan(\alpha/2)}  + z ] \]
+
+

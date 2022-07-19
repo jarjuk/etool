@@ -791,11 +791,23 @@ isolation width $i$ when carving $n$ grooves of width $cut$:
 #+BEGIN_SRC python :eval no-export :results output :noweb no :session *Python* :exports code
   def overLap( i, cut, n):
       """:return: (min) overLap -‰ needed to achive isolation 'i' when
-      carving 'n' grooves of width 'cut'
+      carving 'n' grooves of width 'cut'. None if not possible
 
       """
-      overLap = (n * cut - i)/(n*cut) * 100.0
-      return overLap
+      # Max area possible to cover with n cuts
+      maxCarvingCover = n*cut
+
+      # Not possible to isolate
+      if maxCarvingCover < i: return None
+
+      # Need at least two carvings to have any overLap
+      if n < 2: return None
+      
+      #  width of one overLap 
+      overLapWidth = (maxCarvingCover - i)/(n-1)
+      
+      # one overLap width from cut width as percent
+      return overLapWidth / cut * 100.0
 #+END_SRC
 
 #+RESULTS:
@@ -808,10 +820,10 @@ To achive isolation width ~0.4mm~, when carving ~2~ grooves of width
   print( f"{overLap(i=0.4, cut=0.2155, n=2):.1f}%")
 #+END_SRC
 
-overlap ‰ at least
+overlap ‰ 
 
 #+RESULTS: example2
-: 7.2%
+: 14.4%
 
 
 Default CAM configuration [[file:docker/etool/pcb2gcode.ini]] defines cut
@@ -994,25 +1006,6 @@ Ref: [[file:docker.org]]
 ** RELEASE -notes
 
 Ref: [[file:docker/etool/RELEASES]]
-
-
-* Notes                                                            :noexport:
-
-** Latex snippet
-
-  From the geometry 
-
-  \[ tan( \alpha/2 ) =   \frac{cut/2}{ h + z }  \], 
-
-  where is $h$ can be calculated using tip width $w$ and tip angle
-  $\alpha$
-
-  \[ tan(\alpha/2) = \frac{w/2}{h}  \Leftrightarrow h = \frac{w}{2tan(\alpha/2)}\]
-
-  Hence, 
-
-  \[  cut = 2 tan(\alpha/2)[ h + z] = 2 tan(\alpha/2) [  \frac{w}{2 tan(\alpha/2)}  + z ] \]
-
 
 
 * Fin                                                              :noexport:
