@@ -1,3 +1,7 @@
+2022-08-19  jj  <jj@santtu>
+
+	* docker/etool/pcb2gcode.ini (min-milldrill-hole-diameter): enable milldrill
+
 2022-08-11  jj  <jj@santtu>
 
 	* schema/dip/dip.kicad_pcb: fixed edge markers
