@@ -836,7 +836,7 @@ grep -E '^mill-diameters|^isolation-width|^milling-overlap' docker/etool/pcb2gco
 #+RESULTS:
 : isolation-width=0.4mm  # min width between copper surfaces
 : mill-diameters=0.2155mm # milling cut
-: milling-overlap=9%      # overlap milling passes, [%/mm]
+: milling-overlap=13.25%  # overlap milling passes, [%/mm]
 
 
 ** User specific CAM configuration

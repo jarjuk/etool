@@ -9,7 +9,9 @@
 - Change pcb2gcode parameters
    - add +tile-x=1               # number of tiling columns. Default value is 1
    - add +tile-y=1               # number of tiling rows. Default value is 1
-- bridges=1.5mm --> 1mm
+   - bridges=1.5mm --> 1mm
+   - milling-overlap=9% --> 13.25%
+   - added milldrill (but they are commented out - should be tested)
 
 - Schema examples
   - dip version B

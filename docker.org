@@ -24,7 +24,7 @@ docker build -t marcus2002/etool:$ETOOL_DOCKER_TAG .  2>&1; echo $?
 
 #+RESULTS:
 #+begin_example
-Sending build context to Docker daemon  626.7kB
+Sending build context to Docker daemon  627.7kB
 Step 1/30 : FROM ubuntu:18.04
  ---> c3c304cb4f22
 Step 2/30 : RUN      apt-get update &&      apt-get install -y      curl      wget      git      firefox      gnupg2  gnupg
@@ -91,31 +91,34 @@ Step 22/30 : RUN sed -i -e 's!~/\.!/etool/!' /emc/bin/image-to-gcode
  ---> Using cache
  ---> ca77c60ba5b7
 Step 23/30 : COPY resources/ /resources
- ---> Using cache
- ---> a9b19077624a
+ ---> 3b218406a35e
 Step 24/30 : WORKDIR /etool
- ---> Using cache
- ---> 84d2f5da3e56
+ ---> Running in 49aa56879cff
+Removing intermediate container 49aa56879cff
+ ---> e36d1cebe369
 Step 25/30 : ENV HOME=/etool
- ---> Using cache
- ---> fa756b11e3d0
+ ---> Running in 8966d1c87775
+Removing intermediate container 8966d1c87775
+ ---> 95dc82844800
 Step 26/30 : RUN mkdir /etool-bin
- ---> Using cache
- ---> 224133ac00e4
+ ---> Running in f309d44c3067
+Removing intermediate container f309d44c3067
+ ---> 0bc4e6a4f143
 Step 27/30 : ENV PATH=/etool-bin:/emc/scripts:${PATH}
- ---> Using cache
- ---> a0252fe7b405
+ ---> Running in f4f15cb22aea
+Removing intermediate container f4f15cb22aea
+ ---> debf40b06e64
 Step 28/30 : COPY       etool.sh       adrill.sh       RELEASES       VERSION       axis_etool.ini       sim_mm.tbl       .linuxcncrc       pcb2gcode.ini       pcb2gcode-control.template       pcbGcodeZprobing.py       Dockerfile       /etool-bin/
- ---> 9ce2b6749ee8
+ ---> 3d7c0bc6b78e
 Step 29/30 : ENTRYPOINT [ "etool.sh" ]
- ---> Running in ddd667fb162b
-Removing intermediate container ddd667fb162b
- ---> 66b9945e0761
+ ---> Running in 16739b41b74e
+Removing intermediate container 16739b41b74e
+ ---> b9950b79ec91
 Step 30/30 : CMD [ "usage"]
- ---> Running in a6d0a6341fab
-Removing intermediate container a6d0a6341fab
- ---> dcc3b7d793e9
-Successfully built dcc3b7d793e9
+ ---> Running in 4f50253ab5d2
+Removing intermediate container 4f50253ab5d2
+ ---> 70eca2f76ca1
+Successfully built 70eca2f76ca1
 Successfully tagged marcus2002/etool:7
 0
 #+end_example

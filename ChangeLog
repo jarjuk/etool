@@ -1,3 +1,11 @@
+2022-08-11  jj  <jj@santtu>
+
+	* schema/dip/dip.kicad_pcb: fixed edge markers
+
+	* schema/pad2pad/pad2pad.pro (): fixed - did not work
+
+	* docker/etool/pcb2gcode.ini (milldrill options): added
+
 2022-07-04  jj  <jj@santtu>
 
 	* README.org: document 02-silk directory
