@@ -317,6 +317,12 @@ Pull ~marcus2002/etool:$ETOOL_DOCKER_TAG~ from Docker hub
 docker pull marcus2002/etool:$ETOOL_DOCKER_TAG
 #+END_SRC
 
+
+7: Pulling from marcus2002/etool
+: Digest: sha256:8150eb52eb17bf79acf92d8f47bf5e9ff7e0e46fb0d69fa704446388efeb36ee
+: Status: Image is up to date for marcus2002/etool:7
+: docker.io/marcus2002/etool:7
+
 Docker tag 4
 : 4: Pulling from marcus2002/etool
 : Digest: sha256:281331687cb3dc4239c6036d46fcc1c11c8958da5c8517e385479ae432892bc2
