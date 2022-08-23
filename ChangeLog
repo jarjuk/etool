@@ -1,3 +1,13 @@
+2022-08-23  jj  <jj@santtu>
+
+	* docker/etool/pcb2gcode.ini (isolation-width): 0.4mm-> 0.38
+	(milling-overlap): 13.25%->23%
+
+2022-08-21  jj  <jj@santtu>
+
+	* docker/etool/etool.sh (initApp): silkImage for {B,F}_SilkS,
+	{B,F}_Silkscreen, User{1,2}
+
 2022-08-19  jj  <jj@santtu>
 
 	* docker/etool/pcb2gcode.ini (min-milldrill-hole-diameter): enable milldrill

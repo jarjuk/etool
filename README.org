@@ -819,17 +819,17 @@ isolation width $i$ when carving $n$ grooves of width $cut$:
 #+RESULTS:
 
 
-To achive isolation width ~0.4mm~, when carving ~2~ grooves of width
+To achive isolation width ~0.38mm~, when carving ~2~ grooves of width
 ~0.2155mm~ requires
 #+name: example2
 #+BEGIN_SRC python :eval no-export :results output :noweb no :session *Python* :exports results
-  print( f"{overLap(i=0.4, cut=0.2155, n=2):.1f}%")
+  print( f"{overLap(i=0.38, cut=0.2155, n=2):.1f}%")
 #+END_SRC
 
 overlap ‰ 
 
 #+RESULTS: example2
-: 14.4%
+: 23.7%
 
 
 Default CAM configuration [[file:docker/etool/pcb2gcode.ini]] defines cut
@@ -840,9 +840,9 @@ grep -E '^mill-diameters|^isolation-width|^milling-overlap' docker/etool/pcb2gco
 #+END_SRC
 
 #+RESULTS:
-: isolation-width=0.4mm  # min width between copper surfaces
+: isolation-width=0.38mm # min width between copper surfaces
 : mill-diameters=0.2155mm # milling cut
-: milling-overlap=13.25%  # overlap milling passes, [%/mm]
+: milling-overlap=23%     # overlap milling passes, [%/mm]
 
 
 ** User specific CAM configuration
