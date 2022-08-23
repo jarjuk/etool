@@ -194,6 +194,9 @@ EOF
          local silk_stem=$1; shift
          local flip=$1; shift
          echo "Convert Gerber  $GERBERS_DIR/${silk_stem}.gbr to $SILK_IMAGE_TYPE -image $SILK_OUTPUT_DIR/${silk_stem}.$SILK_IMAGE_TYPE"
+         if [ ! -f $GERBERS_DIR/${silk_stem}.gbr ]; then
+             echo "--> No such file $GERBERS_DIR/${silk_stem}.gbr - no conversion"
+         fi
          gerbv  -x $SILK_IMAGE_TYPE --dpi=$SILK_IMAGE_DPI -o $SILK_OUTPUT_DIR/${silk_stem}-tmp.$SILK_IMAGE_TYPE $GERBERS_DIR/${silk_stem}.gbr
          if [ ! -z "$flip" ]; then
              # back side silp mirrored in gerber -> flip/flop 
@@ -330,10 +333,14 @@ EOF
                pcb2gcode --config $CAM_CONTROL_FILE,$PARAMS
 
                # producde silḱ
-               F_SILK=${PROJECT}-F_SilkS
-               B_SILK=${PROJECT}-B_SilkS
-               silkImage $F_SILK ""
-               silkImage $B_SILK "-flop"
+               # F_SILK=${PROJECT}-F_SilkS
+               # B_SILK=${PROJECT}-B_SilkS
+               silkImage ${PROJECT}-F_SilkS ""
+               silkImage ${PROJECT}-F_Silkscreen ""
+               silkImage ${PROJECT}-B_SilkS "-flop"
+               silkImage ${PROJECT}-B_Silkscreen "-flop"
+               silkImage ${PROJECT}-User_1 ""
+               silkImage ${PROJECT}-User_2 "-flop"
                ;;
              adrill)  # alignment drilling
                  if [ $# -lt 1 ]; then

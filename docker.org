@@ -13,7 +13,7 @@ echo Current ETOOL_DOCKER_TAG=$ETOOL_DOCKER_TAG
 #+END_SRC
 
 #+RESULTS:
-: Current ETOOL_DOCKER_TAG=7
+: Current ETOOL_DOCKER_TAG=8
 
 Build ~marcus2002/etool:$ETOOL_DOCKER_TAG~
 
@@ -106,19 +106,21 @@ Step 27/30 : ENV PATH=/etool-bin:/emc/scripts:${PATH}
  ---> Using cache
  ---> debf40b06e64
 Step 28/30 : COPY       etool.sh       adrill.sh       RELEASES       VERSION       axis_etool.ini       sim_mm.tbl       .linuxcncrc       pcb2gcode.ini       pcb2gcode-control.template       pcbGcodeZprobing.py       Dockerfile       /etool-bin/
- ---> dc59cd9dbab8
+ ---> aeeece6b7ad2
 Step 29/30 : ENTRYPOINT [ "etool.sh" ]
- ---> Running in 7a188f8148a3
-Removing intermediate container 7a188f8148a3
- ---> 96250dbfc9cb
+ ---> Running in 95047b1c152b
+Removing intermediate container 95047b1c152b
+ ---> a47903f8ded6
 Step 30/30 : CMD [ "usage"]
- ---> Running in cab5a61af382
-Removing intermediate container cab5a61af382
- ---> 506b1d5e8b94
-Successfully built 506b1d5e8b94
-Successfully tagged marcus2002/etool:7
+ ---> Running in f19b411caf66
+Removing intermediate container f19b411caf66
+ ---> 14581a809fe2
+Successfully built 14581a809fe2
+Successfully tagged marcus2002/etool:8
 0
 #+end_example
+
+
 
 
 

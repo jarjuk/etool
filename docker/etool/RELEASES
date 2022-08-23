@@ -1,4 +1,63 @@
-* marcus2002/etool:8/yyyy-mm-dd
+
+
+
+* marcus2002/etool:1/2022-02-23
+- initial version
+
+* marcus2002/etool:2/2022-03-1
+
+- changes:
+  - etool.sh: cam PRORJECT [PARAMS]
+  - etool.sh: --?, usage 
+  - etool.sh: create ETOOL_DIR
+  - etool.cmd: added
+  - pcb2gcode-control.template: cam command parameter chg (CAM->PROJECT)
+  - soic KiCAD -example: add trace on back copper
+  - soic KiCAD -example: add pin holder holes for flipping
+
+- documentation:
+  - some clarifications
+  - README.org: install system tools ubuntu/windows
+  - pcb2gcode.ini: document milling of one/two sided PCBs
+
+* marcus2002/etool:3/2022-03-16
+
+- changes:
+  - zsafe: 2mm
+  - pcb2gcode.ini: parameter changes
+  - ETOOL_DIR=$HOME/.etool
+  - Dockerfile: Add drivers needed on MacOs
+  - example dip added
+  - README: added documentation on example projects
+
+* marcus2002/etool:4/2022-03-18
+
+- User specific CAM -configuration
+- etoolMac.sh added
+- added via to example soic
+
+* marcus2002/etool:5/2022-04-03
+
+- rename command cam --> gerber
+- added:  01-image -directory
+- added: command image-help
+- added: command image
+- pcbGcodeZprobing.py: support for G2/G3
+- pcbGcodeZprobing.py: O200 subru parameter #5/z_dest
+- change: example TYPE PROJECT
+
+* marcus2002/etool:6/2022-04-20
+
+- Command: adrill added
+
+- Example pad2pad R-LED + pin-header 
+
+- Fixed pcb2gcode parameters
+  - zcut=-1.7mm            # cutting depth
+  - drill-feed=30 mm/min   # drill feed [mm/m]
+  - isolation-width=0.4mm  # min width between copper surfaces
+  - mill-diameters=0.25mm  # diameters of mill bits
+  - milling-overlap=9%    # overlap milling passes, [%/mm]
 
 * marcus2002/etool:7/2022-08-19
 
@@ -30,65 +89,12 @@
 - Features added:
   - produce png into 02-silk -directory for B_SilS and F_SilS -files in 01-gerber directory
 
-* marcus2002/etool:6/2022-04-20
+* marcus2002/etool:8/yyyy-mm-dd
 
+- gerber -command: Create silk images for KiCad6 files
+  (B_Silkscreen.gbr/F_Silkscreen.gbr), KiCad5 files(B_SilkS/F_SilkS), and
+  user files (User_1, User_2)
+- pcb2gcode.ini:
+  - milling-overlap=23%       # was 13.25%
+  - isolation-width=0.38mm    # was 0.4%
 
-- Command: adrill added
-
-- Example pad2pad R-LED + pin-header 
-
-- Fixed pcb2gcode parameters
-  - zcut=-1.7mm            # cutting depth
-  - drill-feed=30 mm/min   # drill feed [mm/m]
-  - isolation-width=0.4mm  # min width between copper surfaces
-  - mill-diameters=0.25mm  # diameters of mill bits
-  - milling-overlap=9%    # overlap milling passes, [%/mm]
-
-
-* marcus2002/etool:5/2022-04-03
-
-- rename command cam --> gerber
-- added:  01-image -directory
-- added: command image-help
-- added: command image
-- pcbGcodeZprobing.py: support for G2/G3
-- pcbGcodeZprobing.py: O200 subru parameter #5/z_dest
-- change: example TYPE PROJECT
-
-
-* marcus2002/etool:4/2022-03-18
-
-- User specific CAM -configuration
-- etoolMac.sh added
-- added via to example soic
-
-* marcus2002/etool:3/2022-03-16
-
-- changes:
-  - zsafe: 2mm
-  - pcb2gcode.ini: parameter changes
-  - ETOOL_DIR=$HOME/.etool
-  - Dockerfile: Add drivers needed on MacOs
-  - example dip added
-  - README: added documentation on example projects
-
-
-* marcus2002/etool:2/2022-03-1
-
-- changes:
-  - etool.sh: cam PRORJECT [PARAMS]
-  - etool.sh: --?, usage 
-  - etool.sh: create ETOOL_DIR
-  - etool.cmd: added
-  - pcb2gcode-control.template: cam command parameter chg (CAM->PROJECT)
-  - soic KiCAD -example: add trace on back copper
-  - soic KiCAD -example: add pin holder holes for flipping
-
-- documentation:
-  - some clarifications
-  - README.org: install system tools ubuntu/windows
-  - pcb2gcode.ini: document milling of one/two sided PCBs
-
-
-* marcus2002/etool:1/2022-02-23
-- initial version
