@@ -98,3 +98,5 @@
 - adrill -command: Alingment drilling only for x-coordinate X0.00* (prev X0.)
 
 - gerber -command: added USER configuration '3-grooves'
+
+- soic example: added 0603 pad, added track between soic pads

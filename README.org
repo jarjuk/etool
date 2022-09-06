@@ -1048,6 +1048,8 @@ The tool includes following example gerbers projects:
      - front silk text w. edge markers
      - back copper track 0.25 (B_Cu)
      - back silk (=mirrored) text w. edge markers
+     - 0.25 mm track passing between soic pads
+  - 2 x 0603 pad
   - 2 x Mounting hole 2.5 mm (NPTH)
   - Pin header 1x4, 1.27 mm
   - 1 via between F_Cu/B_Cu
