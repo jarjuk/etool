@@ -189,6 +189,7 @@ ENV HOME=/etool
 
 # /etool-bin created and added to path
 RUN mkdir /etool-bin
+RUN mkdir /etool-cnf
 ENV PATH=/etool-bin:/emc/scripts:${PATH}
 
 COPY \
@@ -201,9 +202,17 @@ COPY \
       .linuxcncrc \
       pcb2gcode.ini \
       pcb2gcode-control.template \
+      pcb2gcode-3-grooves.ini \
+      pcb2gcode-control-3-grooves.template \
       pcbGcodeZprobing.py \
       Dockerfile \
       /etool-bin/
+
+COPY \
+      pcb2gcode*.ini \
+      pcb2gcode-control*.template \
+      /etool-cnf/
+
 
 
 # entry only trough script - default output usage

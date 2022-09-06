@@ -25,12 +25,13 @@
   - [[#default-cam-parameters][Default CAM parameters]]
     - [[#carving-cut-width-and-cut-depth][Carving cut width and cut depth]]
     - [[#carving-overlap][Carving overlap]]
+  - [[#additional-cam-parameters][Additional CAM parameters]]
+    - [[#3-grooves][3-grooves]]
   - [[#user-specific-cam-configuration][User specific CAM configuration]]
   - [[#example-projects][Example projects]]
   - [[#development][Development]]
   - [[#release--notes][RELEASE -notes]]
 :END:
-
 
 ** Features
 
@@ -843,6 +844,63 @@ grep -E '^mill-diameters|^isolation-width|^milling-overlap' docker/etool/pcb2gco
 : isolation-width=0.38mm # min width between copper surfaces
 : mill-diameters=0.2155mm # milling cut
 : milling-overlap=23%     # overlap milling passes, [%/mm]
+
+
+
+** Additional CAM parameters
+
+*** 3-grooves
+:PROPERTIES:
+:header-args+: :var  USER_CONFIG="3-grooves"
+:header-args+: :var  ISOLATION_WIDTH=0.38
+:header-args+: :var  MILL_DIAMETERS=0.2155
+:header-args+: :var  MILLING_OVERLAP=60
+:header-args+: :dir  docker/etool
+:END:
+
+~3-grooves~ -CAM configruation uses three passes to isolate tracks on
+PCB. 
+
+To achive isolation width src_bash[:exports results]{echo -n
+${ISOLATION_WIDTH}mm }, when carving ~3~ grooves using milling bit
+with cutting width src_bash[:exports results]{echo -n
+${MILL_DIAMETERS}mm } requires
+
+
+#+name: 3-grooves
+#+BEGIN_SRC python :eval no-export :results output :noweb no :session *Python* :exports results
+  print( f"{overLap(i=ISOLATION_WIDTH, cut=MILL_DIAMETERS, n=3):.1f}%")
+#+END_SRC
+
+overlap ‰
+
+#+RESULTS: 3-grooves
+: 61.8%
+
+
+
+#+BEGIN_SRC bash :eval no-export :results output :exports none
+# Generate automagicaly USER_CONFIG
+cp pcb2gcode.ini pcb2gcode-${USER_CONFIG}.ini
+cp pcb2gcode-control.template pcb2gcode-control-${USER_CONFIG}.template 
+sed  -i -E "s/^isolation-width=[0-9.]+/isolation-width=${ISOLATION_WIDTH}/" pcb2gcode-${USER_CONFIG}.ini
+sed  -i -E "s/^milling-overlap=[0-9.]+/milling-overlap=${MILLING_OVERLAP}/" pcb2gcode-${USER_CONFIG}.ini
+# Modify configurations
+#+END_SRC
+
+#+RESULTS:
+
+CAM configuration [[file:docker/etool/pcb2gcode-3-grooves.ini]] defines cut
+width, isolation width, and overlap percent as shown below
+
+#+BEGIN_SRC bash :eval no-export :results output :exports results
+grep -E '^mill-diameters|^isolation-width|^milling-overlap' pcb2gcode-${USER_CONFIG}.ini
+#+END_SRC
+
+#+RESULTS:
+: isolation-width=0.38mm # min width between copper surfaces
+: mill-diameters=0.2155mm # milling cut
+: milling-overlap=60%     # overlap milling passes, [%/mm]
 
 
 ** User specific CAM configuration

@@ -221,11 +221,15 @@ EOF
          # mkdir_if_not_exist $MILLING_DIR
          mkdir_if_not_exist $ROOT/linuxcnc/configs/sim.axis
 
+         # init all config files
+         for f in /etool-cnf/*; do
+             mkfile_if_not_exist $ROOT/$(basename $f)  $f 
+         done 
          # Copy default config files respective places
-         mkfile_if_not_exist $CAM_DEFAULT_PARAMS_FILE $ETOOL_BIN/$(basename $CAM_DEFAULT_PARAMS_FILE)
+         # mkfile_if_not_exist $CAM_DEFAULT_PARAMS_FILE $ETOOL_BIN/$(basename $CAM_DEFAULT_PARAMS_FILE)
+         # mkfile_if_not_exist $CAM_CONTROL_TEMPLATE_FILE $ETOOL_BIN/$(basename $CAM_CONTROL_TEMPLATE_FILE)
          mkfile_if_not_exist $LINUXCNC_INI_FILE $ETOOL_BIN/$(basename $LINUXCNC_INI_FILE)
          mkfile_if_not_exist $LINUXCNC_TOOL_TABLE_FILE $ETOOL_BIN/$(basename $LINUXCNC_TOOL_TABLE_FILE)
-         mkfile_if_not_exist $CAM_CONTROL_TEMPLATE_FILE $ETOOL_BIN/$(basename $CAM_CONTROL_TEMPLATE_FILE)
 
 
          mkfile_if_not_exist $LINUXCNC_RC_FILE $ETOOL_BIN/$(basename $LINUXCNC_RC_FILE)
@@ -308,8 +312,8 @@ EOF
                        PARAMS=$ROOT/pcb2gcode-${1}.ini
                        CONTROL_TEMPLATE=$ROOT/pcb2gcode-control-${1}.template
                        # files must exist
-                       [ -f $CONTROL_TEMPLATE ] || die "Control template file $CONTROL_TEMPLATE does not exist - invalid USER parameter $1"
-                       [ -f $PARAMS ] || die "Cam parameter file $PARAMS not exist - invalid USER parameter $1"
+                       [ -f $PARAMS ] || die "Cam parameter file $PARAMS not exist - invalid USER parameter '$1'  (try one of: $(ls $ROOT/pcb2gcode-*.ini | sed -E 's!.*/pcb2gcode-(.*)\.ini!\1!'))"
+                       [ -f $CONTROL_TEMPLATE ] || die "Control template file $CONTROL_TEMPLATE does not exist - invalid USER parameter '$1'"
                    fi
                    shift
                fi

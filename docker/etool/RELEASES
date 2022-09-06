@@ -1,6 +1,3 @@
-
-
-
 * marcus2002/etool:1/2022-02-23
 - initial version
 
@@ -98,3 +95,6 @@
   - milling-overlap=23%       # was 13.25%
   - isolation-width=0.38mm    # was 0.4%
 
+- adrill -command: Alingment drilling only for x-coordinate X0.00* (prev X0.)
+
+- gerber -command: added USER configuration '3-grooves'

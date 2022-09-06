@@ -1,3 +1,15 @@
+2022-09-06  jj  <jj@santtu>
+
+	* docker/etool/etool.sh (initApp): Use '/etool-cnf' for init configurations
+
+	* docker/etool/Dockerfile (COPY): Use wild card in pcb2gcoce -copy
+
+	* README.org: document `3-grooves`
+
+2022-08-26  jj  <jj@santtu>
+
+	* docker/etool/adrill.sh (drilling): Via drillin only on X0.00
+
 2022-08-23  jj  <jj@santtu>
 
 	* docker/etool/pcb2gcode.ini (isolation-width): 0.4mm-> 0.38

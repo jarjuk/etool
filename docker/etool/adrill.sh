@@ -56,11 +56,11 @@ drilling==0 {
    # non -drilling actions -> output
    print $0
 }
-drilling==2 && ! /X0\..*/ {
-  # reject drillings outsize X0
+drilling==2 && ! /X0\.00.*/ {
+  # reject drillings outsize X0.00
   print "(  " $0 " )"
 }
-drilling==2 && /X0\..*/ {
+drilling==2 && /X0\.00.*/ {
    # drilling on Y-axis --> output
    print $0
 }
