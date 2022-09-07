@@ -848,13 +848,6 @@ grep -E '^mill-diameters|^isolation-width|^milling-overlap' docker/etool/pcb2gco
 
 
 ** Additional CAM parameters
-:PROPERTIES:
-:header-args+: :var  USER_CONFIG="3-grooves"
-:header-args+: :var  ISOLATION_WIDTH=0.38
-:header-args+: :var  MILL_DIAMETERS=0.2155
-:header-args+: :var  MILLING_OVERLAP=60
-:header-args+: :dir  docker/etool
-:END:
 
 *** 3-grooves
 
@@ -873,7 +866,7 @@ overlap ‰
 
 #+RESULTS: 3-grooves
 : To achive isolation width 0.38, when carving 3 cuts
-: using milling bit with cutting width 0.2155 mm
+: using milling bit with cutting width of 0.2155 mm
 : requires overlap of 61.8%
 
 
@@ -901,6 +894,13 @@ grep -E '^mill-diameters|^isolation-width|^milling-overlap' pcb2gcode-${USER_CON
 : mill-diameters=0.2155mm # milling cut
 : milling-overlap=60%     # overlap milling passes, [%/mm]
 
+:PROPERTIES:
+:header-args+: :var  USER_CONFIG="3-grooves"
+:header-args+: :var  ISOLATION_WIDTH=0.38
+:header-args+: :var  MILL_DIAMETERS=0.2155
+:header-args+: :var  MILLING_OVERLAP=60
+:header-args+: :dir  "docker/etool"
+:END:
 
 ** User specific CAM configuration
 
