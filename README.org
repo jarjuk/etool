@@ -848,8 +848,6 @@ grep -E '^mill-diameters|^isolation-width|^milling-overlap' docker/etool/pcb2gco
 
 
 ** Additional CAM parameters
-
-*** 3-grooves
 :PROPERTIES:
 :header-args+: :var  USER_CONFIG="3-grooves"
 :header-args+: :var  ISOLATION_WIDTH=0.38
@@ -857,6 +855,8 @@ grep -E '^mill-diameters|^isolation-width|^milling-overlap' docker/etool/pcb2gco
 :header-args+: :var  MILLING_OVERLAP=60
 :header-args+: :dir  docker/etool
 :END:
+
+*** 3-grooves
 
 ~3-grooves~ -CAM configruation uses three passes to isolate tracks on
 PCB. 
