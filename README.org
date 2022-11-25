@@ -869,8 +869,6 @@ PCB.
   print( f"requires overlap of {overLap(i=ISOLATION_WIDTH, cut=MILL_DIAMETERS, n=n):.1f}%")
 #+END_SRC
 
-overlap ‰
-
 #+RESULTS: 3-grooves
 : To achive isolation width 0.38, when carving 3 cuts
 : using milling bit with cutting width of 0.2155 mm
