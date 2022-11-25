@@ -1,6 +1,7 @@
 2022-11-25  jj  <jj@santtu>
 
 	* docker.org (List docker tags): added function 'docker-tags'
+	(~etool~ Docker): Change version 8->9
 
 2022-09-06  jj  <jj@santtu>
 
