@@ -81,8 +81,9 @@ Command line usage
 
 #+RESULTS:
 #+begin_example
+Created ETOOL_DIR=/home/jj/.etool
 
-         marcus2002/etool:7
+         marcus2002/etool:8
 
          A tool for mapping Gerber/image files to gcode for CNC
          machining and launching linuxcnc -simulator for validating
@@ -133,7 +134,7 @@ Command line usage
 
          mkdir $HOME/.etool             # create working directory
 
-         export ETOOL='docker run --rm --user 1000:1000 -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.etool:/etool marcus2002/etool:7'
+         export ETOOL='docker run --rm --user 1000:1000 -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.etool:/etool marcus2002/etool:8'
 
          $ETOOL cleanup                 # clean working directories
          $ETOOL ls                      # empty directories
@@ -151,8 +152,6 @@ Command line usage
 #+end_example
 
 
-
-
 ** Architecture
 
 Following box and line diagram gives an overview of ~marcus2002/etool~
@@ -165,20 +164,21 @@ Following box and line diagram gives an overview of ~marcus2002/etool~
 
 2) Gerber to gcode conversion
 
-   1) Gerber files in *01-gerber* subdirectory. These files are created
-        using plot command in KiCAD EDA -tool, or using ~example~
-        -command in ~marcus2002/etool~.
+   1) Gerber files in *01-gerber* subdirectory. These files are
+      created using plot command in KiCAD EDA -tool, or using
+      ~example~ -command in ~marcus2002/etool~.
 
    2) Output produced with ~gerber~ -command in ~marcus2002/etool~:
-       gcode files in *02-ngc* subdirectory.
+      gcode files in *02-ngc* subdirectory.
 
-   3) Output produced with ~gerber~ -command in ~marcus2002/etool~: png
-        files for front and back Gerber -layers in *01-silk* subdirectory.
+   3) Output produced with ~gerber~ -command in ~marcus2002/etool~:
+      png files for front and back Gerber -layers in *01-silk*
+      subdirectory.
 
 3) Image to gcode conversion
 
    1) Image files in *01-image* subdirectory. These files are created
-        using drawing tool e.g. inkscape.
+      using drawing tool e.g. inkscape.
 
    2) Output produced with ~image~ -command in ~marcus2002/etool~: gcode
       files in *02-ngc* subdirectory.
@@ -189,7 +189,7 @@ Following box and line diagram gives an overview of ~marcus2002/etool~
 5) gcode files in *02-ngc* -subdirectory copied for CNC for milling,
    drilling, and edge cutting.
 
-6) Imange files in *02-silk* -subdirectory copied for laser engraving
+6) Image files in *02-silk* -subdirectory copied for laser engraving
 
 
 #+begin_example
