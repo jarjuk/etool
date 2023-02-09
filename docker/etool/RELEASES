@@ -100,3 +100,10 @@
 - gerber -command: added USER configuration '3-grooves'
 
 - soic example: added 0603 pad, added track between soic pads
+
+
+* marcus2002/etool:9/yyyy-mm-dd
+
+- adrill -command: Only one alignment drill
+  - Fix: accept x-co-ordinate with negative signg X-0.00000
+  

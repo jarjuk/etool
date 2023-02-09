@@ -1,3 +1,9 @@
+2023-02-09  jj  <jj@eero>
+
+	* docker/etool/Dockerfile: Fixed 18.04 linux-header version (to allow docker build on 22.04)
+	
+	* docker/etool/adrill.sh (drilling): accept x-co-ordinate with negative signg X-0.00000
+
 2022-11-25  jj  <jj@santtu>
 
 	* docker.org (List docker tags): added function 'docker-tags'

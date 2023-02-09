@@ -1,4 +1,5 @@
- FROM ubuntu:18.04
+ # FROM ubuntu:18.04
+ FROM ubuntu:18.04@sha256:3235326357dfb65f1781dbc4df3b834546d8bf914e82cce58e6e6b676e23ce8f
 
  # Tools for installing packages
  #  
@@ -11,12 +12,28 @@
      firefox \
      gnupg2  gnupg
 
+
  # Common dev tools
+ #
+ # Error Unable to locate package linux-headers-5.15.0-58-generic
+ # https://stackoverflow.com/questions/62455239/making-building-a-kernel-module-inside-a-docker-container
+ #
+ # So when you run uname command, the result you are seeing is that of the underlying Docker host.
+ #
+ # Building  building on ubuntu:22.04, need to have 18.04 headers
+ # header version used on marcus2002/etoo:8 = 4.15.0-202.generic
+
  #       
+ # RUN \
+ #      apt-get install -y \
+ #      build-essential \
+ #      linux-headers-$(uname -r) \
+ #      dkms 
+
  RUN \
       apt-get install -y \
       build-essential \
-      linux-headers-$(uname -r) \
+      linux-headers-4.15.0-202.generic \
       dkms 
 
 
