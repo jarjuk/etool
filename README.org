@@ -1,4 +1,4 @@
-#+PROPERTY: header-args+ :var  ETOOL_DOCKER_TAG="8"
+#+PROPERTY: header-args+ :var  ETOOL_DOCKER_TAG="9"
 * marcus2002/etool - Docker mapping Gerber files to gcode with simulator support
 :PROPERTIES:
 :TOC:      :include all
@@ -81,9 +81,8 @@ Command line usage
 
 #+RESULTS:
 #+begin_example
-Created ETOOL_DIR=/home/jj/.etool
 
-         marcus2002/etool:8
+         marcus2002/etool:9
 
          A tool for mapping Gerber/image files to gcode for CNC
          machining and launching linuxcnc -simulator for validating
@@ -134,7 +133,7 @@ Created ETOOL_DIR=/home/jj/.etool
 
          mkdir $HOME/.etool             # create working directory
 
-         export ETOOL='docker run --rm --user 1000:1000 -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.etool:/etool marcus2002/etool:8'
+         export ETOOL='docker run --rm --user 1000:1000 -e DISPLAY=unix:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.etool:/etool marcus2002/etool:9'
 
          $ETOOL cleanup                 # clean working directories
          $ETOOL ls                      # empty directories
@@ -309,7 +308,7 @@ echo ETOOL_DOCKER_TAG=$ETOOL_DOCKER_TAG
 #+END_SRC
 
 #+RESULTS:
-: ETOOL_DOCKER_TAG=7
+: ETOOL_DOCKER_TAG=9
 
 
 Pull ~marcus2002/etool:$ETOOL_DOCKER_TAG~ from Docker hub
@@ -319,36 +318,14 @@ docker pull marcus2002/etool:$ETOOL_DOCKER_TAG
 #+END_SRC
 
 
-7: Pulling from marcus2002/etool
+: 9: Pulling from marcus2002/etool
+: Digest: sha256:514c385deede32a71bf4e57752d28bf72b0cfdee7802237a1ebd98f3b83d2d6b
+: Status: Image is up to date for marcus2002/etool:9
+: docker.io/marcus2002/etool:9
+
 : Digest: sha256:8150eb52eb17bf79acf92d8f47bf5e9ff7e0e46fb0d69fa704446388efeb36ee
 : Status: Image is up to date for marcus2002/etool:7
 : docker.io/marcus2002/etool:7
-
-Docker tag 4
-: 4: Pulling from marcus2002/etool
-: Digest: sha256:281331687cb3dc4239c6036d46fcc1c11c8958da5c8517e385479ae432892bc2
-: Status: Image is up to date for marcus2002/etool:4
-: docker.io/marcus2002/etool:4
-
-
-: 4: Pulling from marcus2002/etool
-: Digest: sha256:a9b432f5801c2707d4f4d1c28e2866a939b301370024db2cf4ced802f51b5336
-: Status: Image is up to date for marcus2002/etool:4
-: docker.io/marcus2002/etool:4
-
-Docker tag 2
-: 2: Pulling from marcus2002/etool
-: Digest: sha256:21ffdfee4f13341bffbcc4ef798778121616eccb86afa89dde75b6bdd4e01fb9
-: Status: Image is up to date for marcus2002/etool:2
-: docker.io/marcus2002/etool:2
-
-
-Docker tag 1
-: 1: Pulling from marcus2002/etool
-: Digest: sha256:67c4ce25b60ac6e15799b827619bf0697da138132d207720cfdd19ff46c602b5
-: Status: Image is up to date for marcus2002/etool:1
-: docker.io/marcus2002/etool:1
-
 
 *** Running etool
 

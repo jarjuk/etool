@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Changes this to choose correct version
-TAG=8
+TAG=9
 # Set data directory
 ETOOL_DIR=$HOME/.etool
 
